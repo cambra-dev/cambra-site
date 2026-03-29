@@ -1,0 +1,59 @@
+---
+/**
+ * Root layout used by every page. Injects all SEO meta tags, canonical URL,
+ * Open Graph / Twitter card data, and the global stylesheet.
+ */
+import "../styles/global.css";
+
+interface Props {
+  /** <title> text. Automatically suffixed with "— Cambra" unless it is exactly "Cambra". */
+  title: string;
+  /** Meta description, also used for OG/Twitter descriptions. */
+  description: string;
+  /** Absolute path to the OG image. Defaults to /og-default.png. */
+  ogImage?: string;
+  /** Canonical URL override. Defaults to the current page URL. */
+  canonicalURL?: string;
+}
+
+const {
+  title,
+  description,
+  ogImage = "/og-default.png",
+  canonicalURL = Astro.url.href,
+} = Astro.props;
+
+const pageTitle = title === "Cambra" ? "Cambra" : `${title} — Cambra`;
+const ogImageURL = new URL(ogImage, Astro.site);
+---
+
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <link rel="icon" type="image/svg+xml" href="/nautilus.svg" />
+    <link rel="sitemap" href="/sitemap-index.xml" />
+
+    <title>{pageTitle}</title>
+    <meta name="description" content={description} />
+    <link rel="canonical" href={canonicalURL} />
+
+    <!-- Open Graph -->
+    <meta property="og:type" content="website" />
+    <meta property="og:url" content={canonicalURL} />
+    <meta property="og:title" content={pageTitle} />
+    <meta property="og:description" content={description} />
+    <meta property="og:image" content={ogImageURL} />
+    <meta property="og:site_name" content="Cambra" />
+
+    <!-- Twitter card -->
+    <meta name="twitter:card" content="summary_large_image" />
+    <meta name="twitter:title" content={pageTitle} />
+    <meta name="twitter:description" content={description} />
+    <meta name="twitter:image" content={ogImageURL} />
+  </head>
+  <body>
+    <slot />
+  </body>
+</html>

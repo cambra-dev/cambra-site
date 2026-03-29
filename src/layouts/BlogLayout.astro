@@ -1,0 +1,73 @@
+---
+/**
+ * Layout for individual blog posts. Wraps BaseLayout and adds article chrome:
+ * title, date, estimated reading time, and a back-to-blog link.
+ */
+import BaseLayout from './BaseLayout.astro';
+import Nav from '../components/Nav.astro';
+
+interface Props {
+  title: string;
+  description: string;
+  pubDate: Date;
+  author?: string;
+  /** Optional explicit reading time in minutes. Falls back to auto-estimation. */
+  readingTime?: number;
+  ogImage?: string;
+}
+
+const { title, description, pubDate, author, readingTime, ogImage } = Astro.props;
+
+const formatted = pubDate.toLocaleDateString('en-US', {
+  year: 'numeric',
+  month: 'long',
+  day: 'numeric',
+});
+---
+
+<BaseLayout title={title} description={description} ogImage={ogImage}>
+  <Nav />
+
+  <main class="max-w-3xl mx-auto px-6 py-16 md:py-24">
+    <a
+      href="/blog"
+      class="inline-flex items-center gap-1.5 text-sm text-[var(--color-muted)] hover:text-[var(--color-accent)] transition-colors mb-10"
+    >
+      ← All posts
+    </a>
+
+    <header class="mb-12">
+      <h1
+        class="text-3xl md:text-4xl font-semibold tracking-tight leading-tight mb-4"
+        style="letter-spacing: -0.03em;"
+      >
+        {title}
+      </h1>
+      <div class="flex items-center gap-3 text-sm text-[var(--color-muted)]">
+        {author && (
+          <>
+            <span>{author}</span>
+            <span aria-hidden="true">·</span>
+          </>
+        )}
+        <time datetime={pubDate.toISOString()}>{formatted}</time>
+        {readingTime && (
+          <>
+            <span aria-hidden="true">·</span>
+            <span>{readingTime} min read</span>
+          </>
+        )}
+      </div>
+    </header>
+
+    <article class="prose">
+      <slot />
+    </article>
+  </main>
+
+  <footer class="border-t border-gray-100 py-8 text-center text-sm text-[var(--color-muted)]">
+    <a href="/" class="hover:text-[var(--color-accent)] transition-colors">Cambra</a>
+    &nbsp;·&nbsp;
+    <a href="/blog" class="hover:text-[var(--color-accent)] transition-colors">Blog</a>
+  </footer>
+</BaseLayout>

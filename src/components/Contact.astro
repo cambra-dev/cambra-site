@@ -1,0 +1,92 @@
+---
+/**
+ * Contact capture section. Netlify Forms processes submissions automatically
+ * on deploy — no backend needed. Submissions appear in the Netlify dashboard.
+ *
+ * To receive email notifications for new submissions:
+ *   Netlify dashboard → Forms → contact → Notifications → Add email notification.
+ */
+---
+
+<section id="contact" class="py-24 md:py-32">
+  <div class="max-w-5xl mx-auto px-6">
+    <div class="max-w-md">
+      <h2
+        class="text-2xl md:text-3xl font-semibold tracking-tight mb-3"
+        style="letter-spacing: -0.03em;"
+      >
+        Stay in the loop.
+      </h2>
+      <p class="text-[var(--color-muted)] mb-8 leading-relaxed">
+        We'll reach out when there's something worth sharing — no spam, no
+        marketing, no newsletters.
+      </p>
+
+      <!-- Netlify Forms: the hidden input and netlify attribute are required. -->
+      <form
+        name="contact"
+        method="POST"
+        data-netlify="true"
+        netlify-honeypot="bot-field"
+        class="space-y-5"
+        action="/thanks"
+      >
+        <!-- Honeypot for bot filtering -->
+        <p class="hidden" aria-hidden="true">
+          <label>
+            Don't fill this out if you're human: <input name="bot-field" />
+          </label>
+        </p>
+        <input type="hidden" name="form-name" value="contact" />
+
+        <div>
+          <label for="email" class="block text-sm font-medium mb-1.5">
+            Email address
+          </label>
+          <input
+            id="email"
+            type="email"
+            name="email"
+            required
+            placeholder="you@example.com"
+            class="w-full border border-gray-200 rounded-md px-3.5 py-2.5 text-sm focus:outline-none focus:ring-2 focus:ring-[var(--color-accent)] focus:border-transparent transition"
+          />
+        </div>
+
+        <fieldset>
+          <legend class="block text-sm font-medium mb-2"
+            >I'm interested in…</legend
+          >
+          <div class="space-y-2.5">
+            <label class="flex items-center gap-3 cursor-pointer">
+              <input
+                type="radio"
+                name="intent"
+                value="following"
+                checked
+                class="accent-[var(--color-accent)] w-4 h-4"
+              />
+              <span class="text-sm">Following the project</span>
+            </label>
+            <label class="flex items-center gap-3 cursor-pointer">
+              <input
+                type="radio"
+                name="intent"
+                value="joining"
+                class="accent-[var(--color-accent)] w-4 h-4"
+              />
+              <span class="text-sm">Working on this</span>
+            </label>
+          </div>
+        </fieldset>
+
+        <button
+          type="submit"
+          class="bg-[var(--color-accent)] hover:bg-[var(--color-accent-dark)] text-white text-sm font-medium px-5 py-2.5 rounded-md transition-colors"
+        >
+          Submit
+        </button>
+      </form>
+    </div>
+  </div>
+</section>

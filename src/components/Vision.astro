@@ -1,0 +1,61 @@
+---
+/**
+ * Vision section. Three panels explaining the problem, the approach, and the
+ * guarantee. Copy is drafted from the design doc — refine before launch.
+ */
+
+const panels = [
+  {
+    label: "01",
+    heading: '"Use the right tool" leads to brittle systems.',
+    body: `Modern applications involve databases, services, queues, and frontends.
+Each component excels at its job — but they interact through low-level
+primitives: network calls, byte encodings, connection pools. Every integration
+point is a seam. Seams compound. The result: systems that
+are hard to change and easy to break.`,
+  },
+  {
+    label: "02",
+    heading: "One model. Every workload.",
+    body: `Cambra is built on a new kind of programming model — general-purpose,
+domain-aligned, and sealed. It spans the workloads of internet software:
+transactional processing, analytical queries, streaming pipelines, and API
+serving. Components don't drop down to low-level plumbing to communicate.
+They interact within the model, in domain-aligned terms.`,
+  },
+  {
+    label: "03",
+    heading: "Tools that see your whole stack.",
+    body: `Coherence creates leverage. Contract mismatches that would have been
+runtime failures become type errors. Cross-component optimizations that
+required manual coordination become automatic. Schema migrations that required
+orchestrated deploys become ordinary refactors. The system can be verified,
+optimized, and evolved in ways a fragmented stack simply cannot.`,
+  },
+];
+---
+
+<section class="bg-[var(--color-surface)] py-24 md:py-32">
+  <div class="max-w-5xl mx-auto px-6">
+    <div class="grid md:grid-cols-3 gap-12 md:gap-16">
+      {
+        panels.map((panel) => (
+          <div>
+            <span class="block text-xs font-mono font-medium text-[var(--color-accent)] mb-4 tracking-widest">
+              {panel.label}
+            </span>
+            <h2
+              class="text-xl font-semibold tracking-tight leading-snug mb-4"
+              style="letter-spacing: -0.02em;"
+            >
+              {panel.heading}
+            </h2>
+            <p class="text-[var(--color-muted)] leading-relaxed text-[0.9375rem]">
+              {panel.body}
+            </p>
+          </div>
+        ))
+      }
+    </div>
+  </div>
+</section>

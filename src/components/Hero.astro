@@ -1,0 +1,53 @@
+---
+/**
+ * Landing page hero. Contains the primary headline, subheadline, and two CTAs:
+ * "Read the blog post" → blog post, and "Stay in touch" → #contact section.
+ *
+ * TODO: Fill in HEADLINE and SUBHEADLINE with your finalized copy.
+ */
+
+const announcementSlug = "/blog/announcement";
+---
+
+<section class="pt-16 pb-24 md:pt-24 md:pb-32" style="background: #073252;">
+  <div class="max-w-5xl mx-auto px-6">
+    <!-- Headline -->
+    <h1
+      class="text-4xl md:text-6xl font-semibold tracking-tight leading-[1.05] max-w-3xl mb-6 text-white"
+      style="letter-spacing: -0.04em;"
+    >
+      Software should hold together.
+    </h1>
+
+    <p
+      class="text-lg md:text-xl max-w-xl leading-relaxed mb-10"
+      style="color: rgba(255,255,255,0.65);"
+    >
+      Internet applications are assembled from components with incompatible
+      models — databases, services, queues, frontends — each powerful in
+      isolation, collectively fragile. Cambra introduces a unified programming
+      model that spans every layer: transactional, analytical, streaming, and
+      serving. When your stack is coherent, your tools can finally see all of it.
+    </p>
+
+    <!-- CTAs -->
+    <div class="flex flex-wrap gap-4 items-center">
+      <a
+        href={announcementSlug}
+        class="inline-flex items-center gap-2 bg-[var(--color-accent)] hover:bg-[var(--color-accent-dark)] text-white font-medium text-sm px-5 py-2.5 rounded-md transition-colors"
+      >
+        Read the blog post
+        <span aria-hidden="true">→</span>
+      </a>
+      <a
+        href="/#contact"
+        class="inline-flex items-center gap-2 text-sm font-medium px-5 py-2.5 rounded-md transition-colors"
+        style="color: rgba(255,255,255,0.8); border: 1px solid rgba(255,255,255,0.2);"
+        onmouseover="this.style.borderColor='rgba(255,255,255,0.4)'"
+        onmouseout="this.style.borderColor='rgba(255,255,255,0.2)'"
+      >
+        Stay in touch
+      </a>
+    </div>
+  </div>
+</section>

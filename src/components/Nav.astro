@@ -1,0 +1,41 @@
+---
+/**
+ * Top navigation bar. Logo on the left, blog link on the right.
+ * Logo source: TODO — drop your logo file into public/ and update the src below.
+ */
+---
+
+<header
+  class="w-full border-b border-gray-100 bg-white/90 backdrop-blur-sm sticky top-0 z-50"
+>
+  <nav
+    class="max-w-5xl mx-auto px-6 h-14 flex items-center justify-between"
+    aria-label="Main navigation"
+  >
+    <a href="/" aria-label="Cambra home">
+      <!-- TODO: Replace with <img src="/logo.svg" alt="Cambra" class="h-7" /> once logo is in public/ -->
+      <img src="/nautilus-cambra.svg" alt="Cambra" class="h-12" />
+      <!--span
+        class="font-semibold text-lg tracking-tight"
+        style="font-family: var(--font-mono); letter-spacing: -0.04em;"
+      >
+        cambra
+      </span-->
+    </a>
+
+    <div class="flex items-center gap-6 text-sm font-medium">
+      <a
+        href="/blog"
+        class="text-[var(--color-muted)] hover:text-[var(--color-ink)] transition-colors"
+      >
+        Blog
+      </a>
+      <a
+        href="/#contact"
+        class="text-[var(--color-muted)] hover:text-[var(--color-ink)] transition-colors"
+      >
+        Contact
+      </a>
+    </div>
+  </nav>
+</header>

@@ -1,0 +1,29 @@
+---
+/**
+ * Landing page. Assembles all marketing sections in order.
+ * TODO: Update the description meta tag with your finalized copy.
+ */
+import BaseLayout from '../layouts/BaseLayout.astro';
+import Nav from '../components/Nav.astro';
+import Hero from '../components/Hero.astro';
+import Vision from '../components/Vision.astro';
+import Contact from '../components/Contact.astro';
+import Team from '../components/Team.astro';
+---
+
+<BaseLayout
+  title="Cambra"
+  description="Cambra is a new programming system built on a unified model for internet software — spanning transactions, streaming, and analytics without fragmentation."
+>
+  <Nav />
+  <Hero />
+  <Vision />
+  <Contact />
+  <Team />
+
+  <footer class="border-t border-gray-100 py-8 text-center text-sm text-[var(--color-muted)]">
+    © {new Date().getFullYear()} Cambra
+    &nbsp;·&nbsp;
+    <a href="/blog" class="hover:text-[var(--color-accent)] transition-colors">Blog</a>
+  </footer>
+</BaseLayout>

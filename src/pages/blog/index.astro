@@ -1,0 +1,75 @@
+---
+/**
+ * Blog listing page. Shows all published posts in reverse-chronological order.
+ */
+import BaseLayout from "../../layouts/BaseLayout.astro";
+import Nav from "../../components/Nav.astro";
+import { getCollection } from "astro:content";
+
+const posts = (await getCollection("blog"))
+  .filter((post) => !post.data.draft)
+  .sort((a, b) => b.data.pubDate.valueOf() - a.data.pubDate.valueOf());
+---
+
+<BaseLayout
+  title="Blog"
+  description="Writing from the Cambra team on programming languages, databases, and distributed systems."
+>
+  <Nav />
+
+  <main class="max-w-2xl mx-auto px-6 py-16 md:py-24">
+    <h1
+      class="text-3xl font-semibold tracking-tight mb-12"
+      style="letter-spacing: -0.03em;"
+    >
+      Blog
+    </h1>
+
+    {
+      posts.length === 0 ? (
+        <p class="text-[var(--color-muted)]">No posts yet.</p>
+      ) : (
+        <ul class="space-y-10">
+          {posts.map((post) => {
+            const formatted = post.data.pubDate.toLocaleDateString("en-US", {
+              year: "numeric",
+              month: "long",
+              day: "numeric",
+            });
+            return (
+              <li>
+                <a href={`/blog/${post.id}`} class="group block">
+                  <time
+                    datetime={post.data.pubDate.toISOString()}
+                    class="text-xs text-[var(--color-muted)] font-mono tracking-wide"
+                  >
+                    {formatted}
+                  </time>
+                  <h2
+                    class="text-lg font-semibold mt-1 group-hover:text-[var(--color-accent)] transition-colors"
+                    style="letter-spacing: -0.02em;"
+                  >
+                    {post.data.title}
+                  </h2>
+                  {post.data.description && (
+                    <p class="text-sm text-[var(--color-muted)] mt-1 leading-relaxed">
+                      {post.data.description}
+                    </p>
+                  )}
+                </a>
+              </li>
+            );
+          })}
+        </ul>
+      )
+    }
+  </main>
+
+  <footer
+    class="border-t border-gray-100 py-8 text-center text-sm text-[var(--color-muted)]"
+  >
+    <a href="/" class="hover:text-[var(--color-accent)] transition-colors"
+      >← Cambra</a
+    >
+  </footer>
+</BaseLayout>
