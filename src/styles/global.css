@@ -2,17 +2,17 @@
 @import "tailwindcss";
 
 /* ─── Theme ────────────────────────────────────────────────────── */
-/* TODO: Update --color-accent to match your logo's primary color. */
 @theme {
   --font-sans: 'Inter', ui-sans-serif, system-ui, sans-serif;
   --font-mono: 'JetBrains Mono', ui-monospace, monospace;
 
-  --color-accent:       #d45500;
-  --color-accent-dark:  #b34700;
+  --color-accent: #d45500;
+  --color-accent-dark: #b34700;
   --color-accent-muted: #fdebd8;
-  --color-surface:      #f5f8fc;
-  --color-ink:          #0f1117;
-  --color-muted:        #6b7280;
+  --color-surface: #f5f8fc;
+  --color-ink: #0f1117;
+  --color-muted: #6b7280;
+  --color-bg: #fdf5ec;
 }
 
 /* ─── Base ─────────────────────────────────────────────────────── */
@@ -24,7 +24,7 @@ html {
 body {
   font-family: var(--font-sans);
   color: var(--color-ink);
-  background: #fdf5ec;
+  background: var(--color-bg);
 }
 
 /* ─── Prose (blog posts) ────────────────────────────────────────── */
@@ -34,22 +34,60 @@ body {
   font-size: 1.0625rem;
 }
 
-.prose h1, .prose h2, .prose h3, .prose h4 {
+.prose h1,
+.prose h2,
+.prose h3,
+.prose h4 {
   font-weight: 600;
   letter-spacing: -0.02em;
   margin-top: 2em;
   margin-bottom: 0.5em;
 }
-.prose h1 { font-size: 2rem; }
-.prose h2 { font-size: 1.5rem; border-bottom: 1px solid #e5e7eb; padding-bottom: 0.25em; }
-.prose h3 { font-size: 1.2rem; }
 
-.prose p     { margin-top: 0; margin-bottom: 1.25em; }
-.prose ul    { list-style: disc; padding-left: 1.5em; margin-bottom: 1.25em; }
-.prose ol    { list-style: decimal; padding-left: 1.5em; margin-bottom: 1.25em; }
-.prose li    { margin-bottom: 0.25em; }
-.prose a     { color: var(--color-accent); text-decoration: underline; text-underline-offset: 3px; }
-.prose a:hover { color: var(--color-accent-dark); }
+.prose h1 {
+  font-size: 2rem;
+}
+
+.prose h2 {
+  font-size: 1.5rem;
+  border-bottom: 1px solid #e5e7eb;
+  padding-bottom: 0.25em;
+}
+
+.prose h3 {
+  font-size: 1.2rem;
+}
+
+.prose p {
+  margin-top: 0;
+  margin-bottom: 1.25em;
+}
+
+.prose ul {
+  list-style: disc;
+  padding-left: 1.5em;
+  margin-bottom: 1.25em;
+}
+
+.prose ol {
+  list-style: decimal;
+  padding-left: 1.5em;
+  margin-bottom: 1.25em;
+}
+
+.prose li {
+  margin-bottom: 0.25em;
+}
+
+.prose a {
+  color: var(--color-accent);
+  text-decoration: underline;
+  text-underline-offset: 3px;
+}
+
+.prose a:hover {
+  color: var(--color-accent-dark);
+}
 
 .prose code {
   font-family: var(--font-mono);
@@ -67,6 +105,7 @@ body {
   overflow-x: auto;
   margin-bottom: 1.5em;
 }
+
 .prose pre code {
   background: transparent;
   padding: 0;
