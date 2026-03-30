@@ -1,43 +1,65 @@
-# Astro Starter Kit: Minimal
+# Cambra
+
+Marketing and blog site for [cambra.dev](https://cambra.dev) — a new programming system built on a unified model for internet software.
+
+Built with [Astro](https://astro.build), [Tailwind CSS](https://tailwindcss.com), and deployed on [Netlify](https://www.netlify.com).
+
+## Development
+
+Requires Node.js >= 22.12.0.
 
 ```sh
-npm create astro@latest -- --template minimal
+npm install
+npm run dev
 ```
 
-> 🧑‍🚀 **Seasoned astronaut?** Delete this file. Have fun!
+The dev server starts at `localhost:4321`.
 
-## 🚀 Project Structure
+## Project Structure
 
-Inside of your Astro project, you'll see the following folders and files:
-
-```text
-/
-├── public/
-├── src/
-│   └── pages/
-│       └── index.astro
-└── package.json
+```
+src/
+├── pages/          # Routes (index, blog, thanks)
+├── components/     # Astro components (Nav, Hero, Vision, Contact, Team)
+├── content/        # Blog posts (Markdown)
+├── layouts/        # Page layouts
+├── data/           # Structured data (team info)
+└── styles/         # Global styles
 ```
 
-Astro looks for `.astro` or `.md` files in the `src/pages/` directory. Each page is exposed as a route based on its file name.
+Blog posts are authored as Markdown files in `src/content/blog/` and rendered via Astro's content collections.
 
-There's nothing special about `src/components/`, but that's where we like to put any Astro/React/Vue/Svelte/Preact components.
+## Building
 
-Any static assets, like images, can be placed in the `public/` directory.
+```sh
+npm run build
+```
 
-## 🧞 Commands
+Output goes to `dist/`.
 
-All commands are run from the root of the project, from a terminal:
+## Deploying
 
-| Command                   | Action                                           |
-| :------------------------ | :----------------------------------------------- |
-| `npm install`             | Installs dependencies                            |
-| `npm run dev`             | Starts local dev server at `localhost:4321`      |
-| `npm run build`           | Build your production site to `./dist/`          |
-| `npm run preview`         | Preview your build locally, before deploying     |
-| `npm run astro ...`       | Run CLI commands like `astro add`, `astro check` |
-| `npm run astro -- --help` | Get help using the Astro CLI                     |
+The site is hosted on Netlify. Build settings are configured in `netlify.toml`.
 
-## 👀 Want to learn more?
+**Manual deploy (via CLI):**
 
-Feel free to check [our documentation](https://docs.astro.build) or jump into our [Discord server](https://astro.build/chat).
+```sh
+npm run build
+npx netlify deploy --prod --dir=dist
+```
+
+You'll need to authenticate with `npx netlify login` first.
+
+**DNS:**
+
+The domain `cambra.dev` uses Netlify DNS. Nameservers are configured at the registrar (Namecheap) to point to Netlify's nameservers. SSL is provisioned automatically by Netlify via Let's Encrypt.
+
+## Commands
+
+| Command             | Action                                   |
+| :------------------ | :--------------------------------------- |
+| `npm install`       | Install dependencies                     |
+| `npm run dev`       | Start dev server at `localhost:4321`     |
+| `npm run build`     | Build production site to `./dist/`       |
+| `npm run preview`   | Preview the build locally before deploy  |
+| `npm run astro ...` | Run Astro CLI commands (e.g. `astro add`)|
