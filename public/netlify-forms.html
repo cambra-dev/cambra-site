@@ -1,0 +1,15 @@
+<!DOCTYPE html>
+<html>
+  <head><title>Netlify Forms Detection</title></head>
+  <body>
+    <!-- This file exists solely so Netlify detects and registers the "contact"
+         form during the build scan. The real form is in src/components/Contact.astro. -->
+    <form name="contact" data-netlify="true" netlify-honeypot="bot-field" hidden>
+      <input type="hidden" name="form-name" value="contact" />
+      <input type="text" name="bot-field" />
+      <input type="email" name="email" />
+      <input type="radio" name="intent" value="following" />
+      <input type="radio" name="intent" value="joining" />
+    </form>
+  </body>
+</html>
