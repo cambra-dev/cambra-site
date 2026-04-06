@@ -41,6 +41,8 @@ Output goes to `dist/`.
 
 The site is hosted on Netlify. Build settings are configured in `netlify.toml`.
 
+Pushes to `main` trigger an automatic production deploy via Netlify's GitHub integration.
+
 **Manual deploy (via CLI):**
 
 ```sh

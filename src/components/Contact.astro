@@ -3,6 +3,11 @@
  * Contact capture section. Netlify Forms processes submissions automatically
  * on deploy — no backend needed. Submissions appear in the Netlify dashboard.
  *
+ * Prerequisites:
+ *   1. Enable form detection: Netlify dashboard → Site settings → Forms → Enable form detection.
+ *   2. The hidden form in public/netlify-forms.html must mirror this form's fields
+ *      (Netlify scans it at build time to register the form).
+ *
  * To receive email notifications for new submissions:
  *   Netlify dashboard → Forms → contact → Notifications → Add email notification.
  */
