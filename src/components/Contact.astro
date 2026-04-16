@@ -11,18 +11,19 @@
  * To receive email notifications for new submissions:
  *   Netlify dashboard → Forms → contact → Notifications → Add email notification.
  */
+import Waves from "./Waves.astro";
 ---
 
-<section id="contact" class="py-24 md:py-32">
+<section id="contact" class="relative overflow-hidden pt-12 pb-20 md:pt-16 md:pb-28" style="background: var(--color-sand);">
   <div class="max-w-5xl mx-auto px-6">
     <div class="max-w-md">
       <h2
-        class="text-2xl md:text-3xl font-semibold tracking-tight mb-3"
-        style="letter-spacing: -0.03em;"
+        class="text-2xl md:text-3xl font-semibold tracking-tight mb-3 text-[var(--color-ink)]"
+        style="letter-spacing: -0.02em;"
       >
         Stay in the loop.
       </h2>
-      <p class="text-[var(--color-muted)] mb-8 leading-relaxed">
+      <p class="text-[var(--color-ink-soft)] mb-8 leading-relaxed">
         We'll reach out when there's something worth sharing — no spam, no
         marketing, no newsletters.
       </p>
@@ -45,7 +46,7 @@
         <input type="hidden" name="form-name" value="contact" />
 
         <div>
-          <label for="email" class="block text-sm font-medium mb-1.5">
+          <label for="email" class="block text-sm font-medium mb-1.5 text-[var(--color-ink)]">
             Email address
           </label>
           <input
@@ -54,12 +55,12 @@
             name="email"
             required
             placeholder="you@example.com"
-            class="w-full border border-gray-200 rounded-md px-3.5 py-2.5 text-sm focus:outline-none focus:ring-2 focus:ring-[var(--color-accent)] focus:border-transparent transition"
+            class="w-full bg-white border border-[var(--color-san-blas)] rounded-md px-3.5 py-2.5 text-sm text-[var(--color-ink)] placeholder:text-[var(--color-muted)] focus:outline-none focus:ring-2 focus:ring-[var(--color-accent)] focus:border-transparent transition"
           />
         </div>
 
         <fieldset>
-          <legend class="block text-sm font-medium mb-2"
+          <legend class="block text-sm font-medium mb-2 text-[var(--color-ink)]"
             >I'm interested in…</legend
           >
           <div class="space-y-2.5">
@@ -71,7 +72,7 @@
                 checked
                 class="accent-[var(--color-accent)] w-4 h-4"
               />
-              <span class="text-sm">Following the project</span>
+              <span class="text-sm text-[var(--color-ink)]">Following the project</span>
             </label>
             <label class="flex items-center gap-3 cursor-pointer">
               <input
@@ -80,7 +81,7 @@
                 value="joining"
                 class="accent-[var(--color-accent)] w-4 h-4"
               />
-              <span class="text-sm">Working on this</span>
+              <span class="text-sm text-[var(--color-ink)]">Working on this</span>
             </label>
           </div>
         </fieldset>
@@ -94,4 +95,7 @@
       </form>
     </div>
   </div>
+
+  <!-- Subtle wavy seam into the Team section (San Blas) below -->
+  <Waves palette="solid-san-blas" shape="crest" height="clamp(80px, 10vw, 140px)" />
 </section>

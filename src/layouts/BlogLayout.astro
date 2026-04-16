@@ -31,19 +31,19 @@ const formatted = pubDate.toLocaleDateString('en-US', {
   <main class="max-w-3xl mx-auto px-6 py-16 md:py-24">
     <a
       href="/blog"
-      class="inline-flex items-center gap-1.5 text-sm text-[var(--color-muted)] hover:text-[var(--color-accent)] transition-colors mb-10"
+      class="inline-flex items-center gap-1.5 text-sm text-[var(--color-ink-soft)] hover:text-[var(--color-accent)] transition-colors mb-10"
     >
       ← All posts
     </a>
 
     <header class="mb-12">
       <h1
-        class="text-3xl md:text-4xl font-semibold tracking-tight leading-tight mb-4"
+        class="text-3xl md:text-4xl font-bold tracking-tight leading-tight mb-4 text-[var(--color-ink)]"
         style="letter-spacing: -0.03em;"
       >
         {title}
       </h1>
-      <div class="flex items-center gap-3 text-sm text-[var(--color-muted)]">
+      <div class="flex items-center gap-3 text-sm font-mono text-[var(--color-ink-soft)]">
         {author && (
           <>
             <span>{author}</span>
@@ -65,7 +65,7 @@ const formatted = pubDate.toLocaleDateString('en-US', {
     </article>
   </main>
 
-  <footer class="border-t border-gray-100 py-8 text-center text-sm text-[var(--color-muted)]">
+  <footer class="border-t border-[var(--color-san-blas)] py-8 text-center text-sm text-[var(--color-ink-soft)]">
     <a href="/" class="hover:text-[var(--color-accent)] transition-colors">Cambra</a>
     &nbsp;·&nbsp;
     <a href="/blog" class="hover:text-[var(--color-accent)] transition-colors">Blog</a>

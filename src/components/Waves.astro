@@ -1,0 +1,118 @@
+---
+/**
+ * Decorative layered wave motif from the Cambra brand book.
+ * Stacks five curved bands in the cool palette (San Blas → Abyssal).
+ *
+ * Props:
+ *   position  - "bottom" (default) anchors to bottom of parent; "top" flips the
+ *               motif vertically so it reads as a ceiling.
+ *   height    - CSS height (default "clamp(120px, 18vw, 240px)"). Absolute-
+ *               positioned; parent must be position:relative and clip overflow.
+ *   opacity   - 0..1 (default 1). Use for subtle backgrounds behind content.
+ *   palette   - "cool" (default): pale on top, deep at the bottom. Use when the
+ *               parent bg is light and you want the motif to darken toward the
+ *               edge.
+ *             - "cool-inverse": deep on top, pale at the bottom. Use when the
+ *               parent bg is dark and you want the motif to fade toward a
+ *               lighter next section.
+ *             - "solid-san-blas": every layer is San Blas. Collapses to a single
+ *               wavy silhouette — use as a subtle seam between two light sections
+ *               (e.g. a Sand section flowing into a San Blas one).
+ *             - "solid-sand": every layer is Sand. Use as a subtle wavy seam
+ *               above a Sand section that sits below a paler warm bg.
+ *   shape     - "rolling" (default): gentle rolling crest that dips center-left
+ *               and rises toward the right.
+ *             - "crest": one dominant peak on the left that falls toward the
+ *               right — asymmetric, mirror of "swell".
+ *             - "tide": low-amplitude, three-crest undulation. Use for subtle
+ *               seams where the motif should recede.
+ *             - "swell": rises toward the right with one big right-side crest.
+ *               Mirror of "crest".
+ */
+interface Props {
+  position?: "bottom" | "top";
+  height?: string;
+  opacity?: number;
+  palette?: "cool" | "cool-inverse" | "solid-san-blas" | "solid-sand";
+  shape?: "rolling" | "crest" | "tide" | "swell";
+  class?: string;
+}
+
+const {
+  position = "bottom",
+  height = "clamp(120px, 18vw, 240px)",
+  opacity = 1,
+  palette = "cool",
+  shape = "rolling",
+  class: className = "",
+} = Astro.props;
+
+// Each shape is five stacked layer paths over a 1440×320 viewBox. Layers are
+// drawn back-to-front, so the last entry sits on top visually. Each path closes
+// to y=320 so the space below the curve is filled.
+const shapes: Record<NonNullable<Props["shape"]>, string[]> = {
+  // Gentle rolling — dip around x=560, rise toward x=1160, settle right.
+  rolling: [
+    "M0,140 C180,80 340,200 560,160 C780,120 940,40 1160,70 C1320,92 1400,120 1440,140 L1440,320 L0,320 Z",
+    "M0,190 C200,150 360,230 580,210 C800,190 980,130 1180,170 C1320,198 1400,220 1440,220 L1440,320 L0,320 Z",
+    "M0,230 C220,210 380,260 600,250 C820,240 1000,200 1200,230 C1340,250 1410,260 1440,260 L1440,320 L0,320 Z",
+    "M0,268 C240,258 400,286 620,280 C840,274 1020,248 1220,268 C1350,280 1410,288 1440,288 L1440,320 L0,320 Z",
+    "M0,298 C260,292 420,308 640,304 C860,300 1040,286 1240,300 C1360,308 1420,312 1440,312 L1440,320 L0,320 Z",
+  ],
+  // Dominant left-side crest around x=380, gentle fall to the right.
+  crest: [
+    "M0,200 C120,140 240,40 400,50 C580,62 720,170 900,175 C1080,180 1280,130 1440,160 L1440,320 L0,320 Z",
+    "M0,235 C140,185 260,110 420,120 C600,132 740,200 920,210 C1100,220 1280,180 1440,200 L1440,320 L0,320 Z",
+    "M0,260 C160,220 280,165 440,175 C620,186 760,230 940,238 C1120,246 1280,218 1440,230 L1440,320 L0,320 Z",
+    "M0,282 C180,252 300,212 460,220 C640,229 780,262 960,268 C1140,274 1280,254 1440,262 L1440,320 L0,320 Z",
+    "M0,302 C200,286 320,262 480,268 C660,274 800,294 980,298 C1160,302 1280,288 1440,294 L1440,320 L0,320 Z",
+  ],
+  // Three-crest undulation — a steady tidal rhythm of peaks and troughs.
+  tide: [
+    "M0,140 C80,90 200,210 340,150 C460,100 580,235 700,165 C820,115 940,240 1060,180 C1180,135 1320,215 1440,170 L1440,320 L0,320 Z",
+    "M0,185 C100,145 220,238 360,188 C480,150 600,252 720,200 C840,158 960,258 1080,215 C1200,180 1330,238 1440,205 L1440,320 L0,320 Z",
+    "M0,225 C120,195 240,262 380,225 C500,195 620,272 740,230 C860,200 980,268 1100,235 C1220,210 1340,258 1440,235 L1440,320 L0,320 Z",
+    "M0,260 C140,240 260,282 400,255 C520,235 640,290 760,260 C880,240 1000,288 1120,265 C1240,245 1350,278 1440,265 L1440,320 L0,320 Z",
+    "M0,292 C160,282 280,302 420,288 C540,278 660,305 780,290 C900,280 1020,305 1140,293 C1260,284 1360,300 1440,292 L1440,320 L0,320 Z",
+  ],
+  // Rises from a low left to a big crest around x=1080, dips slightly at right.
+  swell: [
+    "M0,220 C160,235 320,245 520,215 C720,185 880,90 1080,70 C1240,54 1360,100 1440,150 L1440,320 L0,320 Z",
+    "M0,250 C180,262 340,272 540,245 C740,218 880,140 1100,128 C1260,119 1360,160 1440,195 L1440,320 L0,320 Z",
+    "M0,272 C200,282 360,290 560,268 C760,246 900,190 1120,190 C1260,190 1360,218 1440,238 L1440,320 L0,320 Z",
+    "M0,290 C220,298 380,304 580,288 C780,272 920,232 1140,236 C1260,238 1360,258 1440,272 L1440,320 L0,320 Z",
+    "M0,306 C240,310 400,314 600,306 C800,298 940,280 1160,284 C1280,286 1360,298 1440,300 L1440,320 L0,320 Z",
+  ],
+};
+
+const geometry = shapes[shape];
+
+// Cool family ordered light → deep.
+const coolColors = ["#C5E3DB", "#6CC4C8", "#1C88A7", "#054350", "#10253A"];
+const colors =
+  palette === "cool-inverse" ? [...coolColors].reverse() :
+  palette === "solid-san-blas" ? Array(5).fill("#C5E3DB") :
+  palette === "solid-sand" ? Array(5).fill("#FFF0D1") :
+  coolColors;
+
+const transform = position === "top" ? "scale(1,-1) translate(0,-320)" : undefined;
+---
+
+<div
+  class={`pointer-events-none absolute inset-x-0 ${position === "top" ? "top-0" : "bottom-0"} ${className}`}
+  style={`height: ${height}; opacity: ${opacity};`}
+  aria-hidden="true"
+>
+  <svg
+    xmlns="http://www.w3.org/2000/svg"
+    viewBox="0 0 1440 320"
+    preserveAspectRatio="none"
+    class="block w-full h-full"
+  >
+    <g transform={transform}>
+      {geometry.map((d, i) => (
+        <path d={d} fill={colors[i]} />
+      ))}
+    </g>
+  </svg>
+</div>

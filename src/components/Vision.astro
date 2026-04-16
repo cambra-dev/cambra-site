@@ -3,6 +3,7 @@
  * Vision section. Three panels explaining the problem, the approach, and the
  * guarantee. Copy is drafted from the design doc — refine before launch.
  */
+import Waves from "./Waves.astro";
 
 const panels = [
   {
@@ -35,22 +36,22 @@ optimized, and evolved in ways a fragmented stack simply cannot.`,
 ];
 ---
 
-<section class="bg-[var(--color-surface)] py-24 md:py-32">
+<section class="relative overflow-hidden bg-[var(--color-bg)] pt-24 pb-20 md:pt-32 md:pb-28">
   <div class="max-w-5xl mx-auto px-6">
     <div class="grid md:grid-cols-3 gap-12 md:gap-16">
       {
         panels.map((panel) => (
           <div>
-            <span class="block text-xs font-mono font-medium text-[var(--color-accent)] mb-4 tracking-widest">
+            <span class="block font-mono text-xs font-medium text-[var(--color-accent)] mb-4 tracking-[0.22em] uppercase">
               {panel.label}
             </span>
             <h2
-              class="text-xl font-semibold tracking-tight leading-snug mb-4"
-              style="letter-spacing: -0.02em;"
+              class="text-xl md:text-2xl font-semibold tracking-tight leading-snug mb-4 text-[var(--color-ink)]"
+              style="letter-spacing: -0.01em;"
             >
               {panel.heading}
             </h2>
-            <p class="text-[var(--color-muted)] leading-relaxed text-[0.9375rem]">
+            <p class="text-[var(--color-ink-soft)] leading-relaxed text-[0.9375rem]">
               {panel.body}
             </p>
           </div>
@@ -58,4 +59,7 @@ optimized, and evolved in ways a fragmented stack simply cannot.`,
       }
     </div>
   </div>
+
+  <!-- Subtle wavy seam into the Contact section (Sand) below -->
+  <Waves palette="solid-sand" shape="tide" height="clamp(80px, 10vw, 140px)" />
 </section>

@@ -1,30 +1,59 @@
-@import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=JetBrains+Mono:ital,wght@0,400;0,500;1,400&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Fredoka:wght@400;500;600&family=Montserrat:wght@300;400;500;600;700&family=Space+Grotesk:wght@300;400;500;600&display=swap');
 @import "tailwindcss";
 
-/* ─── Theme ────────────────────────────────────────────────────── */
+/* ─── Theme — Coral Coast palette from the Cambra brand guidelines ─── */
 @theme {
-  --font-sans: 'Inter', ui-sans-serif, system-ui, sans-serif;
-  --font-mono: 'JetBrains Mono', ui-monospace, monospace;
+  --font-sans: 'Montserrat', ui-sans-serif, system-ui, sans-serif;
+  --font-display: 'Fredoka', 'Montserrat', ui-sans-serif, system-ui, sans-serif;
+  --font-mono: 'Space Grotesk', ui-monospace, monospace;
 
-  --color-accent: #d45500;
-  --color-accent-dark: #b34700;
-  --color-accent-muted: #fdebd8;
-  --color-surface: #f5f8fc;
-  --color-ink: #0f1117;
-  --color-muted: #6b7280;
-  --color-bg: #fdf5ec;
+  /* Cool family — Deep Ocean */
+  --color-abyssal: #10253A;
+  --color-deep-sea: #054350;
+  --color-ocean: #1C88A7;
+  --color-lagoon: #6CC4C8;
+  --color-san-blas: #C5E3DB;
+
+  /* Warm family — Nautilus Warmth */
+  --color-ember: #D75A2E;
+  --color-coral: #F18B40;
+  --color-amber: #F5A337;
+  --color-sand: #FFF0D1;
+
+  /* Semantic aliases */
+  --color-accent: #D75A2E;        /* Ember */
+  --color-accent-dark: #B4471D;   /* darker Ember for hover */
+  --color-accent-muted: #FFF0D1;  /* Sand */
+  --color-surface: #C5E3DB;       /* San Blas */
+  --color-surface-soft: #FFF0D1;  /* Sand */
+  --color-ink: #10253A;           /* Abyssal */
+  --color-ink-soft: #054350;      /* Deep Sea */
+  --color-muted: #5C6B7A;         /* cool gray that complements the palette */
+  --color-bg: #FFFBF1;            /* very soft sand, easier on long reads than #FFF0D1 */
 }
 
 /* ─── Base ─────────────────────────────────────────────────────── */
 html {
   scroll-behavior: smooth;
   -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
 }
 
 body {
   font-family: var(--font-sans);
   color: var(--color-ink);
   background: var(--color-bg);
+}
+
+/* ─── Brand type hierarchy ──────────────────────────────────────── */
+.font-display {
+  font-family: var(--font-display);
+  font-weight: 500;
+  letter-spacing: -0.01em;
+}
+
+.font-mono {
+  font-family: var(--font-mono);
 }
 
 /* ─── Prose (blog posts) ────────────────────────────────────────── */
@@ -42,20 +71,25 @@ body {
   letter-spacing: -0.02em;
   margin-top: 2em;
   margin-bottom: 0.5em;
+  color: var(--color-ink);
 }
 
 .prose h1 {
-  font-size: 2rem;
+  font-size: 2.25rem;
+  font-weight: 700;
+  letter-spacing: -0.02em;
 }
 
 .prose h2 {
   font-size: 1.5rem;
-  border-bottom: 1px solid #e5e7eb;
+  font-weight: 600;
+  border-bottom: 1px solid var(--color-san-blas);
   padding-bottom: 0.25em;
 }
 
 .prose h3 {
   font-size: 1.2rem;
+  font-weight: 500;
 }
 
 .prose p {
@@ -92,13 +126,14 @@ body {
 .prose code {
   font-family: var(--font-mono);
   font-size: 0.875em;
-  background: #f3f4f6;
+  background: var(--color-sand);
+  color: var(--color-ink);
   border-radius: 4px;
   padding: 0.15em 0.35em;
 }
 
 .prose pre {
-  background: #1a1d23;
+  background: var(--color-abyssal);
   color: #e8eaf0;
   border-radius: 8px;
   padding: 1.25rem 1.5rem;
@@ -108,6 +143,7 @@ body {
 
 .prose pre code {
   background: transparent;
+  color: inherit;
   padding: 0;
   font-size: 0.875em;
 }
@@ -115,13 +151,13 @@ body {
 .prose blockquote {
   border-left: 3px solid var(--color-accent);
   padding-left: 1rem;
-  color: var(--color-muted);
+  color: var(--color-ink-soft);
   font-style: italic;
   margin-bottom: 1.25em;
 }
 
 .prose hr {
   border: none;
-  border-top: 1px solid #e5e7eb;
+  border-top: 1px solid var(--color-san-blas);
   margin: 2em 0;
 }
