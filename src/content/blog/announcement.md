@@ -1,7 +1,7 @@
 ---
 title: "Composition Shouldn't be this Hard"
 description: "Fragmented systems are brittle. Coherent systems are special-purpose. We need a new, general-purpose model so we can build coherent, multi-domain applications."
-pubDate: 2026-03-27
+pubDate: 2026-04-17
 author: "Dan Sotolongo"
 ---
 
