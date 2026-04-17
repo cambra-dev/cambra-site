@@ -9,6 +9,7 @@ import Hero from '../components/Hero.astro';
 import Vision from '../components/Vision.astro';
 import Contact from '../components/Contact.astro';
 import Team from '../components/Team.astro';
+import Waves from '../components/Waves.astro';
 ---
 
 <BaseLayout
@@ -21,9 +22,23 @@ import Team from '../components/Team.astro';
   <Contact />
   <Team />
 
-  <footer class="border-t border-gray-100 py-8 text-center text-sm text-[var(--color-muted)]">
-    © {new Date().getFullYear()} Cambra
-    &nbsp;·&nbsp;
-    <a href="/blog" class="hover:text-[var(--color-accent)] transition-colors">Blog</a>
+  <footer class="relative overflow-hidden pt-56 md:pt-80 pb-10" style="background: var(--color-abyssal);">
+    <!-- Waves at the top of the footer fading from the lighter team section above -->
+    <Waves position="top" palette="cool-inverse" shape="swell" height="clamp(200px, 30vw, 400px)" />
+
+    <div class="relative z-10 max-w-5xl mx-auto px-6 flex flex-col md:flex-row md:items-center md:justify-between gap-6">
+      <a href="/" aria-label="Cambra home" class="inline-flex">
+        <img
+          src="/brand/logo-horizontal-negative.png"
+          alt="Cambra"
+          class="h-9 w-auto"
+        />
+      </a>
+      <div class="flex items-center gap-6 text-sm" style="color: rgba(255,255,255,0.7);">
+        <span>© {new Date().getFullYear()} Cambra</span>
+        <a href="/blog" class="hover:text-[var(--color-coral)] transition-colors">Blog</a>
+        <a href="/#contact" class="hover:text-[var(--color-coral)] transition-colors">Contact</a>
+      </div>
+    </div>
   </footer>
 </BaseLayout>

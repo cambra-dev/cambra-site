@@ -3,23 +3,34 @@
  * Landing page hero. Contains the primary headline, subheadline, and two CTAs:
  * "Read the blog post" → blog post, and "Stay in touch" → #contact section.
  */
+import Waves from "./Waves.astro";
 
 const announcementSlug = "/blog/announcement";
 ---
 
-<section class="pt-16 pb-24 md:pt-24 md:pb-32" style="background: #073252;">
-  <div class="max-w-5xl mx-auto px-6">
-    <!-- Headline -->
-    <h1
-      class="text-4xl md:text-6xl font-semibold tracking-tight leading-[1.05] max-w-3xl mb-6 text-white"
-      style="letter-spacing: -0.04em;"
+<section
+  class="relative overflow-hidden pt-20 pb-56 md:pt-28 md:pb-80"
+  style="background: var(--color-abyssal);"
+>
+  <div class="relative z-10 max-w-5xl mx-auto px-6">
+    <!-- Tagline eyebrow -->
+    <p
+      class="font-mono uppercase tracking-[0.22em] text-sm md:text-base mb-6"
+      style="color: var(--color-lagoon);"
     >
       Software should hold together.
+    </p>
+
+    <!-- Headline -->
+    <h1
+      class="font-display text-4xl md:text-6xl font-medium leading-[1.05] max-w-3xl mb-8 text-white"
+    >
+      One model. Every workload.
     </h1>
 
     <p
-      class="text-lg md:text-xl max-w-xl leading-relaxed mb-10"
-      style="color: rgba(255,255,255,0.65);"
+      class="text-lg md:text-xl max-w-2xl leading-relaxed mb-10"
+      style="color: rgba(255,255,255,0.72);"
     >
       Internet applications are assembled from components with incompatible
       models — databases, services, queues, frontends — each powerful in
@@ -40,13 +51,16 @@ const announcementSlug = "/blog/announcement";
       </a>
       <a
         href="/#contact"
-        class="inline-flex items-center gap-2 text-sm font-medium px-5 py-2.5 rounded-md transition-colors"
-        style="color: rgba(255,255,255,0.8); border: 1px solid rgba(255,255,255,0.2);"
-        onmouseover="this.style.borderColor='rgba(255,255,255,0.4)'"
-        onmouseout="this.style.borderColor='rgba(255,255,255,0.2)'"
+        class="inline-flex items-center gap-2 text-sm font-medium px-5 py-2.5 rounded-md transition-colors border"
+        style="color: rgba(255,255,255,0.85); border-color: rgba(255,255,255,0.25);"
+        onmouseover="this.style.borderColor='rgba(255,255,255,0.5)'"
+        onmouseout="this.style.borderColor='rgba(255,255,255,0.25)'"
       >
         Stay in touch
       </a>
     </div>
   </div>
+
+  <!-- Decorative waves at the bottom of the hero, reading into the next section -->
+  <Waves palette="cool-inverse" height="clamp(200px, 30vw, 400px)" />
 </section>
