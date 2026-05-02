@@ -8,35 +8,25 @@ import Waves from "./Waves.astro";
 const panels = [
   {
     label: "01",
-    heading: "The right tool for each job fragments the whole.",
-    body: `Modern applications involve databases, services, queues, and frontends.
-Each component excels at its job — but they interact through low-level
-primitives: network calls, byte encodings, connection pools. Every integration
-point is a seam. Seams compound. The result: systems that
-are hard to change and easy to break.`,
+    heading: "Logic & data, not infra.",
+    body: `Forget about services, tables, queues, caches. Write code on your terms.`,
   },
   {
     label: "02",
-    heading: "One model. Every workload.",
-    body: `Cambra is built on a new kind of programming model — general-purpose,
-domain-aligned, and sealed. It spans the workloads of internet software:
-transactional processing, analytical queries, streaming pipelines, and API
-serving. Components don't drop down to low-level plumbing to communicate.
-They interact within the model, in domain-aligned terms.`,
+    heading: "Compiled? Verified.",
+    body: `The spec is just types. The type checker automates verification.`,
   },
   {
     label: "03",
-    heading: "Tools that see your whole stack.",
-    body: `Coherence creates leverage. Contract mismatches that would have been
-runtime failures become type errors. Cross-component optimizations that
-required manual coordination become automatic. Schema migrations that required
-orchestrated deploys become ordinary refactors. The system can be verified,
-optimized, and evolved in ways a fragmented stack simply cannot.`,
+    heading: "Branch the whole app.",
+    body: `Don't settle for code or database branches. Experiment freely.`,
   },
 ];
 ---
 
-<section class="relative overflow-hidden bg-[var(--color-bg)] pt-24 pb-20 md:pt-32 md:pb-28">
+<section
+  class="relative overflow-hidden bg-[var(--color-bg)] pt-24 pb-20 md:pt-32 md:pb-28"
+>
   <div class="max-w-5xl mx-auto px-6">
     <div class="grid md:grid-cols-3 gap-12 md:gap-16">
       {
