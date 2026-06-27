@@ -14,6 +14,8 @@ interface Props {
   ogImage?: string;
   /** Canonical URL override. Defaults to the current page URL. */
   canonicalURL?: string;
+  /** When true, emit a noindex robots tag so the page stays out of search. */
+  noindex?: boolean;
 }
 
 const {
@@ -21,6 +23,7 @@ const {
   description,
   ogImage = "/og-default.png",
   canonicalURL = Astro.url.href,
+  noindex = false,
 } = Astro.props;
 
 const pageTitle = title === "Cambra" ? "Cambra" : `${title} — Cambra`;
@@ -37,6 +40,7 @@ const ogImageURL = new URL(ogImage, Astro.site);
 
     <title>{pageTitle}</title>
     <meta name="description" content={description} />
+    {noindex && <meta name="robots" content="noindex" />}
     <link rel="canonical" href={canonicalURL} />
 
     <!-- Open Graph -->

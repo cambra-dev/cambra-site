@@ -1,11 +1,9 @@
 ---
 /**
  * Landing page hero. Contains the primary headline, subheadline, and two CTAs:
- * "Read the blog post" → blog post, and "Stay in touch" → #contact section.
+ * "Read the blog" → blog listing, and "Stay in touch" → #contact section.
  */
 import Waves from "./Waves.astro";
-
-const latestPostSlug = "/blog/the-system-as-a-program";
 ---
 
 <section
@@ -40,10 +38,10 @@ const latestPostSlug = "/blog/the-system-as-a-program";
     <!-- CTAs -->
     <div class="flex flex-wrap gap-4 items-center">
       <a
-        href={latestPostSlug}
+        href="/blog"
         class="inline-flex items-center gap-2 bg-[var(--color-accent)] hover:bg-[var(--color-accent-dark)] text-white font-medium text-sm px-5 py-2.5 rounded-md transition-colors"
       >
-        Read the blog post
+        Read the blog
         <span aria-hidden="true">→</span>
       </a>
       <a

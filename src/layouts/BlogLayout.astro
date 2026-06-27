@@ -14,9 +14,11 @@ interface Props {
   /** Optional explicit reading time in minutes. Falls back to auto-estimation. */
   readingTime?: number;
   ogImage?: string;
+  /** When true, emits a noindex robots tag (used for unlisted draft posts). */
+  noindex?: boolean;
 }
 
-const { title, description, pubDate, author, readingTime, ogImage } = Astro.props;
+const { title, description, pubDate, author, readingTime, ogImage, noindex } = Astro.props;
 
 const formatted = pubDate.toLocaleDateString('en-US', {
   year: 'numeric',
@@ -26,7 +28,7 @@ const formatted = pubDate.toLocaleDateString('en-US', {
 });
 ---
 
-<BaseLayout title={title} description={description} ogImage={ogImage}>
+<BaseLayout title={title} description={description} ogImage={ogImage} noindex={noindex}>
   <Nav />
 
   <main class="max-w-3xl mx-auto px-6 py-16 md:py-24">
