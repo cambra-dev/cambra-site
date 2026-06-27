@@ -8,7 +8,10 @@ import { getCollection, render } from 'astro:content';
 import type { GetStaticPaths } from 'astro';
 
 export const getStaticPaths: GetStaticPaths = async () => {
-  const posts = (await getCollection('blog')).filter((p) => !p.data.draft);
+  // Build every post, drafts included. A draft still gets a live URL so it can
+  // be shared as a preview link; it's just kept out of the listing and sitemap
+  // and marked noindex (see blog/index.astro, astro.config.mjs, BaseLayout).
+  const posts = await getCollection('blog');
   return posts.map((post) => ({
     params: { slug: post.id },
     props: { post },
@@ -34,6 +37,7 @@ const readingTime = post.data.readingTime ?? estimateReadingTime(post.body ?? ''
   author={post.data.author}
   readingTime={readingTime}
   ogImage={post.data.ogImage}
+  noindex={post.data.draft}
 >
   <Content />
 </BlogLayout>

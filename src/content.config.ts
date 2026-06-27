@@ -13,7 +13,11 @@ const blog = defineCollection({
     pubDate: z.coerce.date(),
     /** Post author's display name. */
     author: z.string().optional(),
-    /** Set to true to hide a post from the listing and builds. */
+    /**
+     * Set to true to keep a post out of the listing, the sitemap, and the
+     * search index. The page is still built at its URL, so a draft can be
+     * shared as a private preview link before it's announced.
+     */
     draft: z.boolean().optional().default(false),
     /** Optional explicit reading time in minutes. Auto-calculated if omitted. */
     readingTime: z.number().optional(),
