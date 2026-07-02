@@ -3,8 +3,9 @@ title: "The System as a Program"
 description: "Cambra fuses the database and the programming language into a single model, letting you build an entire data-intensive application as one program — one the compiler can verify and the running system can branch and validate before it ships."
 pubDate: 2026-06-30
 author: "Dan Sotolongo"
-draft: true
 ---
+
+*Discussion on [Hacker News](https://news.ycombinator.com/item?id=48762315).*
 
 In [our first post](/blog/announcement), we argued that the software we build is brittle because it's fragmented: assembled from components with incompatible models, wired together through complex, opaque, unverified interfaces. We also argued this isn't inevitable — a high-level model general enough to span the domains of real applications could let us build coherent systems instead. We promised to say more about how. Here's the shape of the answer.
 
