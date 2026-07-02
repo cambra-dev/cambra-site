@@ -5,7 +5,7 @@ pubDate: 2026-06-30
 author: "Dan Sotolongo"
 ---
 
-*Discussion on [Hacker News](HN_DISCUSSION_URL).*
+*Discussion on [Hacker News](https://news.ycombinator.com/item?id=48762315).*
 
 In [our first post](/blog/announcement), we argued that the software we build is brittle because it's fragmented: assembled from components with incompatible models, wired together through complex, opaque, unverified interfaces. We also argued this isn't inevitable — a high-level model general enough to span the domains of real applications could let us build coherent systems instead. We promised to say more about how. Here's the shape of the answer.
 
