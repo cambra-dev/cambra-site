@@ -18,3 +18,26 @@
     X-Frame-Options = "DENY"
     X-Content-Type-Options = "nosniff"
     Referrer-Policy = "strict-origin-when-cross-origin"
+
+# /pitch is an unlisted reroute to a Google Doc. It's kept undiscoverable:
+# not linked anywhere, absent from the sitemap (no page exists for it), and
+# excluded from robots.txt on purpose (robots.txt is public — listing it there
+# would advertise the path). The noindex header keeps crawlers from surfacing
+# it if the URL ever leaks. 302 (not 301) so browsers don't hard-cache it and
+# the target stays easy to change or remove later.
+[[headers]]
+  for = "/pitch"
+  [headers.values]
+    X-Robots-Tag = "noindex, nofollow"
+
+[[redirects]]
+  from = "/pitch"
+  to = "https://docs.google.com/document/d/1jScBacbhT-5hE132HfDzS-yzwUoYMUd3AXWW1dCLENs/edit?tab=t.0"
+  status = 302
+  force = true
+
+[[redirects]]
+  from = "/pitch/*"
+  to = "https://docs.google.com/document/d/1jScBacbhT-5hE132HfDzS-yzwUoYMUd3AXWW1dCLENs/edit?tab=t.0"
+  status = 302
+  force = true
