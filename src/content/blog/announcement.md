@@ -5,6 +5,8 @@ pubDate: 2026-04-17
 author: "Dan Sotolongo"
 ---
 
+*Update (July 2026): Cambra's source is [now public](https://github.com/cambra-dev/cambra) — the announcement is [Rebundling the Database — into a Language](/blog/rebundling-the-database).*
+
 I've spent over a decade building data infrastructure: observability systems at Twitter, streaming data processing systems at Google, declarative data processing systems at Snowflake. From the beginning, I noticed a strange gap between the conceptual elegance of programming languages and databases, and the reality of developing and operating real systems using them. That reality is filled with tedium and stress. All of the systems I’ve ever worked on have felt brittle in one way or another: hard to change, and easy to break.
 
 Infrastructure engineers develop paranoia around change. We invest more effort testing and deploying changes than making them. We call it maturity, but I've never stopped questioning it. There must be a way to delegate the tedium to our tools and focus on what attracted us to this field: brainstorming ideas, trying them out, and seeing their effects.

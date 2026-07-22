@@ -3,9 +3,8 @@ title: "Rebundling the Database — into a Language"
 description:
   "It's trendy to decompose monoliths, unbundle the database, and separate
   storage from compute. Cambra openly re-fuses."
-pubDate: 2026-07-23
+pubDate: 2026-07-27
 author: "Dan Sotolongo"
-draft: true
 ---
 
 For over a decade, the fashionable direction in software has been _apart_. We

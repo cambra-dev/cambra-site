@@ -5,6 +5,8 @@ pubDate: 2026-06-30
 author: "Dan Sotolongo"
 ---
 
+*Update (July 2026): the code this post promised is [now public](https://github.com/cambra-dev/cambra) — the announcement is [Rebundling the Database — into a Language](/blog/rebundling-the-database).*
+
 In [our first post](/blog/announcement), we argued that the software we build is brittle because it's fragmented: assembled from components with incompatible models, wired together through complex, opaque, unverified interfaces. We also argued this isn't inevitable — a high-level model general enough to span the domains of real applications could let us build coherent systems instead. We promised to say more about how. Here's the shape of the answer.
 
 Cambra is a new category of system, one that fuses the database and the programming language: it collapses the stack into a single programming model that works at the level of business logic and data rather than networks and operating systems. You implement a data-intensive application (serving, transactions, stream processing, analytics) as one program. Not a set of services delicately wired together, but a single artifact that the compiler can analyze, the runtime can execute, and a programmer, agent or human, can reason about at a high level of abstraction.
