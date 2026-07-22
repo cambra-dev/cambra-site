@@ -1,9 +1,11 @@
 ---
 /**
  * Landing page hero. Contains the primary headline, subheadline, and two CTAs:
- * "Read the blog" → blog listing, and "Stay in touch" → #contact section.
+ * "Read the code" → the public repo, and "Read the blog" → blog listing.
  */
 import Waves from "./Waves.astro";
+
+const repoUrl = "https://github.com/cambra-dev/cambra";
 ---
 
 <section
@@ -38,20 +40,20 @@ import Waves from "./Waves.astro";
     <!-- CTAs -->
     <div class="flex flex-wrap gap-4 items-center">
       <a
-        href="/blog"
+        href={repoUrl}
         class="inline-flex items-center gap-2 bg-[var(--color-accent)] hover:bg-[var(--color-accent-dark)] text-white font-medium text-sm px-5 py-2.5 rounded-md transition-colors"
       >
-        Read the blog
+        Read the code
         <span aria-hidden="true">→</span>
       </a>
       <a
-        href="/#contact"
+        href="/blog"
         class="inline-flex items-center gap-2 text-sm font-medium px-5 py-2.5 rounded-md transition-colors border"
         style="color: rgba(255,255,255,0.85); border-color: rgba(255,255,255,0.25);"
         onmouseover="this.style.borderColor='rgba(255,255,255,0.5)'"
         onmouseout="this.style.borderColor='rgba(255,255,255,0.25)'"
       >
-        Stay in touch
+        Read the blog
       </a>
     </div>
   </div>

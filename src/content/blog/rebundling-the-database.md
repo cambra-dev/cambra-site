@@ -5,7 +5,6 @@ description:
   storage from compute. Cambra openly re-fuses."
 pubDate: 2026-07-23
 author: "Dan Sotolongo"
-draft: true
 ---
 
 For over a decade, the fashionable direction in software has been _apart_. We
