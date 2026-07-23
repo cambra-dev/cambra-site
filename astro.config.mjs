@@ -21,6 +21,11 @@ const draftSlugs = readdirSync(blogDir)
 // https://astro.build/config
 export default defineConfig({
   site: 'https://cambra.dev',
+  // css-variables delegates every token color to global.css, where the code
+  // palette is defined from the brand colors (see "Code block palette" there).
+  markdown: {
+    shikiConfig: { theme: 'css-variables' },
+  },
   vite: {
     plugins: [tailwindcss()],
   },

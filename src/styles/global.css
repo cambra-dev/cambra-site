@@ -1,11 +1,14 @@
-@import url('https://fonts.googleapis.com/css2?family=Fredoka:wght@400;500;600&family=Montserrat:wght@300;400;500;600;700&family=Space+Grotesk:wght@300;400;500;600&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Fredoka:wght@400;500;600&family=Montserrat:wght@300;400;500;600;700&family=Space+Grotesk:wght@300;400;500;600&family=Space+Mono:wght@400;700&display=swap');
 @import "tailwindcss";
 
 /* ─── Theme — Coral Coast palette from the Cambra brand guidelines ─── */
 @theme {
   --font-sans: 'Montserrat', ui-sans-serif, system-ui, sans-serif;
   --font-display: 'Fredoka', 'Montserrat', ui-sans-serif, system-ui, sans-serif;
-  --font-mono: 'Space Grotesk', ui-monospace, monospace;
+  /* Space Mono, not Space Grotesk: Grotesk is proportional, and code set in
+     it renders unaligned. Liberation Mono covers Linux before the generic. */
+  --font-mono: 'Space Mono', ui-monospace, SFMono-Regular, Menlo, Consolas,
+    'Liberation Mono', monospace;
 
   /* Cool family — Deep Ocean */
   --color-abyssal: #10253A;
@@ -54,6 +57,28 @@ body {
 
 .font-mono {
   font-family: var(--font-mono);
+}
+
+/* ─── Code block palette (Shiki css-variables theme) ────────────── */
+/* Brand-derived syntax colors on the abyssal background: lagoon for
+   keywords, sand for strings, warmed ember for functions, gold for
+   constants. The muted tones are abyssal tints for comments/punctuation.
+   Both Astro naming generations are set (foreground/background is the
+   v5 name; color-text/color-background the older alias). */
+:root {
+  --astro-code-foreground: #e8eaf0;
+  --astro-code-color-text: #e8eaf0;
+  --astro-code-background: var(--color-abyssal);
+  --astro-code-color-background: var(--color-abyssal);
+  --astro-code-token-keyword: var(--color-lagoon);
+  --astro-code-token-string: var(--color-sand);
+  --astro-code-token-string-expression: var(--color-sand);
+  --astro-code-token-function: #ee8759; /* Ember, lightened for contrast */
+  --astro-code-token-constant: #f2c97d; /* warm gold */
+  --astro-code-token-parameter: #b8d4e8; /* pale sky */
+  --astro-code-token-comment: #6b84a0; /* muted abyssal tint */
+  --astro-code-token-punctuation: #9fb3c8;
+  --astro-code-token-link: var(--color-lagoon);
 }
 
 /* ─── Prose (blog posts) ────────────────────────────────────────── */
@@ -133,12 +158,16 @@ body {
 }
 
 .prose pre {
-  background: var(--color-abyssal);
+  /* !important: shiki inlines its theme background on the element; the block
+     should match the brand's hero color exactly. */
+  background: var(--color-abyssal) !important;
   color: #e8eaf0;
   border-radius: 8px;
   padding: 1.25rem 1.5rem;
   overflow-x: auto;
   margin-bottom: 1.5em;
+  /* Code wants tighter leading than the 1.75 prose inherits into it. */
+  line-height: 1.2;
 }
 
 .prose pre code {
