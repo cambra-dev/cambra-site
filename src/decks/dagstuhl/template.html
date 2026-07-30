@@ -1,0 +1,415 @@
+<title>{{TITLE}}</title>
+
+<style>
+{{FONTS}}
+{{LOGOS}}
+
+/* ═══ Cambra brand tokens (from cambra-site/src/styles/global.css) ═══ */
+:root {
+  --abyssal:#10253A; --deep-sea:#054350; --ocean:#1C88A7; --lagoon:#6CC4C8;
+  --san-blas:#C5E3DB; --ember:#D75A2E; --coral:#F18B40; --amber:#F5A337;
+  --sand:#FFF0D1; --soft-sand:#FFFBF1; --muted:#5C6B7A;
+  --c-fg:#e8eaf0; --c-cm:#6b84a0;
+
+  --bg:var(--abyssal); --bg-2:#17324D; --fg:#fff; --fg-2:rgba(255,255,255,.76);
+  --fg-3:#7D97B2; --line:rgba(255,255,255,.15); --line-2:rgba(255,255,255,.3);
+  --cool:var(--lagoon); --warm:var(--amber); --hot:#ee8759; --code-bg:#0B1B2B;
+
+  --f-logo:'Fredoka','Montserrat',system-ui,sans-serif;
+  --f-disp:'SpaceGrotesk','Montserrat',system-ui,sans-serif;
+  --f-body:'Montserrat',system-ui,-apple-system,sans-serif;
+  --f-mono:'SpaceMono',ui-monospace,SFMono-Regular,Menlo,Consolas,monospace;
+}
+@media (prefers-color-scheme: light) {
+  :root { --bg:var(--soft-sand); --bg-2:var(--sand); --fg:var(--abyssal);
+    --fg-2:var(--deep-sea); --fg-3:var(--muted); --line:var(--san-blas);
+    --line-2:#9FC4BC; --cool:var(--ocean); --warm:var(--ember); --hot:var(--ember) }
+}
+:root[data-theme="light"] { --bg:var(--soft-sand); --bg-2:var(--sand); --fg:var(--abyssal);
+  --fg-2:var(--deep-sea); --fg-3:var(--muted); --line:var(--san-blas);
+  --line-2:#9FC4BC; --cool:var(--ocean); --warm:var(--ember); --hot:var(--ember) }
+:root[data-theme="dark"] { --bg:var(--abyssal); --bg-2:#17324D; --fg:#fff;
+  --fg-2:rgba(255,255,255,.76); --fg-3:#7D97B2; --line:rgba(255,255,255,.15);
+  --line-2:rgba(255,255,255,.3); --cool:var(--lagoon); --warm:var(--amber); --hot:#ee8759 }
+
+/* ═══ shell ═══ */
+.deck { background:var(--bg); color:var(--fg); font-family:var(--f-body);
+        min-height:100vh; overflow:hidden }
+.wrap { position:fixed; inset:0 0 44px 0; display:grid; place-items:center }
+.stage { width:1280px; height:720px; position:relative;
+         transform-origin:center; transform:scale(var(--sc,1)) }
+.slide { position:absolute; inset:0; padding:64px 78px 66px; display:none;
+         flex-direction:column; background:var(--bg) }
+.slide.on { display:flex }
+.slide.on > * { animation:rise .4s cubic-bezier(.2,.7,.3,1) backwards }
+.slide.on > *:nth-child(1){animation-delay:.02s} .slide.on > *:nth-child(2){animation-delay:.11s}
+.slide.on > *:nth-child(3){animation-delay:.20s} .slide.on > *:nth-child(4){animation-delay:.29s}
+.slide.on > *:nth-child(5){animation-delay:.38s}
+@keyframes rise { from{opacity:0;transform:translateY(11px)} to{opacity:1;transform:none} }
+@media (prefers-reduced-motion:reduce){ .slide.on > *{animation:none} }
+
+/* ═══ type — sparse deck, so everything is bigger ═══ */
+.eyebrow { font-family:var(--f-mono); font-size:13px; font-weight:700;
+           letter-spacing:.24em; text-transform:uppercase; color:var(--cool) }
+h1 { font-family:var(--f-logo); font-size:96px; font-weight:600; line-height:.98;
+     letter-spacing:-.022em; margin:0; max-width:16ch; text-wrap:balance }
+h2 { font-family:var(--f-disp); font-size:54px; font-weight:700; line-height:1.08;
+     letter-spacing:-.026em; margin:0; max-width:24ch; text-wrap:balance }
+.lead-p { font-size:22px; line-height:1.45; color:var(--fg-2);
+          max-width:64ch; margin:0 }
+.sub { font-size:26px; line-height:1.4; color:var(--fg-2); max-width:44ch; margin:0 }
+.punch { font-size:27px; line-height:1.34; color:var(--fg); max-width:40ch; margin:0;
+         padding-left:22px; border-left:4px solid var(--warm); font-weight:500 }
+.wink { font-family:var(--f-mono); font-size:12.5px; color:var(--fg-3);
+        letter-spacing:.05em; margin:0 }
+.head { display:flex; flex-direction:column; gap:18px; padding-bottom:8px }
+.grow { flex:1; min-height:0; display:flex; flex-direction:column;
+        justify-content:center; gap:34px }
+/* Never let a code block or diagram be squashed to fit — if a slide
+   overflows, that's a content problem to see, not to silently clip. */
+.grow > * { flex:0 0 auto }
+/* Slightly favour the left column: in practice it carries the code, which has
+   a hard minimum width, while the right carries a diagram that can scale. */
+.split-2 { display:grid; grid-template-columns:1.1fr .9fr; gap:36px;
+           align-items:center }
+.split-2 > * { min-width:0 }
+/* Code in a split has half the runway, so step it down rather than letting it
+   grow a horizontal scrollbar. */
+.split-2 pre { font-size:13.2px; line-height:1.5; padding:16px 18px }
+/* Let the gap do the spacing. Per-element margins here only ever covered
+   sub/byline/wink, so any other combination of children collided. */
+.title-slide { justify-content:center; gap:26px }
+/* The brand lockup stands where a decorative rule would; 933.6:205.53. */
+.title-slide .brand { width:214px; height:47px; margin-bottom:10px;
+                      background:var(--logo) no-repeat left center/contain }
+.byline { display:flex; gap:30px; flex-wrap:wrap; margin-top:6px;
+          font-family:var(--f-mono); font-size:12.5px; letter-spacing:.16em;
+          text-transform:uppercase; color:var(--fg-3) }
+.byline span:first-child { color:var(--fg); letter-spacing:.07em }
+/* A long closing headline can't carry the opening slide's 96px. */
+h1.long  { font-size:66px; max-width:24ch }
+h1.xlong { font-size:52px; max-width:30ch }
+
+/* ═══ the box ═══ */
+.box-outer { position:relative; padding-right:74px; max-width:70% }
+.box { border:2px solid var(--line-2); border-radius:12px; padding:26px 30px;
+       background:var(--bg-2) }
+.box-label { font-family:var(--f-mono); font-size:13px; letter-spacing:.2em;
+             text-transform:uppercase; color:var(--fg-3); margin-bottom:18px }
+/* One column: six things queued up in a line, one narrow way out. */
+.parts { display:grid; grid-template-columns:1fr; gap:14px }
+.parts div { font-family:var(--f-mono); font-size:16px; color:var(--fg);
+             display:flex; align-items:baseline; gap:11px }
+.parts div::before { content:""; width:7px; height:7px; flex:none; border-radius:1px;
+                     background:var(--cool); transform:translateY(-3px) }
+.parts em { font-family:var(--f-body); font-style:normal; color:var(--fg-3); font-size:14px }
+/* The one way in: a narrow barred service window cut THROUGH the right wall,
+   straddling it rather than protruding from it. The grille bars and the small
+   aperture carry the "tiny window, and an attendant" metaphor. */
+.win { position:absolute; top:50%; right:74px; transform:translate(50%,-50%);
+       width:26px; height:64px; border-radius:3px;
+       border:2px solid var(--line-2);
+       background:
+         repeating-linear-gradient(to bottom,
+           transparent 0 10px, var(--line-2) 10px 12px),
+         var(--bg) }
+/* The attendant: whoever is on the other side of the window. Makes the slide
+   carry its own metaphor without the speaker notes. */
+.attendant { position:absolute; top:50%; right:44px; transform:translateY(-50%);
+             width:26px; height:26px; color:var(--warm) }
+.attendant svg { width:100%; height:100%; display:block }
+.win-label { position:absolute; top:50%; right:0; transform:translateY(-50%);
+             font-family:var(--f-mono); font-size:14px; font-weight:700;
+             letter-spacing:.22em; color:var(--warm) }
+
+/* ═══ rows ═══ */
+.rows { display:flex; flex-direction:column; border-top:1px solid var(--line) }
+.rows > div { display:grid; grid-template-columns:230px 1fr; gap:32px; padding:15px 0;
+              border-bottom:1px solid var(--line); align-items:baseline }
+.rows .l { font-family:var(--f-mono); font-size:14px; letter-spacing:.15em;
+           text-transform:uppercase; color:var(--cool) }
+.rows .r { font-family:var(--f-mono); font-size:21px; color:var(--fg) }
+/* %rows2 — halves the height so a full-width code block can share the slide. */
+.rows.two { display:grid; grid-template-columns:1fr 1fr; column-gap:44px;
+            border-top:0 }
+.rows.two > div { grid-template-columns:150px 1fr; gap:20px; padding:10px 0;
+                  border-top:1px solid var(--line); border-bottom:0 }
+.rows.two .r { font-size:18px }
+
+/* ═══ columns ═══ */
+.cols { display:grid; grid-template-columns:1fr 1fr; gap:34px }
+.col { background:var(--bg-2); border:1px solid var(--line); border-radius:10px;
+       border-left:3px solid var(--cool); padding:24px 26px; display:flex;
+       flex-direction:column; gap:15px }
+.col:last-child { border-left-color:var(--warm) }
+.col h3 { font-family:var(--f-mono); font-size:14px; font-weight:700;
+          letter-spacing:.18em; text-transform:uppercase; color:var(--fg-3); margin:0 }
+.col ul { margin:0; padding:0; list-style:none; display:flex;
+          flex-direction:column; gap:11px }
+.col li { font-size:19px; line-height:1.3; color:var(--fg-2);
+          display:flex; align-items:baseline; gap:11px }
+/* Marker matches the panel's accent rail, so the two columns stay legible
+   as a contrast even at a glance. */
+.col li::before { content:""; width:6px; height:6px; flex:none; border-radius:1px;
+                  background:var(--cool); transform:translateY(-3px) }
+.col:last-child li::before { background:var(--warm) }
+
+/* ═══ code ═══ */
+pre { margin:0; background:var(--code-bg); border:1px solid var(--line);
+      border-radius:10px; padding:22px 24px; font-family:var(--f-mono);
+      font-size:16px; line-height:1.55; color:var(--c-fg); overflow-x:auto; tab-size:4 }
+pre.dense { font-size:12.6px; line-height:1.5; padding:18px 20px }
+pre.tiny { font-size:11.6px; line-height:1.45; padding:13px 16px }
+pre .cm{color:var(--c-cm);font-style:italic} pre .kw{color:var(--lagoon)}
+pre .st{color:var(--sand)} pre .ty{color:#f2c97d} pre .fn{color:var(--hot)}
+/* Highlights must survive a washed-out projector, so tint firmly. */
+pre mark { background:rgba(245,163,55,.26); color:inherit; border-radius:3px;
+           padding:1px 3px; box-shadow:0 0 0 1px rgba(245,163,55,.5) }
+:root[data-theme="light"] pre mark { background:rgba(215,90,46,.2);
+           box-shadow:0 0 0 1px rgba(215,90,46,.45) }
+.diag { background:var(--code-bg); border:1px solid var(--line);
+        border-left:3px solid var(--ember); border-radius:10px; padding:22px 24px;
+        font-family:var(--f-mono); font-size:15px; line-height:1.6; color:var(--c-fg);
+        white-space:pre; overflow-x:auto }
+.diag .e{color:var(--hot);font-weight:700} .diag .g{color:var(--c-cm)}
+.diag .c{color:var(--hot)}
+
+/* ═══ code + margin callouts ═══ */
+.annot { display:grid; grid-template-columns:1fr 250px; gap:26px; align-items:center }
+.callouts { display:flex; flex-direction:column; gap:20px }
+.callouts > div { border-left:3px solid var(--warm); padding:2px 0 2px 14px }
+.callouts .ct { font-family:var(--f-mono); font-size:11px; letter-spacing:.18em;
+                text-transform:uppercase; color:var(--warm); display:block;
+                margin-bottom:5px }
+.callouts .cd { font-size:15.5px; line-height:1.35; color:var(--fg-2) }
+
+/* ═══ timeline ═══ */
+.tl { width:100%; height:auto; max-height:260px }
+.tl .ax,.tl .tk{stroke:var(--line-2);stroke-width:1.5}
+.tl .st{stroke:var(--cool);stroke-width:3;fill:none;stroke-linejoin:round}
+.tl .nw{stroke:var(--warm);stroke-width:2;stroke-dasharray:4 4}
+.tl .rc{stroke:var(--warm);stroke-width:2.5;fill:none}
+.tl .d{fill:var(--cool)} .tl .da{fill:var(--warm)}
+.tl text{font-family:var(--f-mono);font-size:13px;fill:var(--fg-3)}
+.tl text.a{fill:var(--warm)}
+
+/* ═══ fork — one history, two futures ═══ */
+/* Cap the WIDTH, not the height: a max-height on a viewBox'd svg letterboxes
+   the drawing into a sliver instead of scaling it. */
+.fk { width:100%; max-width:760px; height:auto; align-self:center }
+.fk .ax, .fk .tk { stroke:var(--line-2); stroke-width:1.5 }
+.fk .trunk, .fk .main { stroke:var(--cool); stroke-width:3.5; fill:none }
+.fk .brnch { stroke:var(--warm); stroke-width:3.5; fill:none; stroke-linecap:round }
+.fk .fdot { fill:var(--warm) }
+.fk text { font-family:var(--f-mono); font-size:13px; fill:var(--fg-3) }
+.fk text.a { fill:var(--warm) }
+.fk text.lbl { fill:var(--fg-2) }
+.fk text.mn { fill:var(--cool); font-size:15px }
+.fk text.br { fill:var(--warm); font-size:15px }
+.fk text.mnq { fill:var(--cool); font-size:11.5px; opacity:.8 }
+.fk text.brq { fill:var(--warm); font-size:11.5px; opacity:.85 }
+
+/* ═══ table ═══ */
+.tw { overflow-x:auto }
+table { width:100%; border-collapse:collapse }
+th { text-align:left; font-family:var(--f-mono); font-size:10.5px; letter-spacing:.2em;
+     text-transform:uppercase; color:var(--fg-3); font-weight:700;
+     padding:0 16px 9px 0; border-bottom:1px solid var(--line-2) }
+td { padding:8px 16px 8px 0; border-bottom:1px solid var(--line); color:var(--fg-2);
+     vertical-align:baseline; font-size:15px; line-height:1.3 }
+td.p { font-family:var(--f-mono); font-size:14px; color:var(--fg) }
+td.s { font-family:var(--f-mono); font-size:13px; white-space:nowrap; color:var(--fg-3) }
+td.s.y { color:var(--cool) }
+
+/* ═══ pills ═══ */
+.pills { display:flex; gap:13px; flex-wrap:wrap }
+.pill { font-family:var(--f-mono); font-size:13px; letter-spacing:.1em;
+        text-transform:uppercase; padding:9px 17px; border-radius:22px;
+        border:1px solid var(--line-2); color:var(--fg-2) }
+.pill:first-child { background:var(--ember); border-color:var(--ember); color:#fff }
+
+/* ═══ chip ═══ */
+.chip { position:absolute; top:64px; right:78px; font-family:var(--f-mono);
+        font-size:10.5px; letter-spacing:.2em; text-transform:uppercase;
+        display:flex; align-items:center; gap:9px; padding:6px 13px;
+        border:1px solid var(--line); border-radius:22px; color:var(--fg-3);
+        background:var(--bg-2) }
+.chip::before { content:""; width:8px; height:8px; transform:rotate(45deg);
+                border:1.5px solid var(--fg-3) }
+.chip.run { color:var(--fg-2) }
+.chip.run::before { background:var(--cool); border-color:var(--cool) }
+
+/* ═══ chrome ═══ */
+.rail { position:fixed; left:0; right:0; bottom:0; height:44px; display:flex;
+        align-items:center; gap:18px; padding:0 20px; background:var(--bg);
+        border-top:1px solid var(--line); font-family:var(--f-mono); font-size:10.5px;
+        letter-spacing:.14em; text-transform:uppercase; color:var(--fg-3); z-index:800 }
+.rail .t { color:var(--fg-2); display:flex; align-items:center; gap:9px }
+.rail .mark { width:17px; height:17px; flex:none;
+              background:var(--mark) no-repeat center/contain }
+.ticks { display:flex; align-items:flex-end; gap:5px; flex:1; height:16px }
+.ticks button { width:13px; height:6px; padding:0; border:0; background:var(--line-2);
+                cursor:pointer; border-radius:1px; transition:height .18s, background .18s }
+.ticks button:hover { background:var(--fg-3) }
+.ticks button[aria-current="true"] { height:15px; background:var(--warm) }
+.rail .ct { font-variant-numeric:tabular-nums; color:var(--fg-2) }
+kbd { font-family:var(--f-mono); font-size:9.5px; border:1px solid var(--line-2);
+      border-bottom-width:2px; border-radius:3px; padding:1px 4px; color:var(--fg-2) }
+.np { position:fixed; right:0; top:0; bottom:44px; width:400px; background:var(--bg-2);
+      border-left:1px solid var(--line); padding:26px; overflow-y:auto; z-index:850;
+      display:none; font-size:15px; line-height:1.6; color:var(--fg-2) }
+.np.open { display:block }
+.np h4 { font-family:var(--f-mono); font-size:10.5px; letter-spacing:.2em;
+         text-transform:uppercase; color:var(--fg-3); margin:0 0 14px }
+.np p { margin:0 0 13px } .np p:last-child { margin-bottom:0 }
+.np strong { color:var(--fg) } .np em { color:var(--fg) }
+.np code { font-family:var(--f-mono); font-size:.88em; color:var(--cool) }
+.np p:first-of-type { border-left:2px solid var(--warm); padding-left:13px; color:var(--fg) }
+aside.n { display:none }
+.help { position:fixed; inset:0; background:color-mix(in srgb,var(--bg) 93%,transparent);
+        z-index:950; display:none; place-items:center }
+.help.open { display:grid }
+.help-c { background:var(--bg-2); border:1px solid var(--line-2); border-radius:12px;
+          padding:32px 36px; max-width:430px }
+.help-c h4 { font-family:var(--f-mono); font-size:11px; letter-spacing:.2em;
+             text-transform:uppercase; color:var(--fg-3); margin:0 0 18px }
+.help-c dl { margin:0; display:grid; grid-template-columns:120px 1fr; gap:10px 16px }
+.help-c dt { font-family:var(--f-mono); font-size:12px; color:var(--warm) }
+.help-c dd { margin:0; font-size:15px; color:var(--fg-2) }
+.gv { position:fixed; inset:0 0 44px 0; background:var(--bg); z-index:870;
+      overflow-y:auto; padding:26px; display:none;
+      grid-template-columns:repeat(auto-fill,minmax(280px,1fr)); gap:20px; align-content:start }
+.gv.open { display:grid }
+.th { position:relative; width:100%; aspect-ratio:16/9; overflow:hidden;
+      border:1px solid var(--line-2); border-radius:6px; background:var(--bg);
+      cursor:pointer; padding:0; display:block }
+.th:hover,.th:focus-visible { border-color:var(--warm); outline:none }
+.th .ti { position:absolute; top:0; left:0; width:1280px; height:720px;
+          transform-origin:top left; pointer-events:none }
+.th .tn { position:absolute; bottom:5px; right:7px; font-family:var(--f-mono);
+          font-size:10px; color:var(--fg-3); background:var(--bg); padding:1px 5px;
+          border-radius:2px; z-index:2 }
+.th .slide { display:flex }
+:focus-visible { outline:2px solid var(--warm); outline-offset:3px }
+</style>
+
+<div class="deck">
+<div class="wrap"><div class="stage" id="stage">
+{{SLIDES}}
+</div></div>
+
+<div class="np" id="np" aria-live="polite"><h4>Speaker notes</h4><div id="np-b"></div></div>
+<div class="gv" id="gv"></div>
+
+<div class="rail">
+  <span class="t"><i class="mark" role="img" aria-label="Cambra"></i>{{RAIL}}</span>
+  <span class="ticks" id="ticks" role="tablist" aria-label="Slides"></span>
+  <span class="ct"><span id="cur">1</span>&thinsp;/&thinsp;<span id="tot"></span></span>
+  <span><kbd>&larr;</kbd><kbd>&rarr;</kbd> move · <kbd>N</kbd> notes · <kbd>G</kbd> grid · <kbd>T</kbd> theme · <kbd>?</kbd> keys</span>
+</div>
+
+<div class="help" id="help"><div class="help-c"><h4>Keys</h4><dl>
+  <dt>&rarr; &darr; space</dt><dd>Next</dd>
+  <dt>&larr; &uarr;</dt><dd>Previous</dd>
+  <dt>1 … 9 0</dt><dd>Jump to slide</dd>
+  <dt>Home / End</dt><dd>First / last</dd>
+  <dt>N</dt><dd>Speaker notes</dd>
+  <dt>G</dt><dd>Grid overview</dd>
+  <dt>T</dt><dd>Abyssal / sand theme</dd>
+  <dt>? or Esc</dt><dd>Close</dd>
+</dl></div></div>
+</div>
+
+<script>
+(function () {
+  var stage=document.getElementById('stage'),
+      slides=[].slice.call(stage.querySelectorAll('.slide')),
+      ticks=document.getElementById('ticks'), curEl=document.getElementById('cur'),
+      np=document.getElementById('np'), npB=document.getElementById('np-b'),
+      help=document.getElementById('help'), gv=document.getElementById('gv'),
+      i=0, notesOn=false, gridOn=false;
+  document.getElementById('tot').textContent=slides.length;
+  slides.forEach(function(s,n){
+    var b=document.createElement('button');
+    b.type='button'; b.setAttribute('role','tab');
+    b.setAttribute('aria-label','Slide '+(n+1));
+    b.addEventListener('click',function(){go(n)}); ticks.appendChild(b);
+  });
+  var tb=[].slice.call(ticks.children);
+  function fit(){
+    var w=innerWidth, h=innerHeight-44, pad=notesOn?400:0;
+    stage.style.setProperty('--sc',Math.max(Math.min((w-pad-36)/1280,(h-34)/720),.2));
+    stage.parentNode.style.paddingRight=pad+'px';
+  }
+  function paint(){
+    var a=slides[i].querySelector('aside.n');
+    npB.innerHTML=a?a.innerHTML:'<p>No notes.</p>';
+  }
+  function go(n){
+    i=(n+slides.length)%slides.length;
+    slides.forEach(function(s,k){s.classList.toggle('on',k===i)});
+    tb.forEach(function(b,k){b.setAttribute('aria-current',k===i?'true':'false')});
+    curEl.textContent=i+1; if(notesOn)paint();
+  }
+  function buildGrid(){
+    if(gv.childElementCount)return;
+    slides.forEach(function(s,n){
+      var t=document.createElement('button'); t.type='button'; t.className='th';
+      t.setAttribute('aria-label','Go to slide '+(n+1));
+      var inner=document.createElement('div'); inner.className='ti';
+      var c=s.cloneNode(true); c.classList.remove('on');
+      var ca=c.querySelector('aside.n'); if(ca)ca.remove();
+      inner.appendChild(c);
+      var num=document.createElement('span'); num.className='tn'; num.textContent=n+1;
+      t.appendChild(inner); t.appendChild(num);
+      t.addEventListener('click',function(){toggleGrid(false);go(n)});
+      gv.appendChild(t);
+    });
+    requestAnimationFrame(scaleThumbs);
+  }
+  function scaleThumbs(){
+    [].forEach.call(gv.querySelectorAll('.th'),function(t){
+      var inner=t.querySelector('.ti');
+      if(inner)inner.style.transform='scale('+(t.clientWidth/1280)+')';
+    });
+  }
+  function toggleGrid(on){
+    gridOn=(on===undefined)?!gridOn:on;
+    if(gridOn){buildGrid();scaleThumbs()}
+    gv.classList.toggle('open',gridOn);
+  }
+  function toggleNotes(){
+    notesOn=!notesOn; np.classList.toggle('open',notesOn);
+    if(notesOn)paint(); fit();
+  }
+  function toggleTheme(){
+    var r=document.documentElement, now=r.getAttribute('data-theme');
+    if(!now)now=matchMedia('(prefers-color-scheme: dark)').matches?'dark':'light';
+    r.setAttribute('data-theme',now==='dark'?'light':'dark');
+  }
+  document.addEventListener('keydown',function(e){
+    if(e.metaKey||e.ctrlKey||e.altKey)return;
+    var k=e.key;
+    if(k==='Escape'){
+      if(help.classList.contains('open')){help.classList.remove('open');return}
+      if(gridOn){toggleGrid(false);return} return;
+    }
+    if(k==='?'||k==='/'){help.classList.toggle('open');e.preventDefault();return}
+    if(help.classList.contains('open'))return;
+    if(k==='ArrowRight'||k==='ArrowDown'||k===' '||k==='PageDown'){go(i+1);e.preventDefault()}
+    else if(k==='ArrowLeft'||k==='ArrowUp'||k==='PageUp'){go(i-1);e.preventDefault()}
+    else if(k==='Home'){go(0);e.preventDefault()}
+    else if(k==='End'){go(slides.length-1);e.preventDefault()}
+    else if(k==='n'||k==='N'){toggleNotes();e.preventDefault()}
+    else if(k==='g'||k==='G'){toggleGrid();e.preventDefault()}
+    else if(k==='t'||k==='T'){toggleTheme();e.preventDefault()}
+    else if(/^[0-9]$/.test(k)){
+      var n=k==='0'?9:parseInt(k,10)-1;
+      if(n<slides.length){go(n);e.preventDefault()}
+    }
+  });
+  help.addEventListener('click',function(e){if(e.target===help)help.classList.remove('open')});
+  addEventListener('resize',function(){fit();if(gridOn)scaleThumbs()});
+  fit(); go(0);
+})();
+</script>

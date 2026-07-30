@@ -1,0 +1,92 @@
+---
+/**
+ * Talks listing. This is the indexable page: it carries each talk's abstract as
+ * real prose, which is what search engines and readers actually want. The decks
+ * themselves are artifacts linked from here.
+ */
+import BaseLayout from "../../layouts/BaseLayout.astro";
+import Nav from "../../components/Nav.astro";
+import { getCollection, render } from "astro:content";
+
+const entries = (await getCollection("talks"))
+  .filter((talk) => !talk.data.draft)
+  .sort((a, b) => b.data.pubDate.valueOf() - a.data.pubDate.valueOf());
+
+const talks = await Promise.all(
+  entries.map(async (talk) => ({ talk, Abstract: (await render(talk)).Content })),
+);
+---
+
+<BaseLayout
+  title="Talks"
+  description="Talks from the Cambra team on programming languages, databases, and stream processing — with the slides."
+>
+  <Nav />
+
+  <main class="max-w-2xl mx-auto px-6 py-16 md:py-24">
+    <h1
+      class="text-3xl md:text-4xl font-bold tracking-tight mb-4 text-[var(--color-ink)]"
+      style="letter-spacing: -0.03em;"
+    >
+      Talks
+    </h1>
+    <p class="text-[var(--color-ink-soft)] leading-relaxed mb-12">
+      Slides are published as they're presented. Each deck opens in the browser —
+      use the arrow keys to move through it, and <kbd
+        class="font-mono text-xs border border-[var(--color-san-blas)] rounded px-1">N</kbd
+      > for the speaker notes.
+    </p>
+
+    {
+      talks.length === 0 ? (
+        <p class="text-[var(--color-ink-soft)]">No talks yet.</p>
+      ) : (
+        <ul class="space-y-14">
+          {talks.map(({ talk, Abstract }) => {
+            const formatted = talk.data.pubDate.toLocaleDateString("en-US", {
+              year: "numeric",
+              month: "long",
+              day: "numeric",
+              timeZone: "UTC",
+            });
+            return (
+              <li>
+                <time
+                  datetime={talk.data.pubDate.toISOString()}
+                  class="font-mono text-xs text-[var(--color-ink-soft)] tracking-wide uppercase"
+                >
+                  {formatted}
+                </time>
+                <h2
+                  class="text-xl md:text-2xl font-semibold mt-1 text-[var(--color-ink)]"
+                  style="letter-spacing: -0.015em;"
+                >
+                  {talk.data.title}
+                </h2>
+                <p class="font-mono text-xs text-[var(--color-ocean)] mt-1 tracking-wide">
+                  {talk.data.venue}
+                </p>
+                <div class="prose mt-4 text-[0.9375rem]">
+                  <Abstract />
+                </div>
+                <a
+                  href={`/talks/${talk.id}/`}
+                  class="inline-flex items-center gap-2 mt-5 bg-[var(--color-accent)] hover:bg-[var(--color-accent-dark)] text-white font-medium text-sm px-5 py-2.5 rounded-md transition-colors no-underline"
+                >
+                  Open the slides
+                  <span aria-hidden="true">→</span>
+                </a>
+              </li>
+            );
+          })}
+        </ul>
+      )
+    }
+  </main>
+
+  <footer
+    class="border-t border-[var(--color-san-blas)] py-8 text-center text-sm text-[var(--color-ink-soft)]"
+  >
+    <a href="/" class="hover:text-[var(--color-accent)] transition-colors">← Cambra</a>
+  </footer>
+</BaseLayout>

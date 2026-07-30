@@ -1,0 +1,70 @@
+---
+/**
+ * A talk deck, served verbatim at /talks/<slug>/.
+ *
+ * Decks are self-contained documents: their own <style>, their own keyboard
+ * navigation, every font and logo embedded as a data: URI. So this page
+ * deliberately does NOT use BaseLayout — global.css would fight the deck's own
+ * styling, and the deck needs no site chrome. All this page contributes is the
+ * document head (metadata, canonical, robots) around the deck's markup.
+ */
+import fs from "node:fs";
+import path from "node:path";
+import { getCollection } from "astro:content";
+
+export async function getStaticPaths() {
+  const talks = await getCollection("talks");
+  return talks.map((talk) => ({ params: { slug: talk.id }, props: { talk } }));
+}
+
+const { talk } = Astro.props;
+const dir = talk.data.deck ?? talk.id;
+const deckFile = path.resolve(`src/decks/${dir}/deck.html`);
+
+if (!fs.existsSync(deckFile)) {
+  throw new Error(
+    `Talk "${talk.id}" has no built deck at src/decks/${dir}/deck.html — ` +
+      `run: cd src/decks/${dir} && python3 build.py`,
+  );
+}
+
+// build.py emits a body fragment (it also targets a host that supplies its own
+// document shell), so it opens with a <title>. Drop it: the head below owns the
+// title, and a second one inside <body> is invalid.
+const deck = fs
+  .readFileSync(deckFile, "utf8")
+  .replace(/^\s*<title>[\s\S]*?<\/title>\s*/i, "");
+
+const pageTitle = `${talk.data.title} — Cambra`;
+const canonical = new URL(`/talks/${talk.id}/`, Astro.site).href;
+const ogImage = new URL(talk.data.ogImage ?? "/og-default.png", Astro.site).href;
+const noindex = !talk.data.indexable || talk.data.draft;
+---
+
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <link rel="icon" type="image/svg" href="/brand/symbol.svg" />
+
+    <title>{pageTitle}</title>
+    <meta name="description" content={talk.data.description} />
+    <link rel="canonical" href={canonical} />
+    {noindex && <meta name="robots" content="noindex" />}
+
+    <meta property="og:type" content="article" />
+    <meta property="og:url" content={canonical} />
+    <meta property="og:title" content={pageTitle} />
+    <meta property="og:description" content={talk.data.description} />
+    <meta property="og:image" content={ogImage} />
+    <meta property="og:site_name" content="Cambra" />
+    <meta name="twitter:card" content="summary_large_image" />
+    <meta name="twitter:title" content={pageTitle} />
+    <meta name="twitter:description" content={talk.data.description} />
+    <meta name="twitter:image" content={ogImage} />
+  </head>
+  <body style="margin: 0">
+    <Fragment set:html={deck} />
+  </body>
+</html>
