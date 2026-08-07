@@ -20,6 +20,9 @@ pnpm-debug.log*
 # macOS-specific files
 .DS_Store
 
+# Python bytecode from the stdlib-only build and check scripts
+__pycache__/
+
 # jetbrains setting folder
 .idea/
 
