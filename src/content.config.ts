@@ -26,4 +26,33 @@ const blog = defineCollection({
   }),
 });
 
-export const collections = { blog };
+/**
+ * Talks. The entry body is the abstract shown on the /talks listing; the deck
+ * itself is a self-contained HTML file built from `src/decks/<deck>/` and served
+ * verbatim at /talks/<slug>/.
+ */
+const talks = defineCollection({
+  loader: glob({ pattern: '**/*.{md,mdx}', base: './src/content/talks' }),
+  schema: z.object({
+    title: z.string(),
+    description: z.string(),
+    /** Where it was given, shown under the title in the listing. */
+    venue: z.string(),
+    pubDate: z.coerce.date(),
+    /** Directory under src/decks/ holding the built deck. Defaults to the slug. */
+    deck: z.string().optional(),
+    /**
+     * Allow search engines to index the deck page itself. Off by default: a
+     * deck is ~25 words a slide with its substance in hidden speaker notes, so
+     * it indexes as thin content and competes with the prose that says the same
+     * thing better. The /talks listing carries the abstract and IS indexed.
+     */
+    indexable: z.boolean().optional().default(false),
+    /** Keep out of the listing and the sitemap, but still build the URL. */
+    draft: z.boolean().optional().default(false),
+    /** Absolute path to a custom OG image. Falls back to the site default. */
+    ogImage: z.string().optional(),
+  }),
+});
+
+export const collections = { blog, talks };
