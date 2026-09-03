@@ -30,3 +30,7 @@ pnpm-debug.log*
 .claude/settings.local.json
 
 CAMBRA BRAND
+
+# wasm-bindgen output for the pitch deck demo — regenerated from the cambra
+# repo, and the .wasm blob is over jj's 1 MiB snapshot limit
+pitch-deck/public/wasm/*.wasm

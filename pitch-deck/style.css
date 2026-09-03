@@ -1,0 +1,1034 @@
+@import url('https://fonts.googleapis.com/css2?family=Fredoka:wght@500;600&family=Montserrat:wght@400;500;600;700&family=Space+Grotesk:wght@500;600;700&family=Space+Mono:wght@400;700&display=swap');
+
+:root {
+  --abyssal: #10253a;
+  --bg-2: #17324d;
+  --deep-sea: #054350;
+  --ocean: #1c88a7;
+  --lagoon: #6cc4c8;
+  --san-blas: #c5e3db;
+  --ember: #d75a2e;
+  --coral: #f18b40;
+  --amber: #f5a337;
+  --sand: #fff0d1;
+  --code-bg: #0b1b2b;
+
+  --fg: #fff;
+  --fg-2: rgba(255, 255, 255, 0.76);
+  --fg-3: #7d97b2;
+  --line: rgba(255, 255, 255, 0.15);
+  --line-2: rgba(255, 255, 255, 0.3);
+  --cool: var(--lagoon);
+  --warm: var(--amber);
+  --hot: #ee8759;
+
+  --f-logo: 'Fredoka', 'Montserrat', system-ui, sans-serif;
+  --f-disp: 'Space Grotesk', 'Montserrat', system-ui, sans-serif;
+  --f-body: 'Montserrat', system-ui, -apple-system, sans-serif;
+  --f-mono: 'Space Mono', ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
+}
+
+.slidev-page,
+.slidev-layout {
+  background: var(--abyssal);
+  color: var(--fg);
+  font-family: var(--f-body);
+}
+
+.slidev-layout {
+  padding: 0 !important;
+}
+
+.frame {
+  width: 100%;
+  height: 100%;
+  box-sizing: border-box;
+  padding: 2.6rem 3.2rem;
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+  position: relative;
+}
+.frame.center {
+  justify-content: center;
+}
+.bg-glow {
+  position: absolute;
+  border-radius: 50%;
+  pointer-events: none;
+}
+
+.slidev-layout a {
+  color: var(--ember);
+}
+.slidev-layout a:hover {
+  color: var(--coral);
+}
+
+/* ─── type ─────────────────────────────────────────────────────── */
+.eyebrow {
+  font-family: var(--f-mono);
+  font-size: 0.8rem;
+  font-weight: 700;
+  letter-spacing: 0.24em;
+  text-transform: uppercase;
+  color: var(--cool);
+}
+.slidev-layout h1 {
+  font-family: var(--f-logo);
+  font-weight: 600;
+  letter-spacing: -0.02em;
+  line-height: 1.04;
+}
+/* !important: the default theme's own heading rule otherwise wins this
+   specificity/order fight, rendering h2 far larger than intended. */
+.slidev-layout h2 {
+  font-family: var(--f-disp) !important;
+  font-size: 2.5rem !important;
+  font-weight: 700 !important;
+  letter-spacing: -0.02em !important;
+  line-height: 1.12 !important;
+  margin: 0 !important;
+  max-width: 26ch;
+}
+.sub {
+  font-family: var(--f-disp);
+  font-size: 1.6rem;
+  font-weight: 600;
+  color: var(--fg-2);
+  margin: 0;
+}
+.punch {
+  font-size: 1.2rem;
+  line-height: 1.4;
+  color: var(--fg);
+  max-width: 56ch;
+  margin: 0;
+  padding-left: 1.1rem;
+  border-left: 4px solid var(--warm);
+  font-weight: 500;
+}
+.lead-p {
+  font-size: 1.1rem;
+  line-height: 1.5;
+  color: var(--fg-2);
+  max-width: 62ch;
+  margin: 0;
+}
+
+/* ─── shared layout scaffolding ───────────────────────────────── */
+.head {
+  display: flex;
+  flex-direction: column;
+  flex-shrink: 0;
+  gap: 0.7rem;
+  padding-bottom: 0.8rem;
+}
+.grow {
+  flex: 1;
+  min-height: 0;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  gap: 1.3rem;
+}
+
+/* ─── columns / cards ─────────────────────────────────────────── */
+.cols {
+  display: grid;
+  gap: 1.2rem;
+}
+.cols.n2 {
+  grid-template-columns: 1fr 1fr;
+}
+.cols.n3 {
+  grid-template-columns: 1fr 1fr 1fr;
+}
+.col {
+  /* Fallback anchor for QuoteCard's expanded overlay; a column that wants the
+     overlay confined to part of itself wraps that part in .col-body. */
+  position: relative;
+  background: var(--bg-2);
+  border: 1px solid var(--line);
+  border-left: 3px solid var(--cool);
+  border-radius: 10px;
+  padding: 0.65rem 0.8rem;
+  display: flex;
+  flex-direction: column;
+  gap: 0.35rem;
+}
+.col.warm {
+  border-left-color: var(--warm);
+}
+/* Two GhostBars stacked in one column. */
+.col > .gb + .gb {
+  margin-top: 0.5rem;
+}
+.frame h3 {
+  font-family: var(--f-mono);
+  font-size: 0.68rem;
+  font-weight: 700;
+  letter-spacing: 0.13em;
+  text-transform: uppercase;
+  color: var(--fg-3);
+  margin: 0;
+}
+.col p {
+  margin: 0;
+  font-size: 0.82rem;
+  line-height: 1.32;
+  color: var(--fg-2);
+}
+.col ul {
+  margin: 0;
+  padding: 0;
+  list-style: none;
+  display: flex;
+  flex-direction: column;
+  gap: 0.4rem;
+}
+/* The bullet hangs in the padding rather than being a flex item, so inline
+   markup in a list item — <a>, <strong> — stays inline. As a flex row, every
+   child element became its own column. */
+.col li {
+  font-size: 0.85rem;
+  line-height: 1.35;
+  color: var(--fg-2);
+  position: relative;
+  padding-left: 1rem;
+}
+.col li::before {
+  content: '';
+  position: absolute;
+  left: 0;
+  top: 0.52em;
+  width: 5px;
+  height: 5px;
+  border-radius: 1px;
+  background: var(--cool);
+}
+.col.warm li::before {
+  background: var(--warm);
+}
+/* Opt in to term-and-gloss rows: the <em> sits in its own column. */
+.col ul.defs li {
+  display: flex;
+  gap: 0.5rem;
+}
+.col li em {
+  font-style: normal;
+  color: var(--fg-3);
+}
+.col li a {
+  color: var(--cool);
+  text-decoration: none;
+  border-bottom: 1px solid rgba(108, 196, 200, 0.4);
+}
+
+/* ─── slide 03: a visual above each trend ─────────────────────── */
+/* Crowd = the market, wall = the adoption barrier, Cambra = feasibility.
+   Columns are ordered to match that left-to-right story. */
+.trend {
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+  min-height: 0;
+}
+.trend > .col {
+  flex: 1;
+}
+.metaphor {
+  flex: none;
+  height: 2.2rem;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 1.8rem;
+  color: var(--fg-3);
+}
+.cool {
+  color: var(--cool);
+}
+span.warm {
+  color: var(--warm);
+}
+.hot {
+  color: var(--coral);
+}
+.metaphor img {
+  height: 2rem;
+  width: auto;
+}
+
+/* ─── vendor marks on the market slide ────────────────────────── */
+.vlogo {
+  font-size: 1.3rem;
+  color: var(--fg-2);
+}
+.vlogo-pair {
+  display: flex;
+  gap: 0.45rem;
+}
+
+/* The slice of a column that QuoteCard's expanded overlay may cover. Anything
+   above it — section label, lead line — stays visible while the quote is up. */
+.col-body {
+  position: relative;
+  flex: 1;
+  min-height: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 0.35rem;
+}
+
+/* ─── pills / chips ───────────────────────────────────────────── */
+.pills {
+  display: flex;
+  gap: 0.6rem;
+  flex-wrap: wrap;
+}
+.pill {
+  font-family: var(--f-mono);
+  font-size: 0.72rem;
+  letter-spacing: 0.05em;
+  padding: 0.45rem 0.85rem;
+  border-radius: 16px;
+  border: 1px solid var(--line-2);
+  color: var(--fg-2);
+  background: var(--bg-2);
+}
+.pill.on {
+  background: var(--ember);
+  border-color: var(--ember);
+  color: #fff;
+}
+.pill.cool {
+  border-color: var(--lagoon);
+  color: #fff;
+}
+.pill.warm {
+  border-color: var(--coral);
+  color: #fff;
+}
+
+/* ─── precedent stat cards ────────────────────────────────────── */
+/* 2x2 inside the performance column — these precedents are evidence for that
+   column only, and full width under both read as if they covered both. */
+.precedents {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 0.45rem;
+}
+/* Full width, where they are the subject rather than a column's evidence. */
+.precedents.wide {
+  grid-template-columns: repeat(4, 1fr);
+  gap: 0.7rem;
+}
+.precedents.wide .prec {
+  padding: 0.7rem;
+}
+.precedents.wide .prec .x {
+  font-size: 1.3rem;
+}
+.precedents.wide .prec .d {
+  font-size: 0.68rem;
+}
+.prec {
+  background: rgba(0, 0, 0, 0.16);
+  border: 1px solid var(--line);
+  border-radius: 8px;
+  padding: 0.45rem 0.5rem;
+}
+.prec .x {
+  font-family: var(--f-mono);
+  font-weight: 700;
+  font-size: 1.05rem;
+  color: var(--warm);
+}
+.prec .d {
+  font-size: 0.6rem;
+  line-height: 1.25;
+  color: var(--fg-3);
+  margin-top: 0.1rem;
+}
+
+/* ─── stack / bracket diagram (Product slide) ────────────────── */
+.stack {
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+}
+.layer {
+  background: var(--bg-2);
+  border: 1px solid var(--line);
+  border-radius: 8px;
+  padding: 0.7rem 1rem;
+  display: flex;
+  flex-direction: column;
+  gap: 0.15rem;
+}
+.layer .k {
+  font-family: var(--f-mono);
+  font-size: 0.65rem;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  color: var(--cool);
+}
+.layer.db .k {
+  color: var(--warm);
+}
+.layer .t {
+  font-family: var(--f-disp);
+  font-size: 1rem;
+  font-weight: 600;
+}
+.layer .d {
+  font-size: 0.75rem;
+  color: var(--fg-3);
+}
+.bracket {
+  margin: 0.1rem 0 0.1rem 0.35rem;
+}
+.bracket .lbl {
+  font-family: var(--f-mono);
+  font-size: 0.65rem;
+  letter-spacing: 0.16em;
+  text-transform: uppercase;
+  padding-left: 0.6rem;
+  border-left: 2px solid var(--cool);
+  color: var(--cool);
+}
+.bracket.db .lbl {
+  border-left-color: var(--warm);
+  color: var(--warm);
+}
+
+/* ─── growing system diagram (Pain slide) ─────────────────────── */
+/* Vue Flow needs an explicitly sized box; it re-frames itself per stage. */
+.diagram-stack {
+  flex: none;
+  height: 15rem;
+  width: 100%;
+}
+/* ─── Vue Flow diagrams (shared by SystemDiagram / ScopeDiagram) ── */
+/* Slidev scales the whole slide with a CSS transform. Vue Flow measures handle
+   positions with getBoundingClientRect but divides only by its OWN zoom, so
+   that outer scale leaks in and every edge attaches offset from its handle.
+   Cancelling it here makes the accumulated page transform exactly 1 inside the
+   flow. Needs a position:relative parent. */
+.flow-unscale {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: calc(100% * var(--slidev-slide-scale, 1));
+  height: calc(100% * var(--slidev-slide-scale, 1));
+  transform: scale(calc(1 / var(--slidev-slide-scale, 1)));
+  transform-origin: top left;
+}
+
+/* Short clipped lines that read as an accelerating slide into trouble. */
+.beats.arc {
+  gap: 0.55rem;
+  font-size: 1.15rem;
+  line-height: 1.3;
+}
+.beats.arc .hot {
+  color: var(--coral);
+  font-weight: 600;
+}
+
+.converge-canvas {
+  flex: 1;
+  min-height: 0;
+  position: relative;
+}
+
+/* ─── stack intervals (Why It Wins) ─────────────────────────── */
+/* Each layer of the stack with the proof point that reached it, and one
+   interval spanning all of them for Cambra. */
+/* Each proof spans the abstraction levels it actually bridges, rather than
+   sitting on one: Weld joins databases to languages, HyPer joins languages to
+   hardware, Mojo reaches from databases down to hardware. Overlapping spans get
+   their own column so they stack without colliding. Cambra spans all four —
+   that is the claim, and the reason distributed systems has no precedent bar. */
+.stackint {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) 3rem 3rem 3rem 4rem;
+  grid-template-rows: repeat(4, auto);
+  gap: 0.3rem 0.36rem;
+  align-items: stretch;
+}
+.si-layer {
+  grid-column: 1;
+  background: rgba(0, 0, 0, 0.16);
+  border: 1px solid var(--line);
+  border-radius: 6px;
+  padding: 0.34rem 0.45rem;
+  /* Sized so the longest layer name stays on one line and the rows stay even. */
+  font-size: 0.66rem;
+  white-space: nowrap;
+  color: var(--fg-2);
+}
+/* Nothing in the literature reaches the top level; say so where the bar would
+   have been. */
+.si-gap {
+  grid-column: 2 / 5;
+  grid-row: 1;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border: 1px dashed var(--line-2);
+  border-radius: 6px;
+  font-size: 0.56rem;
+  letter-spacing: 0.02em;
+  color: var(--fg-3);
+  opacity: 0.75;
+}
+.si-int {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 0.05rem;
+  /* Prior art sits back; Cambra's bar is heavier and full strength, so the one
+     span that crosses every level is the one that reads first. */
+  border-left: 3px solid var(--warm);
+  border-radius: 2px;
+  padding-left: 0.4rem;
+  opacity: 0.62;
+}
+.si-int.weld {
+  grid-column: 2;
+  grid-row: 2 / 4;
+}
+.si-int.hyper {
+  grid-column: 3;
+  grid-row: 3 / 5;
+}
+.si-int.mojo {
+  grid-column: 4;
+  grid-row: 2 / 5;
+}
+.si-int.cambra {
+  grid-column: 5;
+  grid-row: 1 / 5;
+  border-left: 5px solid var(--coral);
+  padding-left: 0.45rem;
+  opacity: 1;
+}
+.si-mult {
+  font-family: var(--f-mono);
+  font-weight: 700;
+  font-size: 0.82rem;
+  color: var(--warm);
+  line-height: 1;
+}
+.si-int.cambra .si-mult {
+  font-size: 1.1rem;
+  color: var(--coral);
+}
+.si-name {
+  font-family: var(--f-mono);
+  text-align: center;
+  line-height: 1.25;
+  font-size: 0.55rem;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: var(--fg-3);
+}
+
+/* ─── market venn ────────────────────────────────────────────── */
+/* Three overlapping regions with Cambra at the centre. Circles are plain divs
+   rather than SVG so the labels can be real text in the flow.
+   Modifier names are spelled out: a bare `a`/`b`/`c` class collides with
+   UnoCSS utilities (`b` is its shorthand for `border`). */
+/* Names what the circles are; .venn-note beside them says what the numbers in
+   them are, since the natural reading of "$300B" would otherwise be revenue. */
+.venn-col {
+  position: relative;
+}
+/* Matches the diagram's own width so the side note can hang off its edge rather
+   than off the column's, which left it stranded in the gutter reading as part
+   of the prose alongside. */
+.venn-stage {
+  position: relative;
+  max-width: 22rem;
+  margin: 0 auto;
+}
+.venn-head {
+  font-family: var(--f-mono);
+  font-size: 0.72rem;
+  font-weight: 700;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  color: var(--fg-2);
+  text-align: center;
+  margin-bottom: 0.55rem;
+}
+/* Sits in the diagram's empty bottom-left corner, saying what the figures in
+   the circles are. Shares the accent colour with those figures so the link is
+   made by colour rather than by proximity alone; sized in cqw like the rest of
+   the diagram so it scales with it. */
+.venn-note {
+  position: absolute;
+  left: 0;
+  bottom: 3%;
+  font-family: var(--f-mono);
+  font-size: 2.083cqw;
+  font-weight: 700;
+  line-height: 1.25;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: var(--cool);
+}
+.venn {
+  position: relative;
+  container-type: inline-size;
+  width: 100%;
+  /* Geometry is derived, not nudged. Three circles of radius r whose centres
+     form an equilateral triangle of side s = k·r; k = 1.15 is the only knob —
+     smaller k, more overlap. Sized so the union exactly fills the box, the
+     union is (2r + s) wide by (√3/2·s + 2r) tall, which fixes this ratio.
+     Every percentage below falls out of that; re-derive them if k changes. */
+  aspect-ratio: 1 / 0.9511;
+  max-width: 22rem;
+  margin: 0 auto;
+}
+.venn-circle {
+  position: absolute;
+  width: 63.49%;
+  aspect-ratio: 1;
+  border-radius: 50%;
+  border: 1.5px solid;
+}
+.venn-circle.serving {
+  left: 0;
+  top: 0;
+  border-color: rgba(108, 196, 200, 0.55);
+  background: rgba(108, 196, 200, 0.08);
+}
+.venn-circle.durable {
+  right: 0;
+  top: 0;
+  border-color: rgba(245, 163, 55, 0.55);
+  background: rgba(245, 163, 55, 0.08);
+}
+.venn-circle.analytics {
+  left: 18.25%;
+  bottom: 0;
+  border-color: rgba(241, 139, 64, 0.55);
+  background: rgba(241, 139, 64, 0.08);
+}
+/* Each label is centred on a point 0.375 out from the centroid along the ray
+   through its own circle's centre — the middle of that circle's exclusive
+   crescent. Centring on the point rather than pinning a corner means a label
+   that grows a line stays put instead of drifting into the overlap.
+   0.35 and the 27% width are the largest that keep every corner of every
+   label inside its own circle and clear of the other two — verified by
+   measuring the rendered ink, not by eye. */
+.venn-label {
+  position: absolute;
+  transform: translate(-50%, -50%);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 0.833cqw;
+  text-align: center;
+  width: 27%;
+}
+.venn-label.serving {
+  left: 19.69%;
+  top: 26.06%;
+}
+.venn-label.durable {
+  left: 80.31%;
+  top: 26.06%;
+}
+.venn-label.analytics {
+  left: 50.00%;
+  top: 81.26%;
+}
+.vl-name {
+  font-family: var(--f-mono);
+  font-size: 2.582cqw;
+  font-weight: 700;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  color: var(--fg-2);
+  line-height: 1.2;
+  /* In em, so it tracks the font through the slide scale. Caps the header at
+     roughly the width of the company rows, so a two-word region wraps at its
+     space instead of becoming the widest thing in the label and pushing the
+     corners out through the circle. */
+  max-width: 7em;
+}
+/* One row per company: mark then name, so the region is legible rather than a
+   line of unlabelled glyphs. */
+.vl-logos {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 0.666cqw;
+  margin: 0.1rem 0;
+}
+.vl-co {
+  display: flex;
+  align-items: center;
+  gap: 1.333cqw;
+  font-family: var(--f-mono);
+  font-size: 2.333cqw;
+  letter-spacing: 0.04em;
+  color: var(--fg-3);
+  white-space: nowrap;
+}
+.vl-co i {
+  font-size: 3.416cqw;
+  flex: none;
+}
+/* Marks a company that discloses no revenue. Started life as a stand-in for
+   missing glyphs, and is now load-bearing: the sources note keys off it. */
+.vl-dot {
+  width: 1.666cqw;
+  height: 1.666cqw;
+  border-radius: 50%;
+  border: 1.5px solid currentColor;
+  opacity: 0.6;
+  margin: 0 0.875cqw;
+}
+/* Two facts per region, the same two everywhere so the circles compare: what
+   the named companies are collectively worth, and how fast they are growing.
+   Not a market size — no credible one exists for PaaS or durable execution,
+   and the published figures for those disagree with each other by 5x. */
+/* Same mark at footnote scale, so the legend and the diagram agree. */
+.vl-dot-inline {
+  display: inline-block;
+  width: 0.34rem;
+  height: 0.34rem;
+  vertical-align: 0.02rem;
+  margin: 0 0.1rem;
+}
+/* "raised", not a valuation — the distinction has to survive being read fast. */
+.vl-qual {
+  font-weight: 400;
+  letter-spacing: 0.02em;
+  color: var(--fg-3);
+}
+.vl-val {
+  font-family: var(--f-mono);
+  font-size: 2.333cqw;
+  font-weight: 700;
+  letter-spacing: 0.04em;
+  color: var(--cool);
+  margin-top: 0.417cqw;
+}
+.vl-growth {
+  font-family: var(--f-mono);
+  font-size: 2.083cqw;
+  letter-spacing: 0.04em;
+  color: var(--cool);
+  opacity: 0.9;
+}
+/* Bottom-left, mirroring the page number, so it sits outside the flow and
+   cannot push the diagram up into the headline. */
+.venn-src {
+  position: absolute;
+  /* Right half only: full width ran underneath the diagram and collided with
+     the analytics circle. */
+  left: 50%;
+  right: 5rem;
+  bottom: 1.1rem;
+  font-family: var(--f-mono);
+  font-size: 0.56rem;
+  line-height: 1.45;
+  letter-spacing: 0.03em;
+  color: var(--fg-3);
+  opacity: 0.6;
+}
+/* A company that genuinely straddles two regions goes in the lens between them
+   rather than being forced into one lobe. Centred between where the two circles
+   cross above and where the third cuts in below, so it reads as "both of these,
+   not all three". Same row styling as the lobe entries — the position carries
+   the meaning. */
+.venn-lens {
+  position: absolute;
+  transform: translate(-50%, -50%);
+  white-space: nowrap;
+}
+.venn-lens.serving-durable {
+  left: 50%;
+  top: 19.66%;
+}
+.venn-core {
+  position: absolute;
+  left: 50%;
+  top: 44.46%;
+  transform: translate(-50%, -50%);
+  width: 12.496cqw;
+  height: 12.496cqw;
+}
+.venn-core img {
+  width: 100%;
+  height: 100%;
+  object-fit: contain;
+}
+
+/* ─── traction timeline ──────────────────────────────────────── */
+/* Vertical: nine events read as a list down the left, quotes alongside.
+   Evenly spaced rather than proportional — four of the nine fall inside two
+   weeks of August and would collide on a real axis. The dates carry the
+   acceleration. */
+.tl-split {
+  /* The timeline is the argument on this slide; the quotes support it. Two
+     thirds / one third rather than sized-to-content. */
+  grid-template-columns: 1.5fr 1fr;
+  gap: 2rem;
+  align-items: start;
+}
+.timeline-v {
+  position: relative;
+  display: grid;
+  grid-template-columns: 3.9rem 1.1rem max-content;
+  /* Fixed rows so the rail below can span first dot to last exactly. */
+  grid-auto-rows: 2.1rem;
+  align-items: center;
+}
+/* Rail down the dot column, stopping at the first and last dot rather than
+   overhanging. Half a row at each end is exactly the first/last dot centre. */
+.timeline-v::before {
+  content: '';
+  position: absolute;
+  left: calc(3.9rem + 0.55rem - 1px);
+  top: 1.05rem;
+  bottom: 1.05rem;
+  width: 2px;
+  background: var(--line-2);
+}
+/* The row is a grouping hook for colour only; its three spans are the grid
+   items, so the columns line up across every row. */
+.tlv-row {
+  display: contents;
+}
+.tlv-date {
+  justify-self: end;
+  font-family: var(--f-mono);
+  font-size: 0.74rem;
+  font-weight: 700;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+}
+.tlv-row.cool .tlv-date {
+  color: var(--cool);
+}
+.tlv-row.hot .tlv-date {
+  color: var(--warm);
+}
+.tlv-dot {
+  position: relative;
+  z-index: 1;
+  justify-self: center;
+  width: 13px;
+  height: 13px;
+  border-radius: 50%;
+  background: var(--abyssal);
+  border: 2px solid var(--cool);
+}
+.tlv-row.hot .tlv-dot {
+  border-color: var(--warm);
+  background: var(--warm);
+}
+.tlv-label {
+  font-size: 0.82rem;
+  line-height: 1.2;
+  color: var(--fg-2);
+}
+/* These cards are expanded from the first frame, so the overlay has nothing
+   left to reveal. Let it flow instead: as an absolute overlay it stretched to
+   the collapsed card's height and the longer text spilled over the heading and
+   out the bottom. Four classes deep to outrank QuoteCard's scoped rules. */
+.tl-quotes .col .qfull.expanded {
+  position: static;
+  opacity: 1;
+}
+.tl-quotes .col .quote-card.expanded > .avatar,
+.tl-quotes .col .quote-card.expanded > .qbody {
+  display: none;
+}
+/* Quote text set for a half-slide column is too large for a third of one.
+   Three classes deep so it outranks QuoteCard's own scoped rule regardless of
+   which stylesheet the bundler emits first. */
+.tl-quotes .col .qfull {
+  font-size: 0.6rem;
+  line-height: 1.34;
+}
+/* Cards in a third-width column cannot afford half-slide padding. */
+.tl-quotes .col {
+  padding: 0.5rem 0.6rem;
+  gap: 0.2rem;
+}
+.tl-quotes .col ul {
+  gap: 0.1rem;
+}
+.tl-quotes {
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+}
+
+/* ─── slide 03: the SDLC feedback loop ────────────────────────── */
+.sdlc-canvas {
+  flex: 1;
+  min-height: 0;
+  position: relative;
+}
+
+/* ─── slide 02: language scope, today vs. what we need ─────────── */
+.scopes {
+  flex: none;
+  display: flex;
+  flex-direction: row;
+  gap: 1.8rem;
+  align-items: flex-start;
+}
+.scope {
+  margin: 0;
+  flex: 1 1 0;
+  min-width: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 0.3rem;
+}
+/* The beats sit below the diagrams here, so they take their natural height
+   rather than a share of the column. */
+.grow:not(.split) > .beats {
+  flex: none;
+}
+.scope figcaption {
+  font-family: var(--f-mono);
+  font-size: 0.62rem;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  color: var(--fg-3);
+}
+.scope-canvas {
+  height: 8.6rem;
+  position: relative;
+}
+.scope p {
+  margin: 0;
+  font-size: 0.72rem;
+  line-height: 1.3;
+  color: var(--fg-2);
+}
+
+/* Diagram on the left, the spoken beats stacked on the right — the diagram is
+   wide, so a full-width stack wasted the horizontal space and squeezed both. */
+.grow.split {
+  flex-direction: row;
+  align-items: center;
+  gap: 2rem;
+}
+.grow.split .diagram-stack {
+  flex: 1 1 58%;
+  min-width: 0;
+  display: flex;
+  flex-direction: column;
+  /* The note captions the diagram, so it sits tight under it... */
+  gap: 0.3rem;
+}
+/* fitView centres the diagram in whatever box it is given, so a box taller
+   than the diagram's own proportions puts dead space between the diagram and
+   its caption. Matching the aspect keeps them together. */
+.grow.split .diagram-canvas {
+  flex: none;
+  width: 100%;
+  aspect-ratio: 2 / 1;
+}
+/* ...and the closer needs room to read as a separate beat, not a third line
+   of that caption. */
+.grow > .split + .closer {
+  margin-top: 0.9rem !important;
+}
+/* The flow fills this box absolutely (see .flow-unscale in SystemDiagram.vue),
+   so it needs its own positioned element — otherwise anything else in
+   .diagram-stack renders underneath the diagram instead of below it. */
+.diagram-canvas {
+  flex: 1;
+  min-height: 0;
+  position: relative;
+}
+.beats {
+  flex: 1 1 42%;
+  min-width: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 1.1rem;
+}
+/* The theme's prose styles put vertical margins on <p>, which stack on top
+   of the flex gap and push this slide's content past the frame. */
+.grow > p,
+.beats > p {
+  margin: 0 !important;
+}
+.flow-note {
+  text-align: center;
+  font-family: var(--f-mono);
+  font-size: 0.7rem;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  color: var(--warm);
+}
+.closer {
+  font-family: var(--f-disp);
+  font-size: 1.5rem;
+  font-weight: 600;
+  line-height: 1.3;
+  color: var(--fg);
+  max-width: 56ch;
+  margin: 0;
+}
+.closer .hot {
+  color: var(--coral);
+}
+/* max-width would otherwise centre the text inside a left-aligned 56ch box
+   rather than across the slide. */
+.closer.center {
+  max-width: none;
+  text-align: center;
+}
+/* Centred text reads as a caption under a full-width diagram; beside one it
+   should sit on the same left edge as the rest of the column. */
+.beats .flow-note {
+  text-align: left;
+}
+/* ─── title slide ─────────────────────────────────────────────── */
+.title-wordmark {
+  width: 180px;
+  height: auto;
+  margin-bottom: 0.4rem;
+}
+.byline {
+  display: flex;
+  gap: 1.6rem;
+  flex-wrap: wrap;
+  margin-top: 0.9rem;
+  font-family: var(--f-mono);
+  font-size: 0.75rem;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  color: var(--fg-3);
+}
+.byline span:first-child {
+  color: var(--fg);
+  letter-spacing: 0.08em;
+}
+
+/* ─── page counter (bottom-right, every non-title slide) ──────── */
+.page-no {
+  position: absolute;
+  right: 1.4rem;
+  bottom: 1.1rem;
+  font-family: var(--f-mono);
+  font-size: 0.62rem;
+  letter-spacing: 0.1em;
+  color: var(--fg-3);
+}

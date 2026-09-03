@@ -1,0 +1,20 @@
+{
+  "name": "cambra-seed-pitch",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "dev": "slidev slides.md --open",
+    "build": "slidev build slides.md",
+    "export": "slidev export slides.md"
+  },
+  "dependencies": {
+    "@slidev/cli": "latest",
+    "@slidev/theme-default": "latest",
+    "@vue-flow/core": "^1.48.2",
+    "vue": "^3.5.0"
+  },
+  "devDependencies": {
+    "@iconify-json/simple-icons": "^1.2.93",
+    "playwright-chromium": "^1.62.1"
+  }
+}
