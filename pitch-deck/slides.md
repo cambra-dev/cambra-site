@@ -611,43 +611,52 @@ TODO: AI needs context, we bring it all into one place so AI can (do more stuff)
 <div class="frame">
   <div class="head">
     <div class="eyebrow">11 · The Ask</div>
-    <h2 style="font-family:var(--f-logo);font-size:2.6rem">$2–5M seed <span style="color:var(--fg-3);font-size:.5em;font-family:var(--f-mono);vertical-align:middle">[range TBD]</span></h2>
+    <h2 style="font-family:var(--f-logo);font-size:2.6rem">$4M seed</h2>
+    <div class="ask-sub">24 months to the Series A</div>
   </div>
   <div class="grow">
-    <div class="cols n2">
-      <div class="col">
-        <h3>Already committed</h3>
-        <ul>
-          <li>SAFEs at a $20M cap</li>
-          <li>[Amount raised so far — TBD]</li>
-        </ul>
+    <div class="ask-phases">
+      <div class="ask-phase">
+        <div class="ph"><span>OSS Core</span><span>months 0–6</span></div>
+        <div class="amt">$0.6M<small>team of 6</small></div>
+        <div class="deliv">Program branching ships. The durable-execution wedge is live in open source with our first design partners.</div>
       </div>
-      <div class="col warm">
-        <h3>Use of funds</h3>
-        <!-- TODO(Dan): focus these on what we actually need to deliver -->
-        <ul>
-          <li>[Headcount / hires — TBD]</li>
-          <li>[GmbH formation, if applicable — TBD]</li>
-          <li>[Runway in months to milestone X — TBD]</li>
-        </ul>
+      <div class="ask-phase">
+        <div class="ph"><span>Cloud</span><span>months 6–18</span></div>
+        <div class="amt">$1.8M<small>team of 8</small></div>
+        <div class="deliv">The distributed runtime is in production with 3–5 paying design partners.</div>
       </div>
+      <div class="ask-phase warm">
+        <div class="ph"><span>Grow</span><span>months 18–24</span></div>
+        <div class="amt">$1.3M<small>team of 11</small></div>
+        <div class="deliv">Raise the Series A on production usage, with six months of runway held for it.</div>
+      </div>
+    </div>
+    <div class="ask-footer">
+      <div><strong>Where it goes</strong> &middot; people 87% &middot; cloud + inference 7% &middot; legal, accounting, travel 6% &middot; plan $3.8M + reserve</div>
+      <div><strong>Already in</strong> &middot; Snowflake co-founder &middot; Redpanda CTO &middot; SAFEs at a $20M cap</div>
     </div>
   </div>
   <div class="page-no">{{ $slidev.nav.currentPage - 1 }} / {{ $slidev.nav.total - 1 }}</div>
 </div>
 
 <!--
-Source, verbatim:
+One number, one sentence, three phases, one line of percentages. The spreadsheet is the
+answer to the follow-up question, not the slide.
 
-The ask: round size, what's already committed (SAFEs at the $20M cap),
-use of funds, and what specifically the round unlocks (e.g., GmbH
-formation, first hires, N months of runway to X milestone).
-
-Funding (from "Material" section): $2-5M — but for what? Focus on what
-we need to deliver.
-
-Meetings-collation: "Headcount and runway math behind the $2–5M" was
-Nnamdi's specific ask — still open, marked [TBD] above.
+Back pocket (Seed Worksheet rev 2, 2026-09-03; vault: projects/seed-round/round-size.md):
+- Monthly burn: $107K (months 0–6) → $153K (6–18) → $222K (18–24). Exit burn $222K/mo, 11 people.
+- Headcount at 24 months: 3 founders, 7 engineers (Leon + Nick + 5 hires), 1 devrel (0.3 FTE from
+  month 6). No recruiters — network hiring, extremely selective.
+- Where it goes (post-close $3.81M): people $3.30M (87%), cloud + inference $0.27M (7%),
+  legal/accounting/insurance $0.15M (4%), travel/misc $0.09M (2%). Founders at benchmark seed
+  salaries; engineers priced senior.
+- Reserve: ~$0.2M on top of the plan, plus the option to hold headcount flat at the month-18
+  level during the raise (~$300K). Cloud credits (AWS Activate / Google for Startups) cover most
+  of year-one infra.
+- The month-18 milestone is what a Series A investor will argue about; the phase wording here
+  is a draft for Dan to put in his own words.
+- Nnamdi (08-19) asked for the headcount and runway math behind the ask — this is it.
 -->
 
 ---

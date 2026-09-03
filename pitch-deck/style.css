@@ -1032,3 +1032,79 @@ span.warm {
   letter-spacing: 0.1em;
   color: var(--fg-3);
 }
+
+/* ─── slide 11: the ask ───────────────────────────────────────── */
+/* One number in the head; three phase cards carry team, spend and the
+   deliverable; a mono footer carries the percentages and who is already in. */
+.ask-sub {
+  font-family: var(--f-mono);
+  font-size: 0.78rem;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: var(--fg-3);
+  margin-top: 0.25rem;
+}
+.ask-phases {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 0.9rem;
+  margin-top: 0.4rem;
+}
+.ask-phase {
+  background: var(--bg-2);
+  border: 1px solid var(--line);
+  border-top: 3px solid var(--cool);
+  border-radius: 8px;
+  padding: 0.85rem 0.95rem;
+  display: flex;
+  flex-direction: column;
+  gap: 0.4rem;
+}
+.ask-phase.warm {
+  border-top-color: var(--warm);
+}
+.ask-phase .ph {
+  display: flex;
+  justify-content: space-between;
+  font-family: var(--f-mono);
+  font-size: 0.68rem;
+  font-weight: 700;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: var(--cool);
+}
+.ask-phase.warm .ph {
+  color: var(--warm);
+}
+.ask-phase .amt {
+  font-family: var(--f-mono);
+  font-weight: 700;
+  font-size: 1.7rem;
+  line-height: 1;
+  color: var(--fg);
+}
+.ask-phase .amt small {
+  font-size: 0.7rem;
+  font-weight: 400;
+  color: var(--fg-3);
+  margin-left: 0.5rem;
+  letter-spacing: 0.04em;
+}
+.ask-phase .deliv {
+  font-size: 0.84rem;
+  line-height: 1.32;
+  color: var(--fg-2);
+}
+.ask-footer {
+  display: grid;
+  grid-template-columns: 1.4fr 1fr;
+  gap: 0.9rem;
+  margin-top: 1rem;
+  font-family: var(--f-mono);
+  font-size: 0.68rem;
+  letter-spacing: 0.03em;
+  color: var(--fg-3);
+}
+.ask-footer strong {
+  color: var(--fg-2);
+}
