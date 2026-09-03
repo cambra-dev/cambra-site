@@ -1,5 +1,6 @@
 <script setup>
 import { computed } from 'vue'
+import { useNav } from '@slidev/client'
 import { VueFlow, MarkerType } from '@vue-flow/core'
 import '@vue-flow/core/dist/style.css'
 import ArchNode from './ArchNode.vue'
@@ -12,6 +13,14 @@ const props = defineProps({
   // 4 = telemetry. Anything above 4 keeps the full system on screen.
   stage: { type: Number, default: 4 },
 })
+
+// Slidev reveals every v-click element when exporting, but these diagrams take
+// their build stage as a prop, so an export rendered them at click 0 — this one
+// with nothing lit at all. Match Slidev's own print behaviour and show the
+// finished diagram.
+const { isPrintMode } = useNav()
+const MAX_STAGE = 4
+const activeStage = computed(() => (isPrintMode.value ? MAX_STAGE : props.stage))
 
 const COOL = '#6CC4C8'
 const WARM = '#F5A337'
@@ -117,7 +126,7 @@ const ALL_EDGES = [
 
 const { wrap, flowId, onPaneReady, fitOptions } = useFlowFit({ padding: 0.1 })
 
-const shown = (at) => (at <= props.stage ? 1 : 0)
+const shown = (at) => (at <= activeStage.value ? 1 : 0)
 
 // Every node and edge stays mounted so the viewport is computed once from the
 // full diagram and never shifts; each stage only fades its members in. That

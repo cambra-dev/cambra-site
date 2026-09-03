@@ -1,5 +1,6 @@
 <script setup>
 import { computed, h } from 'vue'
+import { useNav } from '@slidev/client'
 import { VueFlow, MarkerType } from '@vue-flow/core'
 import '@vue-flow/core/dist/style.css'
 import ArchNode from './ArchNode.vue'
@@ -12,6 +13,14 @@ const props = defineProps({
   // 3 = what only production tells you, 4 = Cambra pulls that forward.
   stage: { type: Number, default: 4 },
 })
+
+// Slidev reveals every v-click element when exporting, but these diagrams take
+// their build stage as a prop, so an export rendered them at click 0 — this one
+// with nothing lit at all. Match Slidev's own print behaviour and show the
+// finished diagram.
+const { isPrintMode } = useNav()
+const MAX_STAGE = 4
+const activeStage = computed(() => (isPrintMode.value ? MAX_STAGE : props.stage))
 
 const COOL = '#6CC4C8'
 const EMBER = '#D75A2E'
@@ -171,8 +180,8 @@ const ALL_EDGES = [
 ]
 
 const shown = (item) => {
-  const stage = Math.max(props.stage, 1)
-  return item.at <= stage && (item.until == null || stage <= item.until) ? 1 : 0
+  const s = Math.max(activeStage.value, 1)
+  return item.at <= s && (item.until == null || s <= item.until) ? 1 : 0
 }
 
 // Everything stays mounted so the viewport never shifts; opacity drives the
