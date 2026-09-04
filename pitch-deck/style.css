@@ -889,6 +889,19 @@ span.warm {
    Evenly spaced rather than proportional — four of the nine fall inside two
    weeks of August and would collide on a real axis. The dates carry the
    acceleration. */
+/* Timeline down the left, the two supporting cards stacked on the right. */
+.tl-side {
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+  min-height: 0;
+}
+.tl-stack {
+  display: flex;
+  flex-direction: column;
+  gap: 0.45rem;
+  min-height: 0;
+}
 .tl-split {
   /* The timeline is the argument on this slide; the quotes support it. Two
      thirds / one third rather than sized-to-content. */
@@ -957,33 +970,33 @@ span.warm {
    left to reveal. Let it flow instead: as an absolute overlay it stretched to
    the collapsed card's height and the longer text spilled over the heading and
    out the bottom. Four classes deep to outrank QuoteCard's scoped rules. */
-.tl-quotes .col .qfull.expanded {
+.col .tl-quotes .qfull.expanded {
   position: static;
   opacity: 1;
 }
-.tl-quotes .col .quote-card.expanded > .avatar,
-.tl-quotes .col .quote-card.expanded > .qbody {
+.col .tl-quotes .quote-card.expanded > .avatar,
+.col .tl-quotes .quote-card.expanded > .qbody {
   display: none;
 }
 /* Quote text set for a half-slide column is too large for a third of one.
    Three classes deep so it outranks QuoteCard's own scoped rule regardless of
    which stylesheet the bundler emits first. */
-.tl-quotes .col .qfull {
-  font-size: 0.6rem;
+.col .tl-quotes .qfull {
+  font-size: 0.58rem;
   line-height: 1.34;
 }
 /* Cards in a third-width column cannot afford half-slide padding. */
-.tl-quotes .col {
-  padding: 0.5rem 0.6rem;
-  gap: 0.2rem;
+.tl-stack .col {
+  padding: 0.45rem 0.65rem;
+  gap: 0.12rem;
 }
-.tl-quotes .col ul {
+.tl-stack .col ul {
   gap: 0.1rem;
 }
-.tl-quotes {
-  display: flex;
-  flex-direction: column;
-  gap: 0.5rem;
+/* Two quotes across the bottom rather than stacked in a column. */
+.tl-quotes.cols {
+  gap: 0.9rem;
+  align-items: start;
 }
 
 /* ─── slide 03: the SDLC feedback loop ────────────────────────── */

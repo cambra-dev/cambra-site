@@ -323,12 +323,11 @@ We're the team you'd bet can solve this problem.
     <div class="eyebrow">07 · Traction</div>
     <h2>The thesis resonates.</h2>
   </div>
-  <!-- TODO: space and size elements appropriately. -->
   <div class="grow">
     <div class="cols tl-split">
-      <div style="margin-top: 1.5em"> 
-          <h3>Timeline</h3>
-      <div class="timeline-v" style="padding-top:auto">
+      <div class="tl-side">
+        <h3>Timeline</h3>
+        <div class="timeline-v">
         <div class="tlv-row cool"><span class="tlv-date">Feb</span><span class="tlv-dot"></span><span class="tlv-label">Cofounders join full-time</span></div>
         <div class="tlv-row cool"><span class="tlv-date">Apr</span><span class="tlv-dot"></span><span class="tlv-label"><strong>Announcement</strong> &middot; HN front page</span></div>
         <div class="tlv-row cool"><span class="tlv-date">Jun</span><span class="tlv-dot"></span><span class="tlv-label">CU PL/V group collaboration</span></div>
@@ -337,6 +336,7 @@ We're the team you'd bet can solve this problem.
         <div class="tlv-row hot"><span class="tlv-date">Aug 17</span><span class="tlv-dot"></span><span class="tlv-label">Verification consultant starts</span></div>
       </div>
       </div>
+      <div class="tl-stack">
         <div class="col">
             <h3>Votes of confidence</h3>
             <div class="col-body">
@@ -352,10 +352,12 @@ We're the team you'd bet can solve this problem.
                 </ul>
             </div>
         </div>
-        <div class="col">
+      </div>
+    </div>
+    <div class="col">
             <h3>Customer Validation</h3>
             <!-- TODO: add photos -->
-            <div class="tl-quotes">
+            <div class="tl-quotes cols n2">
             <div class="col-body">
                 <QuoteCard
                     initials="BJ"
@@ -376,9 +378,8 @@ We're the team you'd bet can solve this problem.
                     title="Director, Nvidia"
                 />
             </div>
+          </div>
         </div>
-      </div>
-    </div>
   </div>
   <div class="page-no">{{ $slidev.nav.currentPage - 1 }} / {{ $slidev.nav.total - 1 }}</div>
 </div>
