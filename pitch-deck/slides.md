@@ -8,9 +8,7 @@ colorSchema: dark
   <img class="title-wordmark" src="/brand/logo-horizontal-negative.svg" alt="Cambra">
   <h1 style="font-size:3.4rem;margin:0">Ship at the pace of AI</h1>
   <p class="punch" style="margin-top:.6rem">
-      An <strong>application platform</strong> for<br>
-          • 10× productivity 
-<br>• 100× performance
+      The <strong>application platform</strong> that builds apps for you.
   </p>
   <div class="byline">
     <span><div>Dan Sotolongo<br>
