@@ -493,21 +493,24 @@ span.warm {
   gap: 0.05rem;
   /* Prior art sits back; Cambra's bracket is heavier and full strength, so the
      one span that crosses every level is the one that reads first.
-     The spine sits on the right and the ticks reach left, so each bracket
-     faces the layer column it is annotating — a `]` gathers what is to its
-     left, which is the direction the reader has to look. */
-  border-right: 3px solid var(--warm);
+     The bracket sits to the LEFT of its number and faces left — spine on the
+     column's left edge, arms reaching further left, a `]`. The bracket is the
+     thing delineating layers and the number is its label, so the bracket has
+     to come first and its arms have to point at what they enclose. */
+  border-left: 3px solid var(--warm);
   border-radius: 2px;
-  padding-right: 0.9rem;
+  padding-left: 0.9rem;
   opacity: 0.62;
 }
-/* The bracket's ticks, reaching left toward the layers being spanned. */
+/* The bracket's arms, reaching left from the spine toward the layers spanned.
+   Each is long enough to clear the spine's own thickness and still read as an
+   arm; they sit in the grid gap, so they never crowd the neighbouring span. */
 .si-int::before,
 .si-int::after {
   content: '';
   position: absolute;
-  right: -3px;
-  width: 0.5rem;
+  left: -0.62rem;
+  width: 0.62rem;
   height: 3px;
   background: inherit;
   background-color: var(--warm);
@@ -522,7 +525,8 @@ span.warm {
 .si-int.cambra::before,
 .si-int.cambra::after {
   background-color: var(--coral);
-  width: 0.62rem;
+  left: -0.78rem;
+  width: 0.78rem;
   height: 5px;
 }
 .si-int.weld {
@@ -540,8 +544,8 @@ span.warm {
 .si-int.cambra {
   grid-column: 5;
   grid-row: 1 / 5;
-  border-right: 5px solid var(--coral);
-  padding-right: 1rem;
+  border-left: 5px solid var(--coral);
+  padding-left: 1rem;
   opacity: 1;
 }
 .si-mult {
