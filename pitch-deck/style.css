@@ -485,17 +485,42 @@ span.warm {
   opacity: 0.75;
 }
 .si-int {
+  position: relative;
   display: flex;
   flex-direction: column;
   align-items: center;
   justify-content: center;
   gap: 0.05rem;
-  /* Prior art sits back; Cambra's bar is heavier and full strength, so the one
-     span that crosses every level is the one that reads first. */
+  /* Prior art sits back; Cambra's bracket is heavier and full strength, so the
+     one span that crosses every level is the one that reads first. */
   border-left: 3px solid var(--warm);
   border-radius: 2px;
-  padding-left: 0.4rem;
+  padding-left: 0.9rem;
   opacity: 0.62;
+}
+/* The bracket's ticks. They reach left, toward the layers being spanned. */
+.si-int::before,
+.si-int::after {
+  content: '';
+  position: absolute;
+  left: -3px;
+  width: 0.5rem;
+  height: 3px;
+  background: inherit;
+  background-color: var(--warm);
+  border-radius: 2px;
+}
+.si-int::before {
+  top: 0;
+}
+.si-int::after {
+  bottom: 0;
+}
+.si-int.cambra::before,
+.si-int.cambra::after {
+  background-color: var(--coral);
+  width: 0.62rem;
+  height: 5px;
 }
 .si-int.weld {
   grid-column: 2;
@@ -513,7 +538,7 @@ span.warm {
   grid-column: 5;
   grid-row: 1 / 5;
   border-left: 5px solid var(--coral);
-  padding-left: 0.45rem;
+  padding-left: 1rem;
   opacity: 1;
 }
 .si-mult {
@@ -826,6 +851,37 @@ span.warm {
   letter-spacing: 0.14em;
   text-transform: uppercase;
   color: var(--fg-3);
+}
+
+/* The performance proof now has a slide to itself rather than half of one. */
+.perf-col {
+  flex: 1;
+  min-height: 0;
+  justify-content: center;
+}
+.perf-col .stackint {
+  grid-template-columns: minmax(0, 17rem) 4.6rem 4.6rem 4.6rem 5.4rem;
+  grid-auto-rows: minmax(3.3rem, auto);
+  justify-content: center;
+  gap: 0.55rem 0.9rem;
+}
+.perf-col .si-layer {
+  font-size: 0.9rem;
+  padding: 0.5rem 0.7rem;
+  display: flex;
+  align-items: center;
+}
+.perf-col .si-mult {
+  font-size: 1.15rem;
+}
+.perf-col .si-int.cambra .si-mult {
+  font-size: 1.7rem;
+}
+.perf-col .si-name {
+  font-size: 0.7rem;
+}
+.perf-col .si-gap {
+  font-size: 0.7rem;
 }
 
 /* ─── traction timeline ──────────────────────────────────────── */

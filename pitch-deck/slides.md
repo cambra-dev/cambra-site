@@ -489,7 +489,7 @@ TODO:animate
 <div class="frame">
   <div class="head">
     <div class="eyebrow">09 · Why It Wins</div>
-    <h2>Productivity. Performance.</h2>
+    <h2>Unprecedented productivity</h2>
   </div>
   <div class="grow">
     <p class="lead-p">Cambra spans <strong>every layer of the stack.</strong></p>
@@ -505,10 +505,13 @@ TODO:animate
             { label: 'Deploy', value: 26, keep: 1 },
             { label: 'Operate', value: 3, keep: 1 },
           ]"
-          note=""
         />
+      </div>
+      <div class="col">
+        <h3>Write a fraction of the code</h3>
         <GhostBar
           title="Lines of code"
+          :tiers="3"
           :segments="[
             { label: 'Domain', value: 131, keep: 92 },
             { label: 'Serialization', value: 276, keep: 14 },
@@ -519,22 +522,35 @@ TODO:animate
           ]"
         />
       </div>
-      <div class="col warm">
-        <h3>Transformative performance</h3>
-        <div class="stackint">
-          <div class="si-layer">Distributed systems</div>
-          <div class="si-layer">Database abstractions</div>
-          <div class="si-layer">Programming languages</div>
-          <div class="si-layer">Hardware languages</div>
-          <div class="si-gap">limited precedents</div>
-          <div class="si-int weld"><span class="si-mult">30&times;</span><span class="si-name">Weld</span></div>
-          <div class="si-int hyper"><span class="si-mult">10&times;</span><span class="si-name">HyPer<br>Halide</span></div>
-          <div class="si-int mojo"><span class="si-mult">50&times;</span><span class="si-name">Mojo</span></div>
-          <div class="si-int cambra"><span class="si-mult">100&times;</span><span class="si-name">Cambra</span></div>
-        </div>
+    </div>
+    <p class="closer">One storefront, built both ways.</p>
+  </div>
+  <div class="page-no">{{ $slidev.nav.currentPage - 1 }} / {{ $slidev.nav.total - 1 }}</div>
+</div>
+
+---
+
+<div class="frame">
+  <div class="head">
+    <div class="eyebrow">10 · Why It Wins</div>
+    <h2>Transformative performance</h2>
+  </div>
+  <div class="grow">
+    <p class="lead-p">Every published gain came from spanning <strong>two layers at once.</strong></p>
+    <div class="col warm perf-col">
+      <div class="stackint">
+        <div class="si-layer">Distributed systems</div>
+        <div class="si-layer">Database abstractions</div>
+        <div class="si-layer">Programming languages</div>
+        <div class="si-layer">Hardware languages</div>
+        <div class="si-gap">limited precedents</div>
+        <div class="si-int weld" v-click="1"><span class="si-mult">30&times;</span><span class="si-name">Weld</span></div>
+        <div class="si-int hyper" v-click="2"><span class="si-mult">10&times;</span><span class="si-name">HyPer<br>Halide</span></div>
+        <div class="si-int mojo" v-click="3"><span class="si-mult">50&times;</span><span class="si-name">Mojo</span></div>
+        <div class="si-int cambra" v-click="4"><span class="si-mult">100&times;</span><span class="si-name">Cambra</span></div>
       </div>
     </div>
-    <p class="closer">Only with <span style="color:var(--coral)">Cambra</span> — <span style="color:var(--lagoon)">inaccessible</span> to frameworks.</p>
+    <p class="closer">Only with <span style="color:var(--coral)">Cambra</span> &mdash; <span style="color:var(--lagoon)">inaccessible</span> to frameworks.</p>
   </div>
   <div class="page-no">{{ $slidev.nav.currentPage - 1 }} / {{ $slidev.nav.total - 1 }}</div>
 </div>
@@ -575,7 +591,7 @@ TODO: split into 2 slides, split each productivity bar into 2, put them side by 
 
 <div class="frame">
   <div class="head">
-    <div class="eyebrow">10 · Business Model</div>
+    <div class="eyebrow">11 · Business Model</div>
     <h2>Managed Runtime → Self-building Apps</h2>
   </div>
   <div class="grow">
@@ -613,7 +629,7 @@ TODO: AI needs context, we bring it all into one place so AI can (do more stuff)
 
 <div class="frame">
   <div class="head">
-    <div class="eyebrow">11 · The Ask</div>
+    <div class="eyebrow">12 · The Ask</div>
     <h2 style="font-family:var(--f-logo);font-size:2.6rem">$4M seed</h2>
     <div class="ask-sub">24 months to the Series A</div>
   </div>
@@ -666,7 +682,7 @@ Back pocket (Seed Worksheet rev 2, 2026-09-03; vault: projects/seed-round/round-
 
 <div class="frame center">
   <div class="bg-glow" style="bottom:-16rem;left:-12rem;width:36rem;height:36rem;background:radial-gradient(circle,rgba(28,136,167,.2),transparent 70%)"></div>
-  <div class="eyebrow">12 · Vision</div>
+  <div class="eyebrow">13 · Vision</div>
   <h2 style="font-size:2.6rem;max-width:22ch;margin-top:.6rem">In five years, Cambra is the default way to start and scale software applications.</h2>
 
   <p class="lead-p" style="font-size:1.05rem">Engineers use agents on Cambra to develop applications with 10× the productivity and 100× the performance of other platforms. They can't even imagine going back to their old tools.</p>

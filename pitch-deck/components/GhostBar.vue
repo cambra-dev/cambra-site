@@ -19,6 +19,10 @@ const props = defineProps({
   // [{ label, value, keep }] — value and keep in the same unit, any unit.
   segments: { type: Array, required: true },
   note: { type: String, default: '' },
+  // How many rows the labels alternate across. Two is enough for a handful of
+  // segments; a bar with more of them needs a third row or neighbouring labels
+  // collide once the type is large enough to read.
+  tiers: { type: Number, default: 2 },
 })
 
 const RUNGS = [1.5, 2, 3, 5, 10, 20, 50, 100]
@@ -46,8 +50,8 @@ const laid = computed(() => {
       centre: ((start + s.value / 2) / total.value) * 100,
       fill: (s.keep / s.value) * 100,
       gain: gain(s.value / s.keep),
-      // Alternating tiers so neighbouring labels cannot collide.
-      tier: i % 2,
+      // Alternating rows so neighbouring labels cannot collide.
+      tier: i % props.tiers,
     }
   })
 })
@@ -69,13 +73,13 @@ const laid = computed(() => {
       />
     </div>
 
-    <div class="gb-labels">
+    <div class="gb-labels" :style="{ '--tiers': tiers }">
       <span
         v-for="s in laid"
         :key="s.label"
         class="gb-tag"
         :class="[`tier-${s.tier}`, { first: s.centre < 7, last: s.centre > 90 }]"
-        :style="{ left: `calc(${s.centre} * 1%)` }"
+        :style="{ left: `calc(${s.centre} * 1%)`, '--stem': `${0.3 + s.tier * 1.25}rem` }"
       >
         <span class="gb-stem" />
         <span class="gb-text">
@@ -104,7 +108,7 @@ const laid = computed(() => {
 }
 .gb-title {
   font-family: var(--f-mono);
-  font-size: 0.58rem;
+  font-size: 0.66rem;
   font-weight: 700;
   letter-spacing: 0.08em;
   text-transform: uppercase;
@@ -112,7 +116,7 @@ const laid = computed(() => {
 }
 .gb-overall {
   font-family: var(--f-mono);
-  font-size: 1rem;
+  font-size: 1.5rem;
   font-weight: 700;
   line-height: 1;
   color: var(--cool);
@@ -120,7 +124,7 @@ const laid = computed(() => {
 .gb-track {
   display: flex;
   gap: 2px;
-  height: 1.25rem;
+  height: 1.8rem;
 }
 /* One box per stage: the kept share filled, the remainder greyed inside the
    same border, so the stage shrinks rather than splitting in two. */
@@ -136,7 +140,7 @@ const laid = computed(() => {
 }
 .gb-labels {
   position: relative;
-  height: 2.15rem;
+  height: calc(1.2rem + var(--tiers, 2) * 1.25rem);
 }
 .gb-tag {
   position: absolute;
@@ -160,21 +164,16 @@ const laid = computed(() => {
 }
 .gb-stem {
   width: 1px;
+  height: var(--stem);
   background: rgba(255, 255, 255, 0.22);
-}
-.gb-tag.tier-0 .gb-stem {
-  height: 0.3rem;
-}
-.gb-tag.tier-1 .gb-stem {
-  height: 1.15rem;
 }
 .gb-text {
   display: flex;
   align-items: baseline;
   gap: 0.28rem;
-  padding-top: 0.1rem;
+  padding-top: 0.12rem;
   font-family: var(--f-mono);
-  font-size: 0.56rem;
+  font-size: 0.68rem;
 }
 .gb-name {
   font-weight: 700;
