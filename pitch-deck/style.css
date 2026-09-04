@@ -845,23 +845,93 @@ span.warm {
   font-size: 0.85rem;
 }
 
-/* Tier label and its ring glyph share a row. The circles are tangent at the
-   bottom of the glyph, so the label sits on that same line rather than on the
-   glyph's centre — the shared ground line is the whole point of the figure. */
-.tier-head {
+/* ─── business model: circle figure + annotations ─────────────── */
+/* The reference structure is a figure on the left with its parts annotated
+   down the right. The three notes are equal rows so their centres land at
+   1/6, 1/2 and 5/6 of the height — which is exactly where TierStack aims its
+   leaders, so the two halves stay in register without magic numbers. */
+.bm {
+  flex: 1;
+  min-height: 0;
   display: flex;
-  align-items: flex-end;
-  gap: 0.6rem;
-  margin-bottom: 0.15rem;
+  align-items: stretch;
+  gap: 1.4rem;
 }
-.tier-label {
-  padding-bottom: 0.1rem;
+.bm-notes {
+  flex: 1;
+  min-width: 0;
+  display: grid;
+  grid-template-rows: repeat(3, 1fr);
+}
+.bm-note {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  gap: 0.16rem;
+  padding-left: 0.85rem;
+  border-left: 3px solid var(--line-2);
+}
+.bm-note.tier-0 {
+  border-left-color: var(--cool);
+}
+.bm-note.tier-1 {
+  border-left-color: var(--warm);
+}
+.bm-note.tier-2 {
+  border-left-color: var(--coral);
+}
+.bm-tier {
   font-family: var(--f-mono);
-  font-size: 0.65rem;
+  font-size: 0.62rem;
+  font-weight: 700;
   letter-spacing: 0.14em;
   text-transform: uppercase;
-  color: var(--fg-3);
 }
+.bm-note.tier-0 .bm-tier {
+  color: var(--cool);
+}
+.bm-note.tier-1 .bm-tier {
+  color: var(--warm);
+}
+.bm-note.tier-2 .bm-tier {
+  color: var(--coral);
+}
+/* Overrides .frame h3, which is the mono section-label treatment — here the
+   heading is the product name and wants the display face. */
+.frame .bm-h {
+  font-family: var(--f-disp);
+  font-size: 1.05rem;
+  font-weight: 700;
+  letter-spacing: 0;
+  text-transform: none;
+  color: var(--fg);
+  margin: 0;
+}
+.bm-note p {
+  margin: 0;
+  font-size: 0.82rem;
+  line-height: 1.32;
+  color: var(--fg-2);
+  max-width: 44ch;
+}
+/* The upsells are examples, not a list to be read down — inline chips keep the
+   row the same height as the other two. */
+.bm-tags {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.3rem;
+  margin-top: 0.12rem;
+}
+.bm-tags span {
+  font-family: var(--f-mono);
+  font-size: 0.6rem;
+  letter-spacing: 0.04em;
+  padding: 0.16rem 0.42rem;
+  border-radius: 10px;
+  border: 1px solid var(--line-2);
+  color: var(--fg-2);
+}
+
 
 /* The performance proof now has a slide to itself rather than half of one. */
 .perf-col {

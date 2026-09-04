@@ -591,26 +591,25 @@ These gains are enabled by the way Cambra spans every layer of the backend stack
     <h2>Managed Runtime → Self-building Apps</h2>
   </div>
   <div class="grow">
-    <div class="cols n3">
-      <div class="col">
-        <div class="tier-head"><TierRings :tier="0" /><div class="tier-label">Open Source</div></div>
-        <h3 style="font-family:var(--f-disp);text-transform:none;font-size:1.05rem;color:var(--fg);letter-spacing:0">Compiler + runtime</h3>
-        <p>Useful for real workloads. Creates community and sales pipeline.</p>
-      </div>
-      <div class="col warm">
-        <div class="tier-head"><TierRings :tier="1" /><div class="tier-label">Core revenue</div></div>
-        <h3 style="font-family:var(--f-disp);text-transform:none;font-size:1.05rem;color:var(--fg);letter-spacing:0">Hosted, distributed runtime</h3>
-        <p>Teams pay for ease of operations and enterprise features.</p>
-      </div>
-      <div class="col">
-        <div class="tier-head"><TierRings :tier="2" /><div class="tier-label">Value Added Services</div></div>
-        <h3 style="font-family:var(--f-disp);text-transform:none;font-size:1.05rem;color:var(--fg);letter-spacing:0">Self-building Apps</h3>
-        <p>Upsell features for AI to build apps automatically.</p>
-        <ul style="gap: 0">
-          <li>User simulation</li>
-          <li>Feature development</li>
-          <li>Experimentation</li>
-        </ul>
+    <div class="bm">
+      <TierStack />
+      <div class="bm-notes">
+        <div class="bm-note tier-2">
+          <div class="bm-tier">Value Added Services</div>
+          <h3 class="bm-h">Self-building Apps</h3>
+          <p>Upsell features for AI to build apps automatically.</p>
+          <div class="bm-tags"><span>User simulation</span><span>Feature development</span><span>Experimentation</span></div>
+        </div>
+        <div class="bm-note tier-1">
+          <div class="bm-tier">Core revenue</div>
+          <h3 class="bm-h">Hosted, distributed runtime</h3>
+          <p>Teams pay for ease of operations and enterprise features.</p>
+        </div>
+        <div class="bm-note tier-0">
+          <div class="bm-tier">Open Source</div>
+          <h3 class="bm-h">Compiler + runtime</h3>
+          <p>Useful for real workloads. Creates community and sales pipeline.</p>
+        </div>
       </div>
     </div>
     <p class="closer">AI needs context. Cambra keeps the whole system in one place.</p>
