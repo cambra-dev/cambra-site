@@ -159,7 +159,7 @@ This feedback needs a human in the loop to ensure the tests are realistic and do
           AI coding is bottlenecked.
           <div class="col-body">
             <div align=center class="cool" style="padding: .6em">only <span style="font-size: 28pt; font-weight: bold;">24% </span> gains</div>
-            <!-- TODO: add a MSFT logo here -->
+            <div class="stat-src"><i class="i-simple-icons-microsoft"></i> Microsoft</div>
             <QuoteCard
               class="mt-auto"
               reveal-on-expand
@@ -182,7 +182,11 @@ This feedback needs a human in the loop to ensure the tests are realistic and do
             <div class="flex" style="color: var(--amber); align-items: center"><div align=center style="font-weight: bold; line-height: 1; padding: 1em">535,000 lines<br>
                 ———————<br>
                 11 days</div> migrated</div>
-            <!-- TODO: add a "zig logo → rust logo" diagram here -->
+            <div class="xlate">
+              <span class="xlate-lang"><i class="i-simple-icons-zig"></i>Zig</span>
+              <span class="xlate-arrow">&rarr;</span>
+              <span class="xlate-lang"><i class="i-simple-icons-rust"></i>Rust</span>
+            </div>
             <QuoteCard
               class="mt-auto"
               reveal-on-expand

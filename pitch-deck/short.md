@@ -3,6 +3,12 @@ theme: default
 title: Cambra — Short
 colorSchema: dark
 
+<!--
+  Derived from slides.md at a point in time, not kept in sync with it. When the
+  short deck is next needed, regenerate the changed slides from slides.md
+  rather than assuming this file is current.
+-->
+
 ---
 
 <div class="frame" style="justify-content:flex-start;padding-top:4.5rem">

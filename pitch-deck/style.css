@@ -772,6 +772,47 @@ span.warm {
   object-fit: contain;
 }
 
+/* Attribution for a headline stat: the mark carries the source without
+   spending a line of prose on it. */
+.stat-src {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.3rem;
+  font-family: var(--f-mono);
+  font-size: 0.55rem;
+  letter-spacing: 0.06em;
+  color: var(--fg-3);
+  opacity: 0.85;
+}
+.stat-src i {
+  font-size: 0.8rem;
+}
+/* The migration the figure above describes, named in one line. */
+.xlate {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.5rem;
+  padding-top: 0.15rem;
+}
+.xlate-lang {
+  display: flex;
+  align-items: center;
+  gap: 0.3rem;
+  font-family: var(--f-mono);
+  font-size: 0.6rem;
+  font-weight: 700;
+  color: var(--fg-2);
+}
+.xlate-lang i {
+  font-size: 0.95rem;
+}
+.xlate-arrow {
+  color: var(--warm);
+  font-size: 0.85rem;
+}
+
 /* ─── traction timeline ──────────────────────────────────────── */
 /* Vertical: nine events read as a list down the left, quotes alongside.
    Evenly spaced rather than proportional — four of the nine fall inside two
