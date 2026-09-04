@@ -8,7 +8,9 @@ colorSchema: dark
   <img class="title-wordmark" src="/brand/logo-horizontal-negative.svg" alt="Cambra">
   <h1 style="font-size:3.4rem;margin:0">Ship at the pace of AI</h1>
   <p class="punch" style="margin-top:.6rem">
-      The <strong>application platform</strong> that builds apps for you.
+      The <strong>application platform</strong> for
+        <br>• 10× productivity 
+        <br>• 100× performance
   </p>
   <div class="byline">
     <span><div>Dan Sotolongo<br>
@@ -489,10 +491,13 @@ The reception of our thesis has also exceeded our expectations.
     <h2>Unprecedented productivity</h2>
   </div>
   <div class="grow">
-    <p class="lead-p">Cambra spans <strong>every layer of the stack.</strong></p>
+    <p class="lead-p">Cambra gives developers confidence and simplicity.</p>
     <div class="cols n2">
       <div class="col">
-        <h3>Ship in hours, not days</h3>
+          <!-- TODO: change header style to be distinct from ghost bar header. -->
+        <h3>Confidence begets velocity</h3>
+        <!-- TODO: redesign the ghost bar diagram to have 2 separate bars, one above and one below. The labels sit between the bars, with lines connecting teh respective sections. The overall multiplier sits in the empty space next to the lower bar.
+        Keep the blue coloring for "time to production", but make the code and test segments orange. Then change the "lines of code" bars to orange, since they're a proxy for that multiplier. -->
         <GhostBar
           title="Time to production"
           :segments="[
@@ -503,9 +508,10 @@ The reception of our thesis has also exceeded our expectations.
             { label: 'Operate', value: 3, keep: 1 },
           ]"
         />
+        <p>Estimates of Cambra's verification and validation features.</p>
       </div>
       <div class="col">
-        <h3>Write a fraction of the code</h3>
+        <h3>Less code, less mess</h3>
         <GhostBar
           title="Lines of code"
           :tiers="3"
@@ -518,9 +524,10 @@ The reception of our thesis has also exceeded our expectations.
             { label: 'Config &amp; infra', value: 490, keep: 48 },
           ]"
         />
+        <p>Agent-built app built on a conventional stack vs Cambra.</p>
       </div>
     </div>
-    <p class="closer">One storefront, built both ways.</p>
+    <p class="closer">Only with <span style="color:var(--coral)">Cambra</span> &mdash; <span style="color:var(--lagoon)">inaccessible</span> to frameworks.</p>
   </div>
   <div class="page-no">{{ $slidev.nav.currentPage - 1 }} / {{ $slidev.nav.total - 1 }}</div>
 </div>
@@ -533,14 +540,17 @@ The reception of our thesis has also exceeded our expectations.
     <h2>Transformative performance</h2>
   </div>
   <div class="grow">
-    <p class="lead-p">Every published gain came from spanning <strong>two layers at once.</strong></p>
+    <p class="lead-p">Deep abstractions fuse layers of the stack. Each layer nets ~10× gains.</p>
+    <!-- TODO:  Take the diagram out of the col container.  -->
     <div class="col warm perf-col">
       <div class="stackint">
+          <!-- TODO: Make the layers look more like layers, and less like boxes. center the text. -->
+          <!-- TODO:  Add a vertical label on the left saying "layer".  -->
         <div class="si-layer">Distributed systems</div>
-        <div class="si-layer">Database abstractions</div>
-        <div class="si-layer">Programming languages</div>
-        <div class="si-layer">Hardware languages</div>
-        <div class="si-gap">limited precedents</div>
+        <div class="si-layer">Database</div>
+        <div class="si-layer">Operating System</div>
+        <div class="si-layer">Hardware</div>
+        <!-- TODO:  Add a heading over the brackets "Depth of Abstraction"  -->
         <div class="si-int weld" v-click="1"><span class="si-mult">30&times;</span><span class="si-name">Weld</span></div>
         <div class="si-int hyper" v-click="2"><span class="si-mult">10&times;</span><span class="si-name">HyPer<br>Halide</span></div>
         <div class="si-int mojo" v-click="3"><span class="si-mult">50&times;</span><span class="si-name">Mojo</span></div>
@@ -588,8 +598,9 @@ These gains are enabled by the way Cambra spans every layer of the backend stack
 <div class="frame">
   <div class="head">
     <div class="eyebrow">11 · Business Model</div>
-    <h2>Managed Runtime → Self-building Apps</h2>
+    <h2>Cloud Runtime ⇒ Self-building Apps</h2>
   </div>
+  <!-- TODO: Animate from OSS to VAS, one step each. -->
   <div class="grow">
     <div class="bm">
       <TierStack />
@@ -612,7 +623,7 @@ These gains are enabled by the way Cambra spans every layer of the backend stack
         </div>
       </div>
     </div>
-    <p class="closer">AI needs context. Cambra keeps the whole system in one place.</p>
+    <p class="closer">Only Cambra has the full context that AI needs.</p>
   </div>
   <div class="page-no">{{ $slidev.nav.currentPage - 1 }} / {{ $slidev.nav.total - 1 }}</div>
 </div>
