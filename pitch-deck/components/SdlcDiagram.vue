@@ -12,6 +12,10 @@ const props = defineProps({
   // Driven by $clicks. 1 = the lifecycle, 2 = what a language can tell you,
   // 3 = what only production tells you, 4 = Cambra pulls that forward.
   stage: { type: Number, default: 4 },
+  // Set when `stage` is pinned deliberately rather than driven by clicks — the
+  // teaser splits this diagram across two slides at fixed stages, and the print
+  // override below would otherwise collapse both to the finished state.
+  fixed: { type: Boolean, default: false },
 })
 
 // Slidev reveals every v-click element when exporting, but these diagrams take
@@ -20,7 +24,9 @@ const props = defineProps({
 // finished diagram.
 const { isPrintMode } = useNav()
 const MAX_STAGE = 4
-const activeStage = computed(() => (isPrintMode.value ? MAX_STAGE : props.stage))
+const activeStage = computed(() =>
+  isPrintMode.value && !props.fixed ? MAX_STAGE : props.stage,
+)
 
 const COOL = '#6CC4C8'
 const EMBER = '#D75A2E'
