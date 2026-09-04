@@ -583,7 +583,6 @@ These gains are enabled by the way Cambra spans every layer of the backend stack
 
 ##
 
-TODO: split into 2 slides, split each productivity bar into 2, put them side by side. animate brackets to highlight respective abstraction layers
 -->
 
 ---
