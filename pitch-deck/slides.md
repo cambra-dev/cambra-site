@@ -578,21 +578,20 @@ TODO: split into 2 slides, split each productivity bar into 2, put them side by 
     <div class="eyebrow">10 · Business Model</div>
     <h2>Managed Runtime → Self-building Apps</h2>
   </div>
-  <!-- TODO: make a visual: concentric circles for each column. no filling in center, filled colors for two outer circles. -->
   <div class="grow">
     <div class="cols n3">
       <div class="col">
-        <div style="font-family:var(--f-mono);font-size:.65rem;letter-spacing:.14em;text-transform:uppercase;color:var(--fg-3)">Open Source</div>
+        <div class="tier-head"><TierRings :tier="0" /><div class="tier-label">Open Source</div></div>
         <h3 style="font-family:var(--f-disp);text-transform:none;font-size:1.05rem;color:var(--fg);letter-spacing:0">Compiler + runtime</h3>
         <p>Useful for real workloads. Creates community and sales pipeline.</p>
       </div>
       <div class="col warm">
-        <div style="font-family:var(--f-mono);font-size:.65rem;letter-spacing:.14em;text-transform:uppercase;color:var(--fg-3)">Core revenue</div>
+        <div class="tier-head"><TierRings :tier="1" /><div class="tier-label">Core revenue</div></div>
         <h3 style="font-family:var(--f-disp);text-transform:none;font-size:1.05rem;color:var(--fg);letter-spacing:0">Hosted, distributed runtime</h3>
         <p>Teams pay for ease of operations and enterprise features.</p>
       </div>
       <div class="col">
-        <div style="font-family:var(--f-mono);font-size:.65rem;letter-spacing:.14em;text-transform:uppercase;color:var(--fg-3)">Value Added Services</div>
+        <div class="tier-head"><TierRings :tier="2" /><div class="tier-label">Value Added Services</div></div>
         <h3 style="font-family:var(--f-disp);text-transform:none;font-size:1.05rem;color:var(--fg);letter-spacing:0">Self-building Apps</h3>
         <p>Upsell features for AI to build apps automatically.</p>
         <ul style="gap: 0">

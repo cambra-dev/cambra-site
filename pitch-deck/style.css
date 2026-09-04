@@ -813,6 +813,21 @@ span.warm {
   font-size: 0.85rem;
 }
 
+/* Tier label and its ring glyph share a row. */
+.tier-head {
+  display: flex;
+  align-items: center;
+  gap: 0.6rem;
+  margin-bottom: 0.15rem;
+}
+.tier-label {
+  font-family: var(--f-mono);
+  font-size: 0.65rem;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  color: var(--fg-3);
+}
+
 /* ─── traction timeline ──────────────────────────────────────── */
 /* Vertical: nine events read as a list down the left, quotes alongside.
    Evenly spaced rather than proportional — four of the nine fall inside two
