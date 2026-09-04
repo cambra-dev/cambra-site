@@ -1,6 +1,6 @@
 ---
 theme: default
-title: Cambra — Teaser
+title: Cambra — Short
 colorSchema: dark
 
 ---

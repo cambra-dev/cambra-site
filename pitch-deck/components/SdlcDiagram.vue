@@ -13,8 +13,8 @@ const props = defineProps({
   // 3 = what only production tells you, 4 = Cambra pulls that forward.
   stage: { type: Number, default: 4 },
   // Set when `stage` is pinned deliberately rather than driven by clicks — the
-  // teaser splits this diagram across two slides at fixed stages, and the print
-  // override below would otherwise collapse both to the finished state.
+  // short deck splits this diagram across two slides at fixed stages, and the
+  // print override below would otherwise collapse both to the finished state.
   fixed: { type: Boolean, default: false },
 })
 

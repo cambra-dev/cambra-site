@@ -6,8 +6,8 @@
     "dev": "slidev slides.md --open",
     "build": "slidev build slides.md",
     "export": "slidev export slides.md --output dist/cambra-deck.pdf",
-    "export:teaser": "slidev export teaser.md --output dist/cambra-teaser.pdf",
-    "dev:teaser": "slidev teaser.md --open --port 3143"
+    "export:short": "slidev export short.md --output dist/cambra-short.pdf",
+    "dev:short": "slidev short.md --open --port 3143"
   },
   "dependencies": {
     "@slidev/cli": "latest",
