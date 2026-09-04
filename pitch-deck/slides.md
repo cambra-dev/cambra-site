@@ -616,12 +616,14 @@ TODO: split into 2 slides, split each productivity bar into 2, put them side by 
         </ul>
       </div>
     </div>
+    <p class="closer">AI needs context. Cambra keeps the whole system in one place.</p>
   </div>
   <div class="page-no">{{ $slidev.nav.currentPage - 1 }} / {{ $slidev.nav.total - 1 }}</div>
 </div>
 
 <!--
-TODO: AI needs context, we bring it all into one place so AI can (do more stuff).
+The closer states the context argument; the payoff after "so AI can…" is still
+yours to finish — I did not want to invent the capability.
 -->
 
 ---
