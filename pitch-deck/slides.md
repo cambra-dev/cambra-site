@@ -288,7 +288,6 @@ Showcase:
       <br>We're clear-eyed about the solution.</p>
       <br>
     <div class="cols" style="grid-template-columns:1fr 1fr 1fr">
-        <!-- TODO: use correct logo fonts for word logos -->
       <TeamCard photo="/team/dan.jpg" name="Dan Sotolongo" role="Founder/CEO"
         :companies="['i-simple-icons-snowflake', 'i-simple-icons-google', 'i-simple-icons-twitter', 'Caltech']">
         <p>Co-created Dynamic Tables (w/o PM) — <strong>$100M+ ARR in 4 years</strong>. Worked on this problem his whole career.</p>

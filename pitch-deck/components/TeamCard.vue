@@ -57,7 +57,7 @@ defineProps({
   font-size: 0.74rem;
 }
 .team-card.small .crest-text {
-  font-size: 0.5rem;
+  font-size: 0.56rem;
 }
 /* The supporting row has room to spare, so centre each card in its column
    instead of letting it hang off the left edge. */
@@ -79,10 +79,11 @@ defineProps({
   color: var(--fg-3);
 }
 .crest-text {
-  font-family: var(--f-mono);
-  font-size: 0.72rem;
+  font-family: var(--f-disp);
+  font-size: 0.78rem;
+  font-weight: 500;
   line-height: 1;
-  letter-spacing: 0.04em;
+  letter-spacing: 0.01em;
   color: var(--fg-3);
 }
 .team-card {
