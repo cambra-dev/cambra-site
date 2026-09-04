@@ -619,17 +619,17 @@ TODO: AI needs context, we bring it all into one place so AI can (do more stuff)
       <div class="ask-phase">
         <div class="ph"><span>OSS Core</span><span>months 0–6</span></div>
         <div class="amt">$0.6M<small>team of 6</small></div>
-        <div class="deliv">Program branching ships. The durable-execution wedge is live in open source with our first design partners.</div>
+        <div class="deliv">Teams outgrowing their PaaS/BaaS reach for Cambra instead of a workflow engine and analytics stack.</div>
       </div>
       <div class="ask-phase">
         <div class="ph"><span>Cloud</span><span>months 6–18</span></div>
         <div class="amt">$1.8M<small>team of 8</small></div>
-        <div class="deliv">The distributed runtime is in production with 3–5 paying design partners.</div>
+        <div class="deliv">The hosted runtime is in production with 3–5 paying design partners.</div>
       </div>
       <div class="ask-phase warm">
         <div class="ph"><span>Grow</span><span>months 18–24</span></div>
         <div class="amt">$1.3M<small>team of 11</small></div>
-        <div class="deliv">Raise the Series A on production usage, with six months of runway held for it.</div>
+        <div class="deliv">Raise the Series A on production usage, leaving six months of runway.</div>
       </div>
     </div>
     <div class="ask-footer">
