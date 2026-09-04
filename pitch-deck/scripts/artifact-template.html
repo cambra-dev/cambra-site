@@ -1,0 +1,660 @@
+<title>Asset Cart, Inspected</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;500;600&family=Space+Grotesk:wght@500;700&family=Space+Mono:wght@400;700&display=swap">
+
+<style>
+/*
+ * Single-theme by choice, not omission: this is the Cambra deck's own visual
+ * world — a deep navy ground the brand already uses — and it holds on either
+ * host ground because every colour below is painted explicitly.
+ */
+:root {
+  --abyssal: #10253a;
+  --panel: #0b1b2b;
+  --panel-2: #14304a;
+  --lagoon: #6cc4c8;
+  --hot: #ee8759;
+  --amber: #f5a337;
+  --fg: #ffffff;
+  --fg-2: rgba(255, 255, 255, 0.78);
+  --fg-3: #7d97b2;
+  --line: rgba(255, 255, 255, 0.14);
+  --line-2: rgba(255, 255, 255, 0.28);
+
+  --f-disp: "Space Grotesk", "Montserrat", system-ui, sans-serif;
+  --f-body: "Montserrat", system-ui, -apple-system, sans-serif;
+  --f-mono: "Space Mono", ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
+
+  color-scheme: dark;
+}
+
+* { box-sizing: border-box; }
+
+body {
+  margin: 0;
+  min-height: 100vh;
+  background: var(--abyssal);
+  color: var(--fg);
+  font-family: var(--f-body);
+  font-size: 15px;
+  line-height: 1.5;
+}
+
+.page {
+  max-width: 1240px;
+  margin: 0 auto;
+  padding: 1.6rem 1.4rem 2.4rem;
+  display: flex;
+  flex-direction: column;
+  gap: 1.1rem;
+}
+
+/* ── header ─────────────────────────────────────────────── */
+.masthead { display: flex; flex-direction: column; gap: 0.35rem; }
+.eyebrow {
+  font-family: var(--f-mono);
+  font-size: 0.7rem;
+  letter-spacing: 0.18em;
+  text-transform: uppercase;
+  color: var(--lagoon);
+}
+h1 {
+  margin: 0;
+  font-family: var(--f-disp);
+  font-size: clamp(1.6rem, 3.4vw, 2.4rem);
+  font-weight: 700;
+  letter-spacing: -0.015em;
+  text-wrap: balance;
+}
+.standfirst {
+  margin: 0;
+  max-width: 68ch;
+  color: var(--fg-2);
+}
+.standfirst code {
+  font-family: var(--f-mono);
+  font-size: 0.87em;
+  color: var(--lagoon);
+}
+
+/* ── the demo: inspector beside a phone ─────────────────── */
+.demo {
+  display: grid;
+  grid-template-columns: 3fr 1fr;
+  gap: 1rem;
+  align-items: stretch;
+  min-height: 520px;
+}
+@media (max-width: 900px) {
+  .demo { grid-template-columns: 1fr; }
+  .phone { max-width: 320px; }
+}
+
+.inspector {
+  border: 1px solid var(--line);
+  border-radius: 10px;
+  overflow: hidden;
+  background: var(--panel);
+  display: flex;
+  min-height: 520px;
+}
+.inspector iframe {
+  flex: 1 1 auto;
+  width: 100%;
+  border: 0;
+  background: var(--panel);
+  /* The bundle's only media query is `prefers-color-scheme`, and an iframe
+     resolves that against its own used colour-scheme rather than the embedder's.
+     Declaring it here keeps the panel dark for a viewer whose system is light,
+     instead of a white document inside a navy page. */
+  color-scheme: dark;
+}
+.inspector-wait {
+  margin: auto;
+  font-family: var(--f-mono);
+  font-size: 0.75rem;
+  letter-spacing: 0.08em;
+  color: var(--fg-3);
+}
+
+/* The app is drawn as a phone because its column is a phone's width; the
+   proportions are honest rather than a desktop view squeezed. */
+.phone {
+  border: 1px solid var(--line-2);
+  border-radius: 18px;
+  background: var(--panel);
+  padding: 0.7rem;
+  display: flex;
+  flex-direction: column;
+  gap: 0.55rem;
+  min-height: 0;
+}
+.app-head { display: flex; align-items: center; justify-content: space-between; }
+.app-title {
+  font-family: var(--f-mono);
+  font-size: 0.7rem;
+  letter-spacing: 0.16em;
+  text-transform: uppercase;
+  color: var(--fg-3);
+}
+.app-dot { width: 7px; height: 7px; border-radius: 50%; background: var(--fg-3); }
+.app-dot.on { background: var(--lagoon); }
+
+.search {
+  width: 100%;
+  padding: 0.32rem 0.5rem;
+  border: 1px solid var(--line);
+  border-radius: 6px;
+  background: transparent;
+  color: var(--fg);
+  font-family: var(--f-mono);
+  font-size: 0.75rem;
+}
+.search:focus { outline: none; border-color: var(--lagoon); }
+
+.products {
+  flex: 1 1 auto;
+  min-height: 120px;
+  max-height: 210px;
+  overflow-y: auto;
+  display: flex;
+  flex-direction: column;
+}
+.product {
+  display: grid;
+  grid-template-columns: auto 1fr auto auto;
+  align-items: baseline;
+  gap: 0.35rem;
+  padding: 0.2rem 0.1rem;
+  border: 0;
+  background: transparent;
+  color: var(--fg-2);
+  text-align: left;
+  font-family: var(--f-mono);
+  font-size: 0.74rem;
+  font-variant-numeric: tabular-nums;
+  cursor: pointer;
+  border-radius: 4px;
+}
+.product:hover:not(:disabled) { color: var(--fg); background: var(--panel-2); }
+.product:focus-visible { outline: 2px solid var(--lagoon); outline-offset: 1px; }
+.product:disabled { color: var(--fg-3); cursor: default; }
+/* A neutral, not the warning colour: a ticker the program does not track is a
+   fact about the program, not something wrong. */
+.product .note { font-size: 0.62rem; letter-spacing: 0.03em; color: var(--fg-3); }
+.product .px { text-align: right; }
+.product .plus { color: var(--lagoon); width: 0.8rem; text-align: right; }
+
+.cart { display: flex; flex-direction: column; gap: 0.15rem; }
+.cart-empty { font-size: 0.72rem; color: var(--fg-3); }
+.line { display: flex; flex-direction: column; padding: 0.15rem 0; }
+.line-a, .line-b {
+  display: flex;
+  align-items: baseline;
+  gap: 0.3rem;
+  font-family: var(--f-mono);
+  font-size: 0.74rem;
+  font-variant-numeric: tabular-nums;
+}
+.line .tk { color: var(--fg); }
+.line .qty { color: var(--lagoon); }
+.line .px { margin-left: auto; color: var(--fg-2); }
+.line .total { margin-left: auto; color: var(--fg); }
+.step {
+  width: 18px; height: 18px; line-height: 1;
+  border: 1px solid var(--line); border-radius: 4px;
+  background: transparent; color: var(--fg-2);
+  font-family: var(--f-mono); font-size: 0.72rem; cursor: pointer;
+}
+.step:hover { border-color: var(--lagoon); color: var(--fg); }
+.step:focus-visible { outline: 2px solid var(--lagoon); outline-offset: 1px; }
+.rule { height: 1px; background: var(--line); margin: 0.3rem 0; }
+.subtotal {
+  display: flex; justify-content: space-between; align-items: baseline;
+  font-family: var(--f-mono); font-size: 0.74rem;
+  font-variant-numeric: tabular-nums; color: var(--fg-3);
+}
+.subtotal .fig { color: var(--fg); }
+.feed-note {
+  font-family: var(--f-mono);
+  font-size: 0.62rem;
+  letter-spacing: 0.05em;
+  color: var(--fg-3);
+}
+
+/* ── the numbers a compiler demo is about ───────────────── */
+.facts {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+  gap: 1px;
+  background: var(--line);
+  border: 1px solid var(--line);
+  border-radius: 8px;
+  overflow: hidden;
+}
+.fact { background: var(--panel); padding: 0.6rem 0.75rem; display: flex; flex-direction: column; gap: 0.1rem; }
+.fact dt {
+  font-family: var(--f-mono);
+  font-size: 0.62rem;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  color: var(--fg-3);
+}
+.fact dd {
+  margin: 0;
+  font-family: var(--f-mono);
+  font-size: 0.95rem;
+  font-variant-numeric: tabular-nums;
+  color: var(--fg);
+}
+.fact dd .unit { color: var(--fg-3); font-size: 0.7em; }
+
+/* ── notes ──────────────────────────────────────────────── */
+.notes {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+  gap: 1.1rem;
+  padding-top: 0.4rem;
+  border-top: 1px solid var(--line);
+}
+.note-h {
+  margin: 0 0 0.3rem;
+  font-family: var(--f-mono);
+  font-size: 0.68rem;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  color: var(--lagoon);
+}
+.notes p { margin: 0 0 0.5rem; color: var(--fg-2); font-size: 0.85rem; }
+.notes code {
+  font-family: var(--f-mono);
+  font-size: 0.85em;
+  color: var(--fg);
+  background: var(--panel);
+  padding: 0.05em 0.3em;
+  border-radius: 3px;
+}
+.fault { color: var(--hot); font-family: var(--f-mono); font-size: 0.8rem; }
+
+@media (prefers-reduced-motion: reduce) {
+  * { animation: none !important; transition: none !important; }
+}
+</style>
+
+<div class="page">
+  <header class="masthead">
+    <div class="eyebrow">Cambra · live demo</div>
+    <h1>Asset Cart, Inspected</h1>
+    <p class="standfirst">
+      One Cambra program, compiled to WebAssembly <strong>in this page</strong> and running now. It
+      filters a 20-product price stream down to three tickers, holds a quantity per ticker in a
+      transactional slot, and serves a priced line on every request. Left: the program inspector —
+      source, operator graph, and the values moving through it. Right: the app that reads from it.
+      Prices replay from a recorded Coinbase capture; <code>4,187</code> rows over 30 minutes, at
+      the rate they arrived.
+    </p>
+  </header>
+
+  <div class="demo">
+    <div class="inspector" id="inspector">
+      <div class="inspector-wait" id="inspector-wait">compiling…</div>
+    </div>
+
+    <div class="phone">
+      <div class="app-head">
+        <span class="app-title">Assets</span>
+        <span class="app-dot" id="dot" title="the program is running"></span>
+      </div>
+      <input class="search" id="search" type="text" placeholder="Filter…" spellcheck="false" autocomplete="off" aria-label="Filter products">
+      <div class="products" id="products"></div>
+      <div class="cart" id="cart"></div>
+      <div class="feed-note" id="feed-note">loading the capture…</div>
+    </div>
+  </div>
+
+  <dl class="facts" id="facts">
+    <div class="fact"><dt>Module</dt><dd id="f-size">—</dd></div>
+    <div class="fact"><dt>Compiled in</dt><dd id="f-compile">—</dd></div>
+    <div class="fact"><dt>Per price row</dt><dd id="f-row">—</dd></div>
+    <div class="fact"><dt>Rows pushed</dt><dd id="f-rows">0</dd></div>
+    <div class="fact"><dt>Views served</dt><dd id="f-views">0</dd></div>
+  </dl>
+
+  <div class="notes">
+    <section>
+      <h2 class="note-h">What the program does</h2>
+      <p>
+        Three filters narrow <code>price_updates()</code> to the tracked tickers. Each writes a
+        <code>Mut(Int, Txn)</code> slot inside a transaction; a reader per ticker takes the latest
+        price and quantity and feeds a line out. The greyed products still reach the program — the
+        filter rejecting them is the thing worth seeing.
+      </p>
+    </section>
+    <section>
+      <h2 class="note-h">What the page does</h2>
+      <p>
+        Divides by the price scale and formats. Prices cross as integers of dollars × 10⁸, so
+        nothing in the program is fractional. The one figure the page computes is the subtotal —
+        three additions — because a block reading all six slots costs about two seconds per row
+        against twenty-two milliseconds for the three readers here.
+      </p>
+    </section>
+    <section>
+      <h2 class="note-h">Not in this build</h2>
+      <p>
+        The live Coinbase socket. This page runs where a socket to another host is not permitted, so
+        the toggle is absent rather than present and dead. Everything else — the compiler, the
+        program, the inspector — is the same as the deck runs.
+      </p>
+      <p class="fault" id="fault" hidden></p>
+    </section>
+  </div>
+</div>
+
+<script>__GLUE__</script>
+
+<script>
+"use strict";
+(function () {
+  const PROGRAM = __PROGRAM_JSON__;
+  const CHANNELS = __CHANNELS_JSON__;
+  const SCALE = 100000000;
+  const TRACKED = ["BTC-USD", "ETH-USD", "SOL-USD"];
+  const LINE_SINKS = { "BTC-USD": "btc_line", "ETH-USD": "eth_line", "SOL-USD": "sol_line" };
+  const PRODUCTS = ["BTC-USD","ETH-USD","SOL-USD","XRP-USD","DOGE-USD","ADA-USD","AVAX-USD","LINK-USD","DOT-USD","LTC-USD","BCH-USD","UNI-USD","AAVE-USD","ATOM-USD","NEAR-USD","APT-USD","ARB-USD","OP-USD","SUI-USD","HBAR-USD"];
+  // How finely each product is quoted, from the capture. Display only: every
+  // price crosses the channel at the same 10^8 scale.
+  const DECIMALS = { "AAVE-USD":2,"BCH-USD":2,"BTC-USD":2,"ETH-USD":2,"SOL-USD":2,"AVAX-USD":3,"LINK-USD":3,"LTC-USD":3,"APT-USD":4,"ATOM-USD":4,"DOT-USD":4,"NEAR-USD":4,"SUI-USD":4,"UNI-USD":4,"XRP-USD":4,"ADA-USD":5,"ARB-USD":5,"DOGE-USD":5,"HBAR-USD":5,"OP-USD":5 };
+  // The six IR panes, hidden so source, operators and values each get a third.
+  const HIDDEN_PANES = ["pre-inference","post-inference","post-channelize","post-as-of-read","post-lambda-elim","post-planning"];
+
+  const $ = (id) => document.getElementById(id);
+  const bytes = (b64) => {
+    const bin = atob(b64);
+    const out = new Uint8Array(bin.length);
+    for (let i = 0; i < bin.length; i++) out[i] = bin.charCodeAt(i);
+    return out;
+  };
+
+  function fail(message) {
+    const el = $("fault");
+    el.textContent = message;
+    el.hidden = false;
+    $("inspector-wait").textContent = "unavailable";
+  }
+
+  /**
+   * A decimal price string as dollars × 10^8, exactly.
+   *
+   * Digits are shifted rather than multiplied: `parseFloat("0.07948") * 1e8` is
+   * 7947999.999999999, and a price one unit off its true value is a wrong
+   * number on the screen.
+   */
+  function scalePrice(decimal) {
+    const negative = decimal[0] === "-";
+    const body = negative ? decimal.slice(1) : decimal;
+    const dot = body.indexOf(".");
+    const whole = dot === -1 ? body : body.slice(0, dot);
+    const fraction = dot === -1 ? "" : body.slice(dot + 1);
+    if (fraction.length > 8) throw new Error("finer than the scale");
+    const scaled = Number(whole + fraction.padEnd(8, "0"));
+    if (!Number.isSafeInteger(scaled)) throw new Error("beyond safe integers");
+    return negative ? -scaled : scaled;
+  }
+
+  const money = (scaled, ticker) =>
+    (scaled / SCALE).toLocaleString("en-US", {
+      minimumFractionDigits: DECIMALS[ticker] ?? 2,
+      maximumFractionDigits: DECIMALS[ticker] ?? 2,
+    });
+  const dollars = (scaled) =>
+    (scaled / SCALE).toLocaleString("en-US", { minimumFractionDigits: 2, maximumFractionDigits: 2 });
+
+  // ── state ───────────────────────────────────────────────
+  const prices = Object.create(null);
+  const lines = Object.create(null);
+  let program = null;
+  let rowsPushed = 0;
+  let viewsServed = 0;
+  let rowMsTotal = 0;
+  let rowMsCount = 0;
+  let filter = "";
+
+  // ── the app panel ───────────────────────────────────────
+  function renderProducts() {
+    const needle = filter.trim().toUpperCase();
+    const shown = PRODUCTS.filter((p) => p.includes(needle)).sort((a, b) => {
+      const at = TRACKED.includes(a) ? 0 : 1;
+      const bt = TRACKED.includes(b) ? 0 : 1;
+      return at - bt || a.localeCompare(b);
+    });
+    const host = $("products");
+    host.replaceChildren();
+    for (const ticker of shown) {
+      const tracked = ticker in LINE_SINKS;
+      const row = document.createElement("button");
+      row.className = "product";
+      row.disabled = !tracked;
+      row.type = "button";
+      const px = prices[ticker];
+      row.innerHTML =
+        '<span class="tk">' + ticker + "</span>" +
+        '<span class="note">' + (tracked ? "" : "not tracked") + "</span>" +
+        '<span class="px">' + (px === undefined ? "—" : money(px, ticker)) + "</span>" +
+        '<span class="plus">' + (tracked ? "+" : "") + "</span>";
+      if (tracked) {
+        row.addEventListener("click", () => setQuantity(ticker, (lines[ticker]?.qty ?? 0) + 1));
+      }
+      host.appendChild(row);
+    }
+  }
+
+  function renderCart() {
+    const host = $("cart");
+    host.replaceChildren();
+    const held = TRACKED.filter((t) => (lines[t]?.qty ?? 0) > 0);
+    if (held.length === 0) {
+      const empty = document.createElement("div");
+      empty.className = "cart-empty";
+      empty.textContent = "No positions — tap + on a tracked ticker";
+      host.appendChild(empty);
+    }
+    let subtotal = 0;
+    for (const ticker of held) {
+      const line = lines[ticker];
+      subtotal += line.total;
+      const el = document.createElement("div");
+      el.className = "line";
+      el.innerHTML =
+        '<div class="line-a"><span class="tk">' + ticker + '</span>' +
+        '<span class="qty">×' + line.qty + '</span>' +
+        '<span class="px">' + money(line.price, ticker) + "</span></div>" +
+        '<div class="line-b"><button class="step" type="button" aria-label="one fewer ' + ticker + '">−</button>' +
+        '<button class="step" type="button" aria-label="one more ' + ticker + '">+</button>' +
+        '<span class="total">' + dollars(line.total) + "</span></div>";
+      const [minus, plus] = el.querySelectorAll(".step");
+      minus.addEventListener("click", () => setQuantity(ticker, Math.max(0, line.qty - 1)));
+      plus.addEventListener("click", () => setQuantity(ticker, line.qty + 1));
+      host.appendChild(el);
+    }
+    const rule = document.createElement("div");
+    rule.className = "rule";
+    host.appendChild(rule);
+    const sub = document.createElement("div");
+    sub.className = "subtotal";
+    sub.innerHTML = "<span>Subtotal</span><span class='fig'>" + dollars(subtotal) + "</span>";
+    host.appendChild(sub);
+  }
+
+  function renderFacts() {
+    $("f-rows").textContent = rowsPushed.toLocaleString("en-US");
+    $("f-views").textContent = viewsServed.toLocaleString("en-US");
+    if (rowMsCount > 0) {
+      $("f-row").innerHTML =
+        (rowMsTotal / rowMsCount).toFixed(0) + " <span class='unit'>ms</span>";
+    }
+  }
+
+  // ── driving the program ─────────────────────────────────
+  const frameHandlers = [];
+
+  function drain() {
+    const result = program.tick();
+    for (const output of result.outputs ?? []) {
+      const ticker = TRACKED.find((t) => LINE_SINKS[t] === output.sink);
+      const row = output.rows[output.rows.length - 1];
+      if (!ticker || !row) continue;
+      lines[ticker] = { qty: Number(row.qty), price: Number(row.price), total: Number(row.total) };
+    }
+    if (result.produced) {
+      const frame = program.frame(false);
+      for (const handler of frameHandlers) handler({ data: frame });
+    }
+    return result;
+  }
+
+  /** Push, then drive until the sinks answer. A reader fires a tick or more
+   *  after the write it reads. */
+  function pushAndSettle(source, rows) {
+    const started = performance.now();
+    program.push(source, rows);
+    rowsPushed += rows.length;
+    for (let i = 0; i < 8; i++) {
+      if (drain().outputs.length > 0) break;
+    }
+    rowMsTotal += performance.now() - started;
+    rowMsCount += 1;
+  }
+
+  function requestView() {
+    program.push("view_requests", [true]);
+    for (let i = 0; i < 8; i++) {
+      if (drain().outputs.length > 0) break;
+    }
+    viewsServed += 1;
+    renderCart();
+    renderFacts();
+  }
+
+  function setQuantity(ticker, qty) {
+    if (!program) return;
+    pushAndSettle("cart_changes", [{ ticker: ticker, qty: qty }]);
+    requestView();
+    renderProducts();
+  }
+
+  function onTick(ticker, price) {
+    prices[ticker] = price;
+    pushAndSettle("price_updates", [{ ticker: ticker, price: price }]);
+    if (ticker in LINE_SINKS) requestView();
+    renderProducts();
+    renderFacts();
+  }
+
+  // ── the recorded capture, replayed at its own timings ───
+  async function startReplay() {
+    const gz = bytes("__SLICE_B64__");
+    const stream = new Blob([gz]).stream().pipeThrough(new DecompressionStream("gzip"));
+    const text = await new Response(stream).text();
+    const rows = [];
+    for (const line of text.split("\n")) {
+      if (!line) continue;
+      const row = JSON.parse(line);
+      if (typeof row.t === "number" && row.p && row.px) rows.push(row);
+    }
+    if (rows.length === 0) throw new Error("the capture carries no price rows");
+    $("feed-note").textContent = "replay · " + rows.length.toLocaleString("en-US") + " rows";
+
+    let index = 0;
+    let base = 0;
+    const startedAt = performance.now();
+    const schedule = () => {
+      const row = rows[index];
+      if (!row) {
+        // Loop by re-basing, so a page left open keeps producing with no seam.
+        index = 0;
+        base += rows[rows.length - 1].t;
+        schedule();
+        return;
+      }
+      const wait = Math.max(0, base + row.t - (performance.now() - startedAt));
+      setTimeout(() => {
+        index += 1;
+        try {
+          onTick(row.p, scalePrice(row.px));
+        } catch (e) {
+          // A row the scale cannot hold is dropped rather than ending the feed.
+        }
+        schedule();
+      }, wait);
+    };
+    schedule();
+  }
+
+  // ── the inspector, as its own document ──────────────────
+  function mountInspector(snapshot) {
+    const host = $("inspector");
+    const frame = document.createElement("iframe");
+    frame.title = "Cambra program inspector";
+    host.replaceChildren(frame);
+    frame.srcdoc = "<!doctype html><html><head></head><body></body></html>";
+    frame.onload = () => {
+      const win = frame.contentWindow;
+      const doc = frame.contentDocument;
+      if (!win || !doc) return;
+      // Installed before the bundle's script runs: its entry point reads the
+      // global immediately, so an install after the write would race it.
+      win.__CAMBRA__ = {
+        snapshot: JSON.parse(snapshot),
+        hiddenPanes: HIDDEN_PANES,
+        // Source positions, not node ids — ids are minted per compile. These
+        // are the ingest filter and the line the app renders.
+        pins: [{ line: 6, col: 1 }, { line: 44, col: 9 }],
+        openLive: () => ({
+          addEventListener: (type, handler) => {
+            if (type === "message") frameHandlers.push(handler);
+          },
+          close: () => {},
+        }),
+      };
+      frame.onload = null;
+      doc.open();
+      doc.write(new TextDecoder().decode(bytes("__INSPECTOR_B64__")));
+      doc.close();
+    };
+  }
+
+  // ── boot ────────────────────────────────────────────────
+  async function boot() {
+    const wasm = bytes("__WASM_B64__");
+    $("f-size").innerHTML = (wasm.length / 1024 / 1024).toFixed(2) + " <span class='unit'>MB</span>";
+    await wasm_bindgen({ module_or_path: wasm });
+    wasm_bindgen.init_panic_hook();
+
+    const started = performance.now();
+    program = wasm_bindgen.Program.compile("cart.cambra", PROGRAM, CHANNELS.channels);
+    const compileMs = performance.now() - started;
+    $("f-compile").innerHTML = compileMs.toFixed(0) + " <span class='unit'>ms</span>";
+    $("dot").classList.add("on");
+
+    mountInspector(program.snapshot());
+    renderProducts();
+    renderCart();
+
+    // A position to open in, so the first look shows a working cart rather than
+    // an empty one waiting on the feed.
+    setQuantity("BTC-USD", 2);
+    await startReplay();
+  }
+
+  $("search").addEventListener("input", (e) => {
+    filter = e.target.value;
+    renderProducts();
+  });
+
+  renderProducts();
+  renderCart();
+  boot().catch((e) => fail(String(e && e.message ? e.message : e)));
+})();
+</script>

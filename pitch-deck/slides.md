@@ -233,42 +233,47 @@ This feedback needs a human in the loop to ensure the tests are realistic and do
     <div class="eyebrow">05 · Demo</div>
     <h2>The system as a program</h2>
   </div>
-  <div class="grow">
-    <div class="cols n2">
-      <WasmDemo />
-      <div style="display:flex;flex-direction:column;gap:.9rem">
-        <h3 style="font-family:var(--f-mono);font-size:.7rem;letter-spacing:.14em;text-transform:uppercase;color:var(--fg-3)">A multi-domain app, wired by hand today</h3>
-        <ul style="margin:0;padding:0;list-style:none;display:flex;flex-direction:column;gap:.6rem">
-          <li style="font-size:.85rem;color:var(--fg-2);display:flex;gap:.5rem"><span>—</span>Otherwise built from several off-the-shelf components</li>
-          <li style="font-size:.85rem;color:var(--fg-2);display:flex;gap:.5rem"><span>—</span>Contract mismatches, across the seams</li>
-          <li style="font-size:.85rem;color:var(--fg-2);display:flex;gap:.5rem"><span>—</span>Cross-component optimizations, left on the table</li>
-          <li style="font-size:.85rem;color:var(--fg-2);display:flex;gap:.5rem"><span>—</span>Deployment risk — DB migrations, workflow versioning</li>
-        </ul>
-      </div>
-    </div>
+  <div class="grow" data-waitfor=".cart-demo">
+    <CartDemo />
   </div>
   <div class="page-no">{{ $slidev.nav.currentPage - 1 }} / {{ $slidev.nav.total - 1 }}</div>
 </div>
 
 <!--
-Purpose:
-1. Demonstrate that we've implemented something real.
-2. Give a concrete sense of the UX
-3. Gesture at the opportunities available to tooling
+The whole slide is one Cambra program, compiled to WebAssembly in this page and
+running now. Left: the program inspector, showing its source, its operator graph
+and the values flowing through it. Right: the app, at a quarter of the width
+because it is a phone.
 
-Idea: Stock trading app with live ticker
-- program selects a few symbols
-- gets live ticker info from public APIs
-- shopping cart of symbol purchases with **live** updating totals
-- program is updated to add new symbols
-- shopping cart state survives
+**The argument the old bullets made** — say it over the demo rather than beside
+it:
+- A multi-domain app, otherwise built from several off-the-shelf components
+- Contract mismatches, across the seams
+- Cross-component optimizations, left on the table
+- Deployment risk — DB migrations, workflow versioning
 
-Showcase:
-- concise code
-- fast app
-- inspector features
-- transparent program upgrade
-- verification
+**What to point at, in order:**
+
+1. *The prices are moving.* A recorded Coinbase slice, replaying at the rate it
+   was captured — 2.33 rows/s across 20 products. Click the status line at the
+   foot of the phone to go to the live feed.
+2. *The program keeps three of the twenty.* Scroll the product list: the greyed
+   ones say `not tracked`. That filter is three lines of Cambra, and the values
+   pane shows the stream arriving and the filtered slot changing.
+3. *Tap `+` on BTC.* The quantity, the price and the line total all come out of
+   the program — the app divides by the 10^8 scale and formats. Watch the values
+   pane update in the same beat.
+4. *The middle pane is the operator graph.* Not a diagram of the program: the
+   program, as the runtime holds it. Say "operator graph", not "dataflow" — the
+   edges are construction edges.
+
+**If asked what the app computes itself:** the subtotal, three additions. Every
+other figure is the program's. There is a compiler performance issue behind that
+— a block reading all six slots costs ~2s per row against ~22ms for the three
+the program has — and it is written up rather than hidden.
+
+**Numbers, if asked:** 2.07 MB module, ~160 ms to compile the program in the
+browser, ~116 ms per price row against a 430 ms budget.
 -->
 
 ---

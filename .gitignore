@@ -31,6 +31,15 @@ pnpm-debug.log*
 
 CAMBRA BRAND
 
-# wasm-bindgen output for the pitch deck demo — regenerated from the cambra
-# repo, and the .wasm blob is over jj's 1 MiB snapshot limit
+# The generated blobs the pitch deck needs. All three are over jj's 1 MiB
+# snapshot limit and all three are reproducible from a `cambra` checkout:
+# pitch-deck/scripts/sync-cambra.sh builds the first two, which slide 05 runs
+# from, and pitch-deck/scripts/build-artifact.mjs then builds the third, the
+# standalone page. The program, its channel declarations and the price slice are
+# small and are committed, so only these are a setup step.
 pitch-deck/public/wasm/*.wasm
+pitch-deck/public/inspector/index.html
+pitch-deck/artifact/
+
+# Scratch drivers — a `name.tmp.ext` is a throwaway, not something to commit.
+*.tmp.*
