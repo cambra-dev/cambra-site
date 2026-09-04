@@ -409,10 +409,10 @@ The reception of our thesis has also exceeded our expectations.
         <div class="venn-stage">
       <div class="venn">
         <div class="venn-note">Combined<br>valuations</div>
-        <div class="venn-circle serving"></div>
-        <div class="venn-circle durable"></div>
-        <div class="venn-circle analytics"></div>
-        <div class="venn-label serving">
+        <div class="venn-circle serving" v-click="2"></div>
+        <div class="venn-circle durable" v-click="3"></div>
+        <div class="venn-circle analytics" v-click="1"></div>
+        <div class="venn-label serving" v-click="2">
             <span class="vl-name">Serving<span style="font-family: var(--f-logo)">*</span></span>
           <span class="vl-logos">
             <span class="vl-co"><i class="i-simple-icons-vercel"></i>Vercel</span>
@@ -422,7 +422,7 @@ The reception of our thesis has also exceeded our expectations.
           <span class="vl-val">$20B</span>
           <span class="vl-growth">2&ndash;3&times; / yr</span>
         </div>
-        <div class="venn-label durable">
+        <div class="venn-label durable" v-click="3">
           <span class="vl-name">Durable execution</span>
           <span class="vl-logos">
             <span class="vl-co"><i class="i-simple-icons-temporal"></i>Temporal</span>
@@ -432,7 +432,7 @@ The reception of our thesis has also exceeded our expectations.
           <span class="vl-val">$5B</span>
           <span class="vl-growth">5&times; / yr</span>
         </div>
-        <div class="venn-label analytics">
+        <div class="venn-label analytics" v-click="1">
           <span class="vl-name">Analytics</span>
           <span class="vl-logos">
             <span class="vl-co"><i class="i-simple-icons-snowflake"></i>Snowflake</span>
@@ -442,18 +442,18 @@ The reception of our thesis has also exceeded our expectations.
           <span class="vl-val">$300B</span>
           <span class="vl-growth">1.3&ndash;2&times; / yr</span>
         </div>
-        <div class="venn-lens serving-durable">
+        <div class="venn-lens serving-durable" v-click="4">
           <span class="vl-co"><i class="vl-dot"></i>Convex</span>
           <span class="vl-val">$110M <span class="vl-qual">raised</span></span>
         </div>
-        <div class="venn-core"><img src="/brand/symbol.svg" alt="Cambra"></div>
+        <div class="venn-core" v-click="6"><img src="/brand/symbol.svg" alt="Cambra"></div>
       </div>
       </div>
       </div>
       <div class="beats">
-        <p class="lead-p">Most applications need all 3.</p>
-        <p class="closer">Only <span class="warm">Cambra</span> is at the intersection.</p>
-        <p><strong>ICP</strong>: teams <span class="hot">outgrowing their PaaS.</span></p>
+        <p class="lead-p" v-click="5">Most applications need all 3.</p>
+        <p class="closer" v-click="6">Only <span class="warm">Cambra</span> is at the intersection.</p>
+        <p v-click="7"><strong>ICP</strong>: teams <span class="hot">outgrowing their PaaS.</span></p>
       </div>
     </div>
   </div>
@@ -466,7 +466,6 @@ The reception of our thesis has also exceeded our expectations.
 </div>
 
 <!--
-TODO:animate
 0. Cambra works at the intersection of 3 market categories.
 
 1. Analytics is a behemoth with major incumbents like Snowflake, Databricks, and Clickhouse, cumulative valuations in the hundreds of billions, and annual growth between 30 and 80 percent.
