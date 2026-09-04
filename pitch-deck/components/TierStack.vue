@@ -11,6 +11,11 @@
 // The innermost circle is never filled: the open-source core is the part nobody
 // pays for, and leaving it hollow says so without a caption.
 //
+// The tiers arrive one click at a time, innermost first, so the figure is built
+// up in the order the business is: open source, then the hosted runtime on top
+// of it, then the services on top of that. The ground line is there from the
+// start — it is the stage, not one of the tiers.
+//
 // Plain divs rather than SVG, matching the market Venn.
 
 // Diameter as a fraction of the square figure, and the height the tier's leader
@@ -39,6 +44,7 @@ const laid = TIERS.map((t) => {
     <span
       v-for="t in laid"
       :key="`c${t.key}`"
+      v-click="t.key + 1"
       class="ts-c"
       :class="`tier-${t.key}`"
       :style="{ width: `${t.size}%`, height: `${t.size}%` }"
@@ -46,6 +52,7 @@ const laid = TIERS.map((t) => {
     <span
       v-for="t in laid"
       :key="`l${t.key}`"
+      v-click="t.key + 1"
       class="ts-lead"
       :class="`tier-${t.key}`"
       :style="{ bottom: `${t.y}%`, left: `${t.x}%` }"

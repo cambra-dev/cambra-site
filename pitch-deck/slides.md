@@ -494,16 +494,13 @@ The reception of our thesis has also exceeded our expectations.
     <p class="lead-p">Cambra gives developers confidence and simplicity.</p>
     <div class="cols n2">
       <div class="col">
-          <!-- TODO: change header style to be distinct from ghost bar header. -->
-        <h3>Confidence begets velocity</h3>
-        <!-- TODO: redesign the ghost bar diagram to have 2 separate bars, one above and one below. The labels sit between the bars, with lines connecting teh respective sections. The overall multiplier sits in the empty space next to the lower bar.
-        Keep the blue coloring for "time to production", but make the code and test segments orange. Then change the "lines of code" bars to orange, since they're a proxy for that multiplier. -->
+        <h3 class="disp">Confidence begets velocity</h3>
         <GhostBar
           title="Time to production"
           :segments="[
-            { label: 'Code', value: 4, keep: 1 },
+            { label: 'Code', value: 4, keep: 1, accent: 'warm' },
             { label: 'Review', value: 8, keep: 0.33 },
-            { label: 'Test', value: 4, keep: 0.75 },
+            { label: 'Test', value: 4, keep: 0.75, accent: 'warm' },
             { label: 'Deploy', value: 26, keep: 1 },
             { label: 'Operate', value: 3, keep: 1 },
           ]"
@@ -511,9 +508,10 @@ The reception of our thesis has also exceeded our expectations.
         <p>Estimates of Cambra's verification and validation features.</p>
       </div>
       <div class="col">
-        <h3>Less code, less mess</h3>
+        <h3 class="disp">Less code, less mess</h3>
         <GhostBar
           title="Lines of code"
+          accent="warm"
           :tiers="3"
           :segments="[
             { label: 'Domain', value: 131, keep: 92 },
@@ -541,16 +539,16 @@ The reception of our thesis has also exceeded our expectations.
   </div>
   <div class="grow">
     <p class="lead-p">Deep abstractions fuse layers of the stack. Each layer nets ~10× gains.</p>
-    <!-- TODO:  Take the diagram out of the col container.  -->
-    <div class="col warm perf-col">
+    <div class="perf-col">
       <div class="stackint">
-          <!-- TODO: Make the layers look more like layers, and less like boxes. center the text. -->
-          <!-- TODO:  Add a vertical label on the left saying "layer".  -->
-        <div class="si-layer">Distributed systems</div>
-        <div class="si-layer">Database</div>
-        <div class="si-layer">Operating System</div>
-        <div class="si-layer">Hardware</div>
-        <!-- TODO:  Add a heading over the brackets "Depth of Abstraction"  -->
+        <div class="si-axis">Layer</div>
+        <div class="si-head">Depth of Abstraction</div>
+        <div class="si-layers">
+          <div class="si-layer">Distributed systems</div>
+          <div class="si-layer">Database</div>
+          <div class="si-layer">Operating System</div>
+          <div class="si-layer">Hardware</div>
+        </div>
         <div class="si-int weld" v-click="1"><span class="si-mult">30&times;</span><span class="si-name">Weld</span></div>
         <div class="si-int hyper" v-click="2"><span class="si-mult">10&times;</span><span class="si-name">HyPer<br>Halide</span></div>
         <div class="si-int mojo" v-click="3"><span class="si-mult">50&times;</span><span class="si-name">Mojo</span></div>
@@ -600,23 +598,22 @@ These gains are enabled by the way Cambra spans every layer of the backend stack
     <div class="eyebrow">11 · Business Model</div>
     <h2>Cloud Runtime ⇒ Self-building Apps</h2>
   </div>
-  <!-- TODO: Animate from OSS to VAS, one step each. -->
   <div class="grow">
     <div class="bm">
       <TierStack />
       <div class="bm-notes">
-        <div class="bm-note tier-2">
+        <div class="bm-note tier-2" v-click="3">
           <div class="bm-tier">Value Added Services</div>
           <h3 class="bm-h">Self-building Apps</h3>
           <p>Upsell features for AI to build apps automatically.</p>
           <div class="bm-tags"><span>User simulation</span><span>Feature development</span><span>Experimentation</span></div>
         </div>
-        <div class="bm-note tier-1">
+        <div class="bm-note tier-1" v-click="2">
           <div class="bm-tier">Core revenue</div>
           <h3 class="bm-h">Hosted, distributed runtime</h3>
           <p>Teams pay for ease of operations and enterprise features.</p>
         </div>
-        <div class="bm-note tier-0">
+        <div class="bm-note tier-0" v-click="1">
           <div class="bm-tier">Open Source</div>
           <h3 class="bm-h">Compiler + runtime</h3>
           <p>Useful for real workloads. Creates community and sales pipeline.</p>

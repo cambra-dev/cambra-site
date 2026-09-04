@@ -1,28 +1,32 @@
 <script setup>
 import { computed } from 'vue'
 
-// One bar, two states. Each stage is a single box drawn at its full "today"
-// width; the share Cambra keeps is filled and the rest is greyed out inside the
-// same box, so a stage reads as one thing that shrinks rather than two things
-// sitting side by side.
+// Two bars on one scale: what a stage costs today (top, full width) and what it
+// costs on Cambra (bottom, the kept share). Both are measured against the same
+// total, so the bottom bar's shortness IS the claim — you read the saving as
+// the length that is simply missing, without decoding a fill.
 //
-// Stages are labelled once, below the bar, each tied to its box by a stem.
-// Labels alternate between two tiers because the narrow stages cannot hold
-// their own text at their own width, and a label that has to be matched to its
-// box by guesswork is worse than no label at all.
+// The middle band carries the labels and the connectors. A label sits under its
+// own section of the TOP bar, where the stages are at full width and there is
+// room to spread; below the labels the connectors fan inward to the bottom bar.
+// Anchoring labels to the bottom bar instead packs them all into the left tenth
+// of the chart, because that is what a 10x saving does to the geometry.
+// Labels stagger across `tiers` rows: narrow stages cannot hold their own text
+// at their own width.
 //
 // Gains are multipliers snapped to a coarse ladder. A stage that computes to
 // 23x is not known to that precision, and printing it that way costs more
 // credibility than the extra digit buys.
 const props = defineProps({
   title: { type: String, required: true },
-  // [{ label, value, keep }] — value and keep in the same unit, any unit.
+  // [{ label, value, keep, accent? }] — value and keep in the same unit, any
+  // unit. `accent` overrides the bar's colour for one stage.
   segments: { type: Array, required: true },
   note: { type: String, default: '' },
-  // How many rows the labels alternate across. Two is enough for a handful of
-  // segments; a bar with more of them needs a third row or neighbouring labels
-  // collide once the type is large enough to read.
+  // How many rows the labels stagger across.
   tiers: { type: Number, default: 2 },
+  // 'cool' | 'warm' — the bar's colour, overridable per segment.
+  accent: { type: String, default: 'cool' },
 })
 
 const RUNGS = [1.5, 2, 3, 5, 10, 20, 50, 100]
@@ -38,48 +42,56 @@ const gain = (r) => (r < FLAT ? null : `${snap(r)}×`)
 const total = computed(() => props.segments.reduce((a, s) => a + s.value, 0))
 const kept = computed(() => props.segments.reduce((a, s) => a + s.keep, 0))
 const overall = computed(() => gain(total.value / kept.value))
+// The bottom bar's share of the full width. The multiplier goes in what is left
+// over, which is empty precisely in proportion to how big the win is.
+const keptPct = computed(() => (kept.value / total.value) * 100)
 
 const laid = computed(() => {
-  let acc = 0
+  let accV = 0
+  let accK = 0
   return props.segments.map((s, i) => {
-    const start = acc
-    acc += s.value
+    const startV = accV
+    const startK = accK
+    accV += s.value
+    accK += s.keep
+    // Both bars are measured against the same total, so their widths compare.
+    const xu = ((startV + s.value / 2) / total.value) * 100
+    const xl = ((startK + s.keep / 2) / total.value) * 100
     return {
       ...s,
-      width: (s.value / total.value) * 100,
-      centre: ((start + s.value / 2) / total.value) * 100,
-      fill: (s.keep / s.value) * 100,
-      gain: gain(s.value / s.keep),
-      // Alternating rows so neighbouring labels cannot collide.
+      wUpper: (s.value / total.value) * 100,
+      wLower: (s.keep / total.value) * 100,
+      xu,
+      xl,
       tier: i % props.tiers,
+      gain: gain(s.value / s.keep),
+      acc: `var(--${s.accent || props.accent})`,
     }
   })
 })
 </script>
 
 <template>
-  <div class="gb">
-    <div class="gb-head">
-      <span class="gb-title">{{ title }}</span>
-      <span v-if="overall" class="gb-overall">{{ overall }}</span>
-    </div>
+  <div class="gb" :style="{ '--acc': `var(--${accent})` }">
+    <div class="gb-title">{{ title }}</div>
 
+    <!-- Today: every stage at full cost. -->
     <div class="gb-track">
       <span
         v-for="s in laid"
-        :key="s.label"
-        class="gb-seg"
-        :style="{ width: `calc(${s.width} * 1%)`, '--fill': `${s.fill}%` }"
+        :key="`u${s.label}`"
+        class="gb-seg today"
+        :style="{ width: `calc(${s.wUpper} * 1%)` }"
       />
     </div>
 
     <div class="gb-labels" :style="{ '--tiers': tiers }">
       <span
         v-for="s in laid"
-        :key="s.label"
+        :key="`t${s.label}`"
         class="gb-tag"
-        :class="[`tier-${s.tier}`, { first: s.centre < 7, last: s.centre > 90 }]"
-        :style="{ left: `calc(${s.centre} * 1%)`, '--stem': `${0.3 + s.tier * 1.25}rem` }"
+        :class="[`tier-${s.tier}`, { first: s.xu < 6, last: s.xu > 94 }]"
+        :style="{ left: `calc(${s.xu} * 1%)`, '--stem': `${0.2 + s.tier * 1.3}rem`, '--acc': s.acc }"
       >
         <span class="gb-stem" />
         <span class="gb-text">
@@ -88,6 +100,36 @@ const laid = computed(() => {
           <span v-else class="gb-flat">unchanged</span>
         </span>
       </span>
+    </div>
+
+    <!-- The fan: one line per stage, from under its label to its section of the
+         bottom bar. preserveAspectRatio=none lets x stay in percentages of the
+         bar while the band keeps a fixed height; non-scaling-stroke stops that
+         distorting the line weight. -->
+    <svg class="gb-fan" viewBox="0 0 100 100" preserveAspectRatio="none">
+      <line
+        v-for="s in laid"
+        :key="`k${s.label}`"
+        :x1="s.xu"
+        y1="0"
+        :x2="s.xl"
+        y2="100"
+        :stroke="s.acc"
+        vector-effect="non-scaling-stroke"
+      />
+    </svg>
+
+    <!-- With Cambra: the same stages, at the width that survives. -->
+    <div class="gb-low">
+      <div class="gb-track kept" :style="{ width: `calc(${keptPct} * 1%)` }">
+        <span
+          v-for="s in laid"
+          :key="`l${s.label}`"
+          class="gb-seg cambra"
+          :style="{ flexGrow: s.keep, background: s.acc }"
+        />
+      </div>
+      <span v-if="overall" class="gb-overall">{{ overall }}</span>
     </div>
 
     <div v-if="note" class="gb-note">{{ note }}</div>
@@ -99,13 +141,6 @@ const laid = computed(() => {
   display: flex;
   flex-direction: column;
 }
-.gb-head {
-  display: flex;
-  align-items: baseline;
-  justify-content: space-between;
-  gap: 0.6rem;
-  margin-bottom: 0.25rem;
-}
 .gb-title {
   font-family: var(--f-mono);
   font-size: 0.66rem;
@@ -113,34 +148,26 @@ const laid = computed(() => {
   letter-spacing: 0.08em;
   text-transform: uppercase;
   color: var(--fg-3);
-}
-.gb-overall {
-  font-family: var(--f-mono);
-  font-size: 1.5rem;
-  font-weight: 700;
-  line-height: 1;
-  color: var(--cool);
+  margin-bottom: 0.3rem;
 }
 .gb-track {
   display: flex;
   gap: 2px;
-  height: 1.8rem;
+  height: 1.15rem;
 }
-/* One box per stage: the kept share filled, the remainder greyed inside the
-   same border, so the stage shrinks rather than splitting in two. */
 .gb-seg {
   min-width: 2px;
   border-radius: 3px;
-  border: 1px solid rgba(255, 255, 255, 0.16);
-  background: linear-gradient(
-    to right,
-    var(--cool) 0 var(--fill),
-    rgba(255, 255, 255, 0.06) var(--fill) 100%
-  );
+}
+/* Today reads as cost, not as colour: outlined and nearly empty, so the only
+   saturated thing on the chart is what Cambra leaves behind. */
+.gb-seg.today {
+  border: 1px solid rgba(255, 255, 255, 0.22);
+  background: rgba(255, 255, 255, 0.05);
 }
 .gb-labels {
   position: relative;
-  height: calc(1.2rem + var(--tiers, 2) * 1.25rem);
+  height: calc(0.35rem + var(--tiers, 2) * 1.3rem);
 }
 .gb-tag {
   position: absolute;
@@ -151,9 +178,8 @@ const laid = computed(() => {
   transform: translateX(-50%);
   white-space: nowrap;
 }
-/* A stage at either extreme cannot have its label centred on it without the
-   label running off the track — anchor to the edge instead and let the stem
-   sit at the label's corner. */
+/* A label at either extreme cannot centre on its stage without running off the
+   chart — anchor it to the edge and let the stem sit at its corner. */
 .gb-tag.first {
   transform: none;
   align-items: flex-start;
@@ -165,29 +191,46 @@ const laid = computed(() => {
 .gb-stem {
   width: 1px;
   height: var(--stem);
-  background: rgba(255, 255, 255, 0.22);
+  background: var(--acc);
+  opacity: 0.55;
 }
 .gb-text {
   display: flex;
   align-items: baseline;
   gap: 0.28rem;
-  padding-top: 0.12rem;
+  padding-top: 0.1rem;
   font-family: var(--f-mono);
   font-size: 0.68rem;
 }
-.gb-name {
-  font-weight: 700;
-  color: var(--fg-2);
+.gb-fan {
+  width: 100%;
+  height: 1.5rem;
+  opacity: 0.5;
+  stroke-width: 1;
 }
-.gb-gain {
-  font-weight: 700;
-  color: var(--cool);
+.gb-low {
+  display: flex;
+  align-items: center;
+  gap: 0.7rem;
 }
-.gb-flat {
-  color: var(--fg-3);
-  opacity: 0.7;
+/* Segments share the kept width in proportion, so the bottom bar is a scaled
+   copy of the top one rather than a separate chart. */
+.gb-track.kept {
+  flex: none;
+}
+.gb-seg.cambra {
+  flex-basis: 0;
+  border: none;
+}
+.gb-overall {
+  font-family: var(--f-mono);
+  font-size: 1.5rem;
+  font-weight: 700;
+  line-height: 1;
+  color: var(--acc);
 }
 .gb-note {
+  margin-top: 0.3rem;
   font-size: 0.55rem;
   line-height: 1.35;
   color: var(--fg-3);
