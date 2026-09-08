@@ -6,10 +6,10 @@ colorSchema: dark
 
 <div class="frame" style="justify-content:flex-start;padding-top:4.5rem">
   <img class="title-wordmark" src="/brand/logo-horizontal-negative.svg" alt="Cambra">
-  <h1 style="font-size:3.4rem;margin:0">Ship at the pace of AI</h1>
+  <h1 style="font-size:3.4rem;margin:0">Ship fast. Break nothing.</h1>
   <p class="punch" style="margin-top:.6rem">
-      The first <strong>vertically integrated</strong><br>backend application platform.
-      <span style="display:block;margin-top:.55rem">• 10× productivity<br>• 100× performance</span>
+      Replace your stack with one program on one engine: 
+      <br>proven before it runs, run against a branch of production.
   </p>
   <div class="byline">
     <span><div>Dan Sotolongo<br>
@@ -26,7 +26,7 @@ colorSchema: dark
 <div class="frame">
   <div class="head">
     <div class="eyebrow">01 · The Problem</div>
-    <h2>System Fragmentation</h2>
+    <h2>Your stack unravels in 15 minutes.</h2>
   </div>
   <div class="grow">
     <div class="grow split">
@@ -36,6 +36,7 @@ colorSchema: dark
           </div>
           <div class="flow-note" v-click="5">Each arrow multiplies complexity</div>
         </div>
+        <!-- TODO: make it more obvious who has this problem. It's app builders--software engineers, using AI coding. Claude: don't just do this on your own; help me think through teh best way to present it. -->
         <div class="beats arc" v-click="6">
             <div>You ship fast.</div>
             <div>Then you slow down.</div>
@@ -439,7 +440,7 @@ We're the team you'd bet can solve this problem.
         <div class="si-axis">Layer</div>
         <div class="si-head">Depth of Abstraction</div>
         <div class="si-layers">
-          <div class="si-layer">Distributed systems</div>
+          <div class="si-layer">Application (Distributed)</div>
           <div class="si-layer">Database</div>
           <div class="si-layer">Operating System</div>
           <div class="si-layer">Hardware</div>
