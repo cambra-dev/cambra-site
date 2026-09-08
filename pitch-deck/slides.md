@@ -458,7 +458,7 @@ The reception of our thesis has also exceeded our expectations.
              analytics: their outline stops exactly on the arc where Cambra's
              region begins, so the two share a boundary instead of Convex
              appearing to contain us. -->
-        <svg class="venn-region cambra" v-click="7" viewBox="0 0 315 299.59" aria-hidden="true">
+        <svg class="venn-region cambra" v-click="6" viewBox="0 0 315 299.59" aria-hidden="true">
           <path class="for-cat" d="M115.40 108.88A100 100 0 0 1 199.60 108.89A100 100 0 0 1 157.50 181.82A100 100 0 0 1 115.40 108.88Z" />
           <!-- Same construction at k = 0.26, where the triple intersection is
                60% of the union and each exclusive crescent is ~7%. -->

@@ -735,8 +735,12 @@ span.warm {
 /* Cambra is filled: territory occupied. Convex is outlined only: territory
    claimed, and one circle short of ours. Ember rather than coral because
    coral sits too close to Cambra's amber to separate at this size. */
+/* Cambra's territory is filled at the same strength in both views — it is the
+   one thing that survives the change of population, so it should not get
+   quieter when the diagram is dense. 0.32 also composited to olive-grey over
+   the stacked teals rather than reading as amber. */
 .venn-region.cambra path {
-  fill: rgba(245, 163, 55, 0.32);
+  fill: rgba(245, 163, 55, 0.55);
   stroke: var(--warm);
   stroke-width: 2.5;
 }
@@ -1164,12 +1168,6 @@ span.warm {
 }
 .venn-col.segments .venn-region.cambra .for-seg {
   opacity: 1;
-}
-/* Heavier than the categories region. It now covers most of the diagram, and
-   at 0.32 over the tripled teal it composites to olive-grey rather than amber
-   — and this shape is the whole claim, so it has to read as Cambra's colour. */
-.venn-region.cambra .for-seg {
-  fill: rgba(245, 163, 55, 0.55);
 }
 .venn-region.convex {
   transition: opacity 0.35s ease;
