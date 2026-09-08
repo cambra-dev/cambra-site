@@ -233,52 +233,7 @@ This feedback needs a human in the loop to ensure the tests are realistic and do
 
 <div class="frame">
   <div class="head">
-    <div class="eyebrow">05 · Demo</div>
-    <h2>The system as a program</h2>
-  </div>
-  <div class="grow">
-    <div class="cols n2">
-      <WasmDemo />
-      <div style="display:flex;flex-direction:column;gap:.9rem">
-        <h3 style="font-family:var(--f-mono);font-size:.7rem;letter-spacing:.14em;text-transform:uppercase;color:var(--fg-3)">A multi-domain app, wired by hand today</h3>
-        <ul style="margin:0;padding:0;list-style:none;display:flex;flex-direction:column;gap:.6rem">
-          <li style="font-size:.85rem;color:var(--fg-2);display:flex;gap:.5rem"><span>—</span>Otherwise built from several off-the-shelf components</li>
-          <li style="font-size:.85rem;color:var(--fg-2);display:flex;gap:.5rem"><span>—</span>Contract mismatches, across the seams</li>
-          <li style="font-size:.85rem;color:var(--fg-2);display:flex;gap:.5rem"><span>—</span>Cross-component optimizations, left on the table</li>
-          <li style="font-size:.85rem;color:var(--fg-2);display:flex;gap:.5rem"><span>—</span>Deployment risk — DB migrations, workflow versioning</li>
-        </ul>
-      </div>
-    </div>
-  </div>
-  <div class="page-no">{{ $slidev.nav.currentPage - 1 }} / {{ $slidev.nav.total - 1 }}</div>
-</div>
-
-<!--
-Purpose:
-1. Demonstrate that we've implemented something real.
-2. Give a concrete sense of the UX
-3. Gesture at the opportunities available to tooling
-
-Idea: Stock trading app with live ticker
-- program selects a few symbols
-- gets live ticker info from public APIs
-- shopping cart of symbol purchases with **live** updating totals
-- program is updated to add new symbols
-- shopping cart state survives
-
-Showcase:
-- concise code
-- fast app
-- inspector features
-- transparent program upgrade
-- verification
--->
-
----
-
-<div class="frame">
-  <div class="head">
-    <div class="eyebrow">06 · Team</div>
+    <div class="eyebrow">05 · Team</div>
     <h2>Passionate, clear-eyed experts</h2>
   </div>
   <div class="grow">
@@ -318,87 +273,7 @@ We're the team you'd bet can solve this problem.
 
 <div class="frame">
   <div class="head">
-    <div class="eyebrow">07 · Traction</div>
-    <h2>The thesis resonates.</h2>
-  </div>
-  <div class="grow">
-    <div class="cols tl-split">
-      <div class="tl-side">
-        <h3>Timeline</h3>
-        <div class="timeline-v">
-        <div class="tlv-row cool"><span class="tlv-date">Feb</span><span class="tlv-dot"></span><span class="tlv-label">Cofounders join full-time</span></div>
-        <div class="tlv-row cool"><span class="tlv-date">Apr</span><span class="tlv-dot"></span><span class="tlv-label"><strong>Announcement</strong> &middot; HN front page</span></div>
-        <div class="tlv-row cool"><span class="tlv-date">Jun</span><span class="tlv-dot"></span><span class="tlv-label">CU PL/V group collaboration</span></div>
-        <div class="tlv-row cool"><span class="tlv-date">Jul</span><span class="tlv-dot"></span><span class="tlv-label">Founding engineer accepts</span></div>
-        <div class="tlv-row hot"><span class="tlv-date">Aug 10</span><span class="tlv-dot"></span><span class="tlv-label"><strong>OSS announcement</strong> &middot; Unsolicited contributor interest</span></div>
-        <div class="tlv-row hot"><span class="tlv-date">Aug 17</span><span class="tlv-dot"></span><span class="tlv-label">Verification consultant starts</span></div>
-      </div>
-      </div>
-      <div class="tl-stack">
-        <div class="col">
-            <h3>Votes of confidence</h3>
-            <div class="col-body">
-                Angels
-                <ul>
-                    <li>Snowflake co-founder</li>
-                    <li>Redpanda CTO</li>
-                </ul>
-                Hiring
-                <ul>
-                    <li>100% offer acceptance (of 4)</li>
-                    <li>Unsolicited talent inbound</li>
-                </ul>
-            </div>
-        </div>
-      </div>
-    </div>
-    <div class="col">
-            <h3>Customer Validation</h3>
-            <!-- TODO: add photos -->
-            <div class="tl-quotes cols n2">
-            <div class="col-body">
-                <QuoteCard
-                    initials="BJ"
-                expand-at="0"
-                    quote="&quot;That would be amazing.&quot;"
-                    full-quote="&quot;I think that would be amazing. [...] My ideal model would be like, here's old. This is new. Do it. [...] If you're taking over hosting our backends, probably hundreds of thousands a year.&quot;"
-                    name="Bryan Jadot"
-                    title="Tech Lead, Nuvo"
-                />
-            </div>
-            <div class="col-body">
-                <QuoteCard
-                    initials="AM"
-                expand-at="0"
-                    quote="&quot;...unify[ing] the logic for all this stuff would simplify it a ton.&quot"
-                    full-quote="&quot;Unify[ing] the logic for all this stuff would simplify it a ton. [...] If I had one more engineer, it would give me less value than just being able to pay for this.&quot;"
-                    name="Alan Menezes"
-                    title="Director, Nvidia"
-                />
-            </div>
-          </div>
-        </div>
-  </div>
-  <div class="page-no">{{ $slidev.nav.currentPage - 1 }} / {{ $slidev.nav.total - 1 }}</div>
-</div>
-
-<!--
-We've been working at this full time for 7 months. In that time, we've made tremendous progress on our prototype, and are approaching our MVP faster than expected.
-
-The reception of our thesis has also exceeded our expectations.
-- Our announcement blog post made it to the front page of HN completely organically.
-- The programming languages research group here at CU Boulder was eager to collaborate
-- We've brought on 2 key engineers, and received unsolicited inbound. BTW, our acceptance rate is 100% (including cofounders).
-- After our OSS announcement, we got unsolicited contributor inbound, eager to work for free (we said no for now).
-- Our angels include a Snowflake co-founder and the Redpanda CTO.
-- In our customer conversations, our product positioning has resonated. A tech lead at the growth-stage startup Nuvo said it would be amazing. A director at Nvidia said it would greatly simplify his stack, and be easy to justify the cost.
--->
-
----
-
-<div class="frame">
-  <div class="head">
-    <div class="eyebrow">08 · Market</div>
+    <div class="eyebrow">06 · Market</div>
     <h2>Complex Applications</h2>
   </div>
   <div class="grow">
@@ -507,7 +382,7 @@ The reception of our thesis has also exceeded our expectations.
 
 <div class="frame">
   <div class="head">
-    <div class="eyebrow">09 · Why It Wins</div>
+    <div class="eyebrow">07 · Why It Wins</div>
     <h2>Unprecedented productivity</h2>
   </div>
   <div class="grow">
@@ -554,7 +429,7 @@ The reception of our thesis has also exceeded our expectations.
 
 <div class="frame">
   <div class="head">
-    <div class="eyebrow">10 · Why It Wins</div>
+    <div class="eyebrow">08 · Why It Wins</div>
     <h2>Transformative performance</h2>
   </div>
   <div class="grow">
@@ -609,6 +484,131 @@ These gains are enabled by the way Cambra spans every layer of the backend stack
 
 ##
 
+-->
+
+---
+
+<div class="frame">
+  <div class="head">
+    <div class="eyebrow">09 · Demo</div>
+    <h2>The system as a program</h2>
+  </div>
+  <div class="grow">
+    <div class="cols n2">
+      <WasmDemo />
+      <div style="display:flex;flex-direction:column;gap:.9rem">
+        <h3 style="font-family:var(--f-mono);font-size:.7rem;letter-spacing:.14em;text-transform:uppercase;color:var(--fg-3)">A multi-domain app, wired by hand today</h3>
+        <ul style="margin:0;padding:0;list-style:none;display:flex;flex-direction:column;gap:.6rem">
+          <li style="font-size:.85rem;color:var(--fg-2);display:flex;gap:.5rem"><span>—</span>Otherwise built from several off-the-shelf components</li>
+          <li style="font-size:.85rem;color:var(--fg-2);display:flex;gap:.5rem"><span>—</span>Contract mismatches, across the seams</li>
+          <li style="font-size:.85rem;color:var(--fg-2);display:flex;gap:.5rem"><span>—</span>Cross-component optimizations, left on the table</li>
+          <li style="font-size:.85rem;color:var(--fg-2);display:flex;gap:.5rem"><span>—</span>Deployment risk — DB migrations, workflow versioning</li>
+        </ul>
+      </div>
+    </div>
+  </div>
+  <div class="page-no">{{ $slidev.nav.currentPage - 1 }} / {{ $slidev.nav.total - 1 }}</div>
+</div>
+
+<!--
+Purpose:
+1. Demonstrate that we've implemented something real.
+2. Give a concrete sense of the UX
+3. Gesture at the opportunities available to tooling
+
+Idea: Stock trading app with live ticker
+- program selects a few symbols
+- gets live ticker info from public APIs
+- shopping cart of symbol purchases with **live** updating totals
+- program is updated to add new symbols
+- shopping cart state survives
+
+Showcase:
+- concise code
+- fast app
+- inspector features
+- transparent program upgrade
+- verification
+-->
+
+---
+
+<div class="frame">
+  <div class="head">
+    <div class="eyebrow">10 · Traction</div>
+    <h2>The thesis resonates.</h2>
+  </div>
+  <div class="grow">
+    <div class="cols tl-split">
+      <div class="tl-side">
+        <h3>Timeline</h3>
+        <div class="timeline-v">
+        <div class="tlv-row cool"><span class="tlv-date">Feb</span><span class="tlv-dot"></span><span class="tlv-label">Cofounders join full-time</span></div>
+        <div class="tlv-row cool"><span class="tlv-date">Apr</span><span class="tlv-dot"></span><span class="tlv-label"><strong>Announcement</strong> &middot; HN front page</span></div>
+        <div class="tlv-row cool"><span class="tlv-date">Jun</span><span class="tlv-dot"></span><span class="tlv-label">CU PL/V group collaboration</span></div>
+        <div class="tlv-row cool"><span class="tlv-date">Jul</span><span class="tlv-dot"></span><span class="tlv-label">Founding engineer accepts</span></div>
+        <div class="tlv-row hot"><span class="tlv-date">Aug 10</span><span class="tlv-dot"></span><span class="tlv-label"><strong>OSS announcement</strong> &middot; Unsolicited contributor interest</span></div>
+        <div class="tlv-row hot"><span class="tlv-date">Aug 17</span><span class="tlv-dot"></span><span class="tlv-label">Verification consultant starts</span></div>
+      </div>
+      </div>
+      <div class="tl-stack">
+        <div class="col">
+            <h3>Votes of confidence</h3>
+            <div class="col-body">
+                Angels
+                <ul>
+                    <li>Snowflake co-founder</li>
+                    <li>Redpanda CTO</li>
+                </ul>
+                Hiring
+                <ul>
+                    <li>100% offer acceptance (of 4)</li>
+                    <li>Unsolicited talent inbound</li>
+                </ul>
+            </div>
+        </div>
+      </div>
+    </div>
+    <div class="col">
+            <h3>Customer Validation</h3>
+            <!-- TODO: add photos -->
+            <div class="tl-quotes cols n2">
+            <div class="col-body">
+                <QuoteCard
+                    initials="BJ"
+                expand-at="0"
+                    quote="&quot;That would be amazing.&quot;"
+                    full-quote="&quot;I think that would be amazing. [...] My ideal model would be like, here's old. This is new. Do it. [...] If you're taking over hosting our backends, probably hundreds of thousands a year.&quot;"
+                    name="Bryan Jadot"
+                    title="Tech Lead, Nuvo"
+                />
+            </div>
+            <div class="col-body">
+                <QuoteCard
+                    initials="AM"
+                expand-at="0"
+                    quote="&quot;...unify[ing] the logic for all this stuff would simplify it a ton.&quot"
+                    full-quote="&quot;Unify[ing] the logic for all this stuff would simplify it a ton. [...] If I had one more engineer, it would give me less value than just being able to pay for this.&quot;"
+                    name="Alan Menezes"
+                    title="Director, Nvidia"
+                />
+            </div>
+          </div>
+        </div>
+  </div>
+  <div class="page-no">{{ $slidev.nav.currentPage - 1 }} / {{ $slidev.nav.total - 1 }}</div>
+</div>
+
+<!--
+We've been working at this full time for 7 months. In that time, we've made tremendous progress on our prototype, and are approaching our MVP faster than expected.
+
+The reception of our thesis has also exceeded our expectations.
+- Our announcement blog post made it to the front page of HN completely organically.
+- The programming languages research group here at CU Boulder was eager to collaborate
+- We've brought on 2 key engineers, and received unsolicited inbound. BTW, our acceptance rate is 100% (including cofounders).
+- After our OSS announcement, we got unsolicited contributor inbound, eager to work for free (we said no for now).
+- Our angels include a Snowflake co-founder and the Redpanda CTO.
+- In our customer conversations, our product positioning has resonated. A tech lead at the growth-stage startup Nuvo said it would be amazing. A director at Nvidia said it would greatly simplify his stack, and be easy to justify the cost.
 -->
 
 ---
