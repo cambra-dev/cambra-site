@@ -1,5 +1,5 @@
 <script setup>
-import { computed } from 'vue'
+import { computed, onBeforeUnmount, onMounted, ref, watch } from 'vue'
 
 // Two bars on one scale: what a stage costs today (top, full width) and what it
 // costs on Cambra (bottom, the kept share). Both are measured against the same
@@ -11,8 +11,11 @@ import { computed } from 'vue'
 // room to spread; below the labels the connectors fan inward to the bottom bar.
 // Anchoring labels to the bottom bar instead packs them all into the left tenth
 // of the chart, because that is what a 10x saving does to the geometry.
-// Labels stagger across `tiers` rows: narrow stages cannot hold their own text
-// at their own width.
+// Labels drop to a lower row only when they have to. Staggering every other
+// label by index pushed plenty of labels down that had room to stay put — the
+// wide stages especially. So rows are assigned greedily from measured widths:
+// each label takes the highest row where it clears the last label already on
+// that row. `tiers` is the cap, not the pattern.
 //
 // Gains are multipliers snapped to a coarse ladder. A stage that computes to
 // 23x is not known to that precision, and printing it that way costs more
@@ -46,6 +49,52 @@ const overall = computed(() => gain(total.value / kept.value))
 // over, which is empty precisely in proportion to how big the win is.
 const keptPct = computed(() => (kept.value / total.value) * 100)
 
+// Measured row assignment. Text width is not knowable until it is rendered, so
+// the labels go out at row 0, get measured, and settle. One frame, invisible.
+const labelsEl = ref(null)
+const rowOf = ref([])
+const rowCount = computed(() => (rowOf.value.length ? Math.max(...rowOf.value) + 1 : 1))
+// Breathing room between two labels sharing a row, in px.
+const GAP = 10
+let ro
+
+const assignRows = () => {
+  const el = labelsEl.value
+  if (!el) return
+  const width = el.getBoundingClientRect().width
+  if (width < 1) return
+  const tags = [...el.querySelectorAll('.gb-tag')]
+  if (tags.length !== laid.value.length) return
+  // Rightmost ink placed on each row so far.
+  const filled = []
+  const next = laid.value.map((s, i) => {
+    const w = tags[i].getBoundingClientRect().width
+    const centre = (s.xu / 100) * width
+    // Must match the .first/.last clamps below, or the maths describes a box
+    // that is not where the label actually is.
+    const left = s.xu < 6 ? centre : s.xu > 94 ? centre - w : centre - w / 2
+    let row = 0
+    while (row < props.tiers - 1 && filled[row] != null && left < filled[row] + GAP) row += 1
+    filled[row] = Math.max(filled[row] ?? -Infinity, left + w)
+    return row
+  })
+  if (next.length !== rowOf.value.length || next.some((r, i) => r !== rowOf.value[i])) {
+    rowOf.value = next
+  }
+}
+
+onMounted(() => {
+  assignRows()
+  // Web fonts land after first paint and change every measurement.
+  document.fonts?.ready?.then(assignRows)
+  if (labelsEl.value) {
+    ro = new ResizeObserver(assignRows)
+    ro.observe(labelsEl.value)
+  }
+})
+onBeforeUnmount(() => ro?.disconnect())
+watch(() => props.segments, () => { rowOf.value = []; assignRows() }, { deep: true })
+
 const laid = computed(() => {
   let accV = 0
   let accK = 0
@@ -63,7 +112,6 @@ const laid = computed(() => {
       wLower: (s.keep / total.value) * 100,
       xu,
       xl,
-      tier: i % props.tiers,
       gain: gain(s.value / s.keep),
       acc: `var(--${s.accent || props.accent})`,
     }
@@ -85,13 +133,13 @@ const laid = computed(() => {
       />
     </div>
 
-    <div class="gb-labels" :style="{ '--tiers': tiers }">
+    <div ref="labelsEl" class="gb-labels" :style="{ '--tiers': rowCount }">
       <span
-        v-for="s in laid"
+        v-for="(s, i) in laid"
         :key="`t${s.label}`"
         class="gb-tag"
-        :class="[`tier-${s.tier}`, { first: s.xu < 6, last: s.xu > 94 }]"
-        :style="{ left: `calc(${s.xu} * 1%)`, '--stem': `${0.2 + s.tier * 1.3}rem`, '--acc': s.acc }"
+        :class="[`tier-${rowOf[i] || 0}`, { first: s.xu < 6, last: s.xu > 94 }]"
+        :style="{ left: `calc(${s.xu} * 1%)`, '--stem': `${0.2 + (rowOf[i] || 0) * 1.3}rem`, '--acc': s.acc }"
       >
         <span class="gb-stem" />
         <span class="gb-text">
@@ -164,11 +212,10 @@ const laid = computed(() => {
    two states, so the eye should match them by hue and read the difference as
    length. */
 .gb-seg.today {
-  border: 1px solid var(--acc);
-  /* 65%, not 20%: a translucent warm over this navy desaturates to grey-brown,
-     so anything lighter stops reading as the same colour as the bar below and
-     the pair no longer looks like one stage in two states. */
-  background: color-mix(in srgb, var(--acc) 65%, transparent);
+  /* Solid, the same colour as the stage's section below: the pair is one stage
+     in two states, and the only difference the reader should have to decode is
+     length. Any translucency over this navy also desaturates toward grey. */
+  background: var(--acc);
 }
 .gb-labels {
   position: relative;

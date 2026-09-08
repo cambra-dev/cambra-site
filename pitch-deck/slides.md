@@ -510,8 +510,6 @@ The reception of our thesis has also exceeded our expectations.
     <div class="cols n2">
       <div class="col">
         <h3 class="disp">Confidence begets velocity</h3>
-        <!-- TODO: only put labels that don't fit lower down. e.g. "deploy" doesn't need to be low. -->
-        <!-- TODO: use solid colors for top bars, not translucent.. -->
         <GhostBar
           title="Time to production"
           :segments="[
@@ -566,7 +564,6 @@ The reception of our thesis has also exceeded our expectations.
           <div class="si-layer">Operating System</div>
           <div class="si-layer">Hardware</div>
         </div>
-        <!-- TODO: make faded intervals cool instead of faded ember. -->
         <div class="si-int weld" v-click="1"><span class="si-mult">30&times;</span><span class="si-name">Weld</span></div>
         <div class="si-int hyper" v-click="2"><span class="si-mult">10&times;</span><span class="si-name">HyPer<br>Halide</span></div>
         <div class="si-int mojo" v-click="3"><span class="si-mult">50&times;</span><span class="si-name">Mojo</span></div>
