@@ -721,7 +721,9 @@ span.warm {
   stroke-width: 2.5;
 }
 .venn-region.convex path {
-  fill: none;
+  /* Faded: territory claimed, against Cambra's territory occupied. Light
+     enough that the two-circle teal underneath still reads as an overlap. */
+  fill: rgba(215, 90, 46, 0.13);
   stroke: var(--ember);
   stroke-width: 2;
 }

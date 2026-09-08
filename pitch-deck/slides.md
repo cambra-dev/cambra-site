@@ -8,9 +8,8 @@ colorSchema: dark
   <img class="title-wordmark" src="/brand/logo-horizontal-negative.svg" alt="Cambra">
   <h1 style="font-size:3.4rem;margin:0">Ship at the pace of AI</h1>
   <p class="punch" style="margin-top:.6rem">
-      The <strong>application platform</strong> for
-        <br>• 10× productivity 
-        <br>• 100× performance
+      The first <strong>vertically integrated</strong><br>backend application platform.
+      <span style="display:block;margin-top:.55rem">• 10× productivity<br>• 100× performance</span>
   </p>
   <div class="byline">
     <span><div>Dan Sotolongo<br>
@@ -464,8 +463,8 @@ The reception of our thesis has also exceeded our expectations.
       </div>
       </div>
       <div class="beats">
-        <p class="lead-p" v-click="5">Most applications need all 3.</p>
-        <p class="closer" v-click="6">Only <span class="warm">Cambra</span> is at the intersection.</p>
+        <p class="lead-p" v-click="5">Apps serve, coordinate, and analyze.</p>
+        <p class="closer" v-click="6">Cambra is the only<br><span class="warm">backend application platform</span><br>that does all three.</p>
         <p v-click="7"><strong>ICP</strong>: teams <span class="hot">outgrowing their PaaS.</span></p>
       </div>
     </div>
