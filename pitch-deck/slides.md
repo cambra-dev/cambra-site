@@ -203,7 +203,7 @@ This feedback needs a human in the loop to ensure the tests are realistic and do
         <div class="metaphor"><img src="/brand/symbol.svg" alt="" /></div>
         <div class="col">
           <h3>Technical feasibility</h3>
-            New things are possible.
+            Research is pent up.
           <div class="col-body">
             <div class="converge-canvas"><ConvergeDiagram /></div>
           </div>
@@ -226,7 +226,7 @@ This feedback needs a human in the loop to ensure the tests are realistic and do
 
 4. I spoke with another respected colleague who is now at Anthropic, who said essentially the same thing: the barrier to entry has substantially reduced.
 
-5. While these adoption barriers have existed, major innovations developed in academia have been kept out of the market. Those are ripe for the picking. Cambra weaves together numerous threads of cutting edge research into a groundbreaking product. AI makes it possible to do this work with a tiny team, faster than ever, and with minimal coordination overhead.
+5. While these adoption barriers have existed, major innovations developed in academia have been kept out of the market. This is the moment for them to break through. Cambra weaves together numerous threads of cutting edge research into a groundbreaking product, something that's only possible with the advent of AI.
 -->
 
 ---
@@ -406,6 +406,7 @@ The reception of our thesis has also exceeded our expectations.
       <div class="venn-col">
         <div class="venn-head">Categories</div>
         <div class="venn-stage">
+            <!-- TODO: make the ven diagram use the whole vertical space available to it. -->
       <div class="venn">
         <div class="venn-note">Combined<br>valuations</div>
         <div class="venn-circle serving" v-click="2"></div>
@@ -455,6 +456,7 @@ The reception of our thesis has also exceeded our expectations.
           <span class="vl-growth">1.3&ndash;2&times; / yr</span>
         </div>
         <div class="venn-lens serving-durable" v-click="4">
+            <!-- TODO: move down slightly so vl-dot doesn't touch edge. -->
           <span class="vl-co"><i class="vl-dot"></i>Convex</span>
           <span class="vl-val">$110M <span class="vl-qual">raised</span></span>
         </div>
@@ -463,16 +465,18 @@ The reception of our thesis has also exceeded our expectations.
       </div>
       </div>
       <div class="beats">
-        <p class="lead-p" v-click="5">Apps serve, coordinate, and analyze.</p>
+        <p class="lead-p" v-click="5">Apps need to serve, coordinate, and analyze.</p>
         <p class="closer" v-click="6">Cambra is the only<br><span class="warm">backend application platform</span><br>that does all three.</p>
         <p v-click="7"><strong>ICP</strong>: teams <span class="hot">outgrowing their PaaS.</span></p>
       </div>
     </div>
   </div>
   <div class="venn-src">
-      <span style="font-family: var(--f-logo)">*</span> Serving covers the leading independents &mdash; hyperscalers hold most of that market. 
-    <br>Last-priced valuations &middot; YoY revenue growth, rounded, Aug 2026. Snowflake is a live market cap. Analytics growth covers Snowflake and Databricks. 
-    <br><span class="vl-dot vl-dot-inline"></span> do not disclose revenue.
+      Last-priced valuations &middot; YoY revenue growth, rounded, Aug 2026. 
+      <span v-click="1">Snowflake is a live market cap. Analytics growth covers Snowflake and Databricks.</span>
+      <br>
+      <span v-click="2"><span style="font-family: var(--f-logo)">*</span> Select independents only. Hyperscalers dominate the market. <br><span class="vl-dot vl-dot-inline"></span> do not disclose revenue.</span>
+      
   </div>
   <div class="page-no">{{ $slidev.nav.currentPage - 1 }} / {{ $slidev.nav.total - 1 }}</div>
 </div>
@@ -507,6 +511,8 @@ The reception of our thesis has also exceeded our expectations.
     <div class="cols n2">
       <div class="col">
         <h3 class="disp">Confidence begets velocity</h3>
+        <!-- TODO: The straight lines from label to bottom look terrible. Put the multiplier below the label, and make the edges smoothstep. -->
+        <!-- TODO: Make the top bar the same colors as the lower bar. -->
         <GhostBar
           title="Time to production"
           :segments="[
@@ -550,7 +556,7 @@ The reception of our thesis has also exceeded our expectations.
     <h2>Transformative performance</h2>
   </div>
   <div class="grow">
-    <p class="lead-p">Deep abstractions fuse layers of the stack. Each layer nets ~10× gains.</p>
+    <p class="lead-p">Deep abstractions fuse layers of the stack. Each layer fused nets major gains.</p>
     <div class="perf-col">
       <div class="stackint">
         <div class="si-axis">Layer</div>
@@ -608,7 +614,7 @@ These gains are enabled by the way Cambra spans every layer of the backend stack
 <div class="frame">
   <div class="head">
     <div class="eyebrow">11 · Business Model</div>
-    <h2>Cloud Runtime ⇒ Self-building Apps</h2>
+    <h2>OSS ⇒ Cloud Service ⇒ AI Services</h2>
   </div>
   <div class="grow">
     <div class="bm">
@@ -617,7 +623,7 @@ These gains are enabled by the way Cambra spans every layer of the backend stack
         <div class="bm-note tier-2" v-click="3">
           <div class="bm-tier">Value Added Services</div>
           <h3 class="bm-h">Self-building Apps</h3>
-          <p>Upsell features for AI to build apps automatically.</p>
+          <p>Only Cambra has the full context for AI to automate development.</p>
           <div class="bm-tags"><span>User simulation</span><span>Feature development</span><span>Experimentation</span></div>
         </div>
         <div class="bm-note tier-1" v-click="2">
@@ -632,14 +638,12 @@ These gains are enabled by the way Cambra spans every layer of the backend stack
         </div>
       </div>
     </div>
-    <p class="closer">Only Cambra has the full context that AI needs.</p>
+    <p class="closer" v-click=4>G2M: Bottom-up for early viral growth. Later stages invert to top-down.</p>
   </div>
   <div class="page-no">{{ $slidev.nav.currentPage - 1 }} / {{ $slidev.nav.total - 1 }}</div>
 </div>
 
 <!--
-The closer states the context argument; the payoff after "so AI can…" is still
-yours to finish — I did not want to invent the capability.
 -->
 
 ---
@@ -652,6 +656,7 @@ yours to finish — I did not want to invent the capability.
   </div>
   <div class="grow">
     <div class="ask-phases">
+        <!-- TODO: Make the box heights proportional to monthly spend of each phase. -->
       <div class="ask-phase">
         <div class="ph"><span>OSS Core</span><span>months 0–6</span></div>
         <div class="amt">$0.6M<small>team of 6</small></div>
@@ -660,7 +665,7 @@ yours to finish — I did not want to invent the capability.
       <div class="ask-phase">
         <div class="ph"><span>Cloud</span><span>months 6–18</span></div>
         <div class="amt">$1.8M<small>team of 8</small></div>
-        <div class="deliv">The hosted runtime is in production with 3–5 paying design partners.</div>
+        <div class="deliv">The hosted runtime is <b>in production</b> with 3–5 paying design partners.</div>
       </div>
       <div class="ask-phase warm">
         <div class="ph"><span>Grow</span><span>months 18–24</span></div>
@@ -700,22 +705,14 @@ Back pocket (Seed Worksheet rev 2, 2026-09-03; vault: projects/seed-round/round-
 <div class="frame center">
   <div class="bg-glow" style="bottom:-16rem;left:-12rem;width:36rem;height:36rem;background:radial-gradient(circle,rgba(28,136,167,.2),transparent 70%)"></div>
   <div class="eyebrow">13 · Vision</div>
-  <h2 style="font-size:2.6rem;max-width:22ch;margin-top:.6rem">In five years, Cambra is the default way to start and scale software applications.</h2>
+  <h2 style="font-size:2.6rem;max-width:22ch;margin-top:.6rem">The <strong class="hot">development</strong> platform.</h2>
 
-  <p class="lead-p" style="font-size:1.05rem">Engineers use agents on Cambra to develop applications with 10× the productivity and 100× the performance of other platforms. They can't even imagine going back to their old tools.</p>
+  <p class="lead-p" style="font-size:1.05rem">Our platform accumulates the context AI needs to take over not just operations, but <strong>application development</strong>.</p>
   <div style="font-family:var(--f-mono);font-size:.7rem;color:var(--fg-3);margin-top:.6rem">cambra.dev · dan@cambra.dev</div>
 </div>
 
 <!--
-Source, verbatim:
-
-Vision (close). Zoom back out — what does the world look like in 5
-years if Cambra wins. This is the slide people remember; end on
-ambition, not logistics.
-
-The source doc doesn't supply actual vision wording — everything on
-this slide is a drafted first pass, explicitly flagged for rewriting in
-Dan's own words.
+When you extrapolate, Cambra's capabilities uniquely position it to take over application devolopment, in the same way that cloud platforms absorbed datacenter operations and application platforms absorbed software infra.
 -->
 
 ---
