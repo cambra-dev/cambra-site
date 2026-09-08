@@ -710,10 +710,20 @@ span.warm {
   pointer-events: none;
 }
 .venn-region path {
+  vector-effect: non-scaling-stroke;
+}
+/* Cambra is filled: territory occupied. Convex is outlined only: territory
+   claimed, and one circle short of ours. Ember rather than coral because
+   coral sits too close to Cambra's amber to separate at this size. */
+.venn-region.cambra path {
   fill: rgba(245, 163, 55, 0.32);
   stroke: var(--warm);
   stroke-width: 2.5;
-  vector-effect: non-scaling-stroke;
+}
+.venn-region.convex path {
+  fill: none;
+  stroke: var(--ember);
+  stroke-width: 2;
 }
 /* Each label is centred on a point 0.375 out from the centroid along the ray
    through its own circle's centre — the middle of that circle's exclusive
