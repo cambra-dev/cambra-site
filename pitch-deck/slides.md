@@ -408,42 +408,7 @@ The reception of our thesis has also exceeded our expectations.
         <div class="venn-stage">
       <div class="venn">
         <div class="venn-note">Combined<br>valuations</div>
-        <div class="venn-circle serving" v-click="2"></div>
-        <div class="venn-circle durable" v-click="3"></div>
         <div class="venn-circle analytics" v-click="1"></div>
-        <!-- Territories, not points: each has area and takes a share of its
-             neighbours. Both paths are derived from the same k = 1.15 as the
-             circles — see .venn in style.css.
-             Convex is serving ∩ durable MINUS analytics, because they have no
-             analytics: their outline stops exactly on the arc where Cambra's
-             region begins, so the two share a boundary instead of Convex
-             appearing to contain us. -->
-        <svg class="venn-region convex" v-click="4" viewBox="0 0 315 299.59" aria-hidden="true">
-          <path d="M157.50 18.18A100 100 0 0 1 199.60 108.89A100 100 0 0 0 115.40 108.88A100 100 0 0 1 157.50 18.18Z" />
-        </svg>
-        <svg class="venn-region cambra" v-click="6" viewBox="0 0 315 299.59" aria-hidden="true">
-          <path d="M115.40 108.88A100 100 0 0 1 199.60 108.89A100 100 0 0 1 157.50 181.82A100 100 0 0 1 115.40 108.88Z" />
-        </svg>
-        <div class="venn-label serving" v-click="2">
-            <span class="vl-name">Serving<span style="font-family: var(--f-logo)">*</span></span>
-          <span class="vl-logos">
-            <span class="vl-co"><i class="i-simple-icons-vercel"></i>Vercel</span>
-            <span class="vl-co"><i class="i-simple-icons-supabase"></i>Supabase</span>
-            <span class="vl-co"><i class="vl-dot"></i>Render</span>
-          </span>
-          <span class="vl-val">$20B</span>
-          <span class="vl-growth">2&ndash;3&times; / yr</span>
-        </div>
-        <div class="venn-label durable" v-click="3">
-          <span class="vl-name">Durable execution</span>
-          <span class="vl-logos">
-            <span class="vl-co"><i class="i-simple-icons-temporal"></i>Temporal</span>
-            <span class="vl-co"><i class="vl-dot"></i>Inngest</span>
-            <span class="vl-co"><i class="vl-dot"></i>Restate</span>
-          </span>
-          <span class="vl-val">$5B</span>
-          <span class="vl-growth">5&times; / yr</span>
-        </div>
         <div class="venn-label analytics" v-click="1">
           <span class="vl-name">Analytics</span>
           <span class="vl-logos">
@@ -454,16 +419,52 @@ The reception of our thesis has also exceeded our expectations.
           <span class="vl-val">$300B</span>
           <span class="vl-growth">1.3&ndash;2&times; / yr</span>
         </div>
-        <div class="venn-lens serving-durable" v-click="4">
+        <div class="venn-circle serving" v-click="2"></div>
+        <div class="venn-label serving" v-click="2">
+            <span class="vl-name">Serving<span style="font-family: var(--f-logo)">*</span></span>
+          <span class="vl-logos">
+            <span class="vl-co"><i class="i-simple-icons-vercel"></i>Vercel</span>
+            <span class="vl-co"><i class="i-simple-icons-supabase"></i>Supabase</span>
+            <span class="vl-co"><i class="vl-dot"></i>Render</span>
+          </span>
+          <span class="vl-val">$20B</span>
+          <span class="vl-growth">2&ndash;3&times; / yr</span>
+        </div>
+        <div class="venn-circle durable" v-click="3"></div>
+        <div class="venn-label durable" v-click="3">
+          <span class="vl-name">Durable execution</span>
+          <span class="vl-logos">
+            <span class="vl-co"><i class="i-simple-icons-temporal"></i>Temporal</span>
+            <span class="vl-co"><i class="vl-dot"></i>Inngest</span>
+            <span class="vl-co"><i class="vl-dot"></i>Restate</span>
+          </span>
+          <span class="vl-val">$5B</span>
+          <span class="vl-growth">5&times; / yr</span>
+        </div>
+        <svg class="venn-region convex" v-click="5" viewBox="0 0 315 299.59" aria-hidden="true">
+          <path d="M157.50 18.18A100 100 0 0 1 199.60 108.89A100 100 0 0 0 115.40 108.88A100 100 0 0 1 157.50 18.18Z" />
+        </svg>
+        <div class="venn-lens serving-durable" v-click="5">
           <span class="vl-co"><i class="vl-dot"></i>Convex</span>
           <span class="vl-val">$110M <span class="vl-qual">raised</span></span>
         </div>
+        <!-- Territories, not points: each has area and takes a share of its
+             neighbours. Both paths are derived from the same k = 1.15 as the
+             circles — see .venn in style.css.
+             Convex is serving ∩ durable MINUS analytics, because they have no
+             analytics: their outline stops exactly on the arc where Cambra's
+             region begins, so the two share a boundary instead of Convex
+             appearing to contain us. -->
+        <svg class="venn-region cambra" v-click="6" viewBox="0 0 315 299.59" aria-hidden="true">
+          <path d="M115.40 108.88A100 100 0 0 1 199.60 108.89A100 100 0 0 1 157.50 181.82A100 100 0 0 1 115.40 108.88Z" />
+        </svg>
         <div class="venn-core" v-click="6"><img src="/brand/symbol.svg" alt="Cambra"></div>
       </div>
       </div>
       </div>
       <div class="beats">
-        <p class="lead-p" v-click="5">Apps need to serve, coordinate, and analyze.</p>
+        <p class="lead-p" v-click="4">Apps need all 3.</p>
+        <!-- TODO: after "need all 3" beat, the structure of these venn diagrams needs to change. Instead of a small overlap, the circles should come together so the overlap region becomes the majority, with mere slivers for the remainder. Need to think throught whether this should be an animation of the existing diagram, or a whole new one--does one even fit on the slide? Fundamentally, we're talking about a change in what's being diagrammed: product categories vs market segments. The central point we're trynig to make is that a single market segment (apps) is currently split across multiple product categories. A unified product can, in theory, take over the whole segment.  -->
         <p class="closer" v-click="6">Cambra is the only<br><span class="warm">backend application platform</span><br>that does all three.</p>
         <p v-click="7"><strong>ICP</strong>: teams <span class="hot">outgrowing their PaaS.</span></p>
       </div>
@@ -473,7 +474,7 @@ The reception of our thesis has also exceeded our expectations.
       Last-priced valuations &middot; YoY revenue growth, rounded, Aug 2026. 
       <span v-click="1">Snowflake is a live market cap. Analytics growth covers Snowflake and Databricks.</span>
       <br>
-      <span v-click="2"><span style="font-family: var(--f-logo)">*</span> Select independents only. Hyperscalers dominate the market. <br><span class="vl-dot vl-dot-inline"></span> do not disclose revenue.</span>
+      <span v-click="2"><span style="font-family: var(--f-logo)">*</span> Select independents only. Hyperscalers dominate the category. <br><span class="vl-dot vl-dot-inline"></span> do not disclose revenue.</span>
       
   </div>
   <div class="page-no">{{ $slidev.nav.currentPage - 1 }} / {{ $slidev.nav.total - 1 }}</div>
@@ -484,13 +485,13 @@ The reception of our thesis has also exceeded our expectations.
 
 1. Analytics is a behemoth with major incumbents like Snowflake, Databricks, and Clickhouse, cumulative valuations in the hundreds of billions, and annual growth between 30 and 80 percent.
 
-2. Serving backend APIs is a huge business. We chose a few platforms as a service with a lot of momentum as representative of the use cases we would target. Their combined valuations is $20B, with a yearl growth rate of 2-3x.
+2. Serving backend APIs is a huge business. We selected a few players with a lot of momentum as representative of the use cases we would target. Their combined valuations is $20B, with a yearly growth rate of 2-3x.
 
 3. Durable execution is a new category, but it's seeing explosive growth. Temporal is the dominant player, with a last-raise valuation of $5B, but rumored to be raising at $12B and growing at 5x.
 
-4. An interesting case study is Convex, which is something like a PaaS with durable execution. They're growth stage, so numbers aren't public, but they've raised $100M. They have clear traction based on the premise of unifying two categories.
+4. In fact, most applications need to buy all 3 categories. But there's a reason these are separate: building a system that spans them is traditionally regarded as impossible. That's changing.
 
-5. In fact, most applications need one component from all 3 categories. But there's a reason these are separate: building a system that spans them is traditionally regarded as impossible. 
+5. Convex blends serving with durable execution. They're growth stage, so numbers aren't public, but they've raised $100M. They are positioning themselves as a new category: "Backend Application Platform".
 
 6. Cambra rejects that contention, and our prototype proves out many of the core pieces. We will serve all 3 categories. And once we do, we'll have access to a gigantic market full of incumbents with structural limitations.
 
@@ -509,6 +510,8 @@ The reception of our thesis has also exceeded our expectations.
     <div class="cols n2">
       <div class="col">
         <h3 class="disp">Confidence begets velocity</h3>
+        <!-- TODO: only put labels that don't fit lower down. e.g. "deploy" doesn't need to be low. -->
+        <!-- TODO: use solid colors for top bars, not translucent.. -->
         <GhostBar
           title="Time to production"
           :segments="[
@@ -563,6 +566,7 @@ The reception of our thesis has also exceeded our expectations.
           <div class="si-layer">Operating System</div>
           <div class="si-layer">Hardware</div>
         </div>
+        <!-- TODO: make faded intervals cool instead of faded ember. -->
         <div class="si-int weld" v-click="1"><span class="si-mult">30&times;</span><span class="si-name">Weld</span></div>
         <div class="si-int hyper" v-click="2"><span class="si-mult">10&times;</span><span class="si-name">HyPer<br>Halide</span></div>
         <div class="si-int mojo" v-click="3"><span class="si-mult">50&times;</span><span class="si-name">Mojo</span></div>
@@ -618,19 +622,23 @@ These gains are enabled by the way Cambra spans every layer of the backend stack
       <div class="bm-notes">
         <div class="bm-note tier-2" v-click="3">
           <div class="bm-tier">Value Added Services</div>
-          <h3 class="bm-h">Self-building Apps</h3>
+          <h3 class="bm-h">AI Development Platform</h3>
           <p>Only Cambra has the full context for AI to automate development.</p>
-          <div class="bm-tags"><span>User simulation</span><span>Feature development</span><span>Experimentation</span></div>
+          <div class="bm-tags">
+              <span>Experimentation</span>
+              <span>User simulation</span>
+              <span>Feature development</span>
+          </div>
         </div>
         <div class="bm-note tier-1" v-click="2">
           <div class="bm-tier">Core revenue</div>
           <h3 class="bm-h">Hosted, distributed runtime</h3>
-          <p>Teams pay for ease of operations and enterprise features.</p>
+          <p>The easiest, cheapest way to run Cambra, from hobbyist to enterprise.</p>
         </div>
         <div class="bm-note tier-0" v-click="1">
           <div class="bm-tier">Open Source</div>
           <h3 class="bm-h">Compiler + runtime</h3>
-          <p>Useful for real workloads. Creates community and sales pipeline.</p>
+          <p>Useful standalone. Builds trust, community, and sales pipeline.</p>
         </div>
       </div>
     </div>
@@ -660,12 +668,12 @@ These gains are enabled by the way Cambra spans every layer of the backend stack
       <div class="ask-phase" style="--h:69%">
         <div class="ph"><span>Cloud</span><span>months 6–18</span></div>
         <div class="amt">$1.8M<small>team of 8</small></div>
-        <div class="deliv">The hosted runtime is <b>in production</b> with 3–5 paying design partners.</div>
+        <div class="deliv">The hosted runtime is <b class="cool">in production</b> with 3–5 paying design partners. Grow OSS community to prime sales funnel for launch.</div>
       </div>
       <div class="ask-phase warm" style="--h:100%">
         <div class="ph"><span>Grow</span><span>months 18–24</span></div>
         <div class="amt">$1.3M<small>team of 11</small></div>
-        <div class="deliv">Raise the Series A on production usage, leaving six months of runway.</div>
+        <div class="deliv">Raise the Series A on production usage, leaving six months of runway. Launch public Beta, freemium tier. Ramp up marketing.</div>
       </div>
     </div>
     <div class="ask-footer">
