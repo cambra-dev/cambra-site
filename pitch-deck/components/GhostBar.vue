@@ -81,7 +81,7 @@ const laid = computed(() => {
         v-for="s in laid"
         :key="`u${s.label}`"
         class="gb-seg today"
-        :style="{ width: `calc(${s.wUpper} * 1%)` }"
+        :style="{ width: `calc(${s.wUpper} * 1%)`, '--acc': s.acc }"
       />
     </div>
 
@@ -102,19 +102,20 @@ const laid = computed(() => {
       </span>
     </div>
 
-    <!-- The fan: one line per stage, from under its label to its section of the
-         bottom bar. preserveAspectRatio=none lets x stay in percentages of the
-         bar while the band keeps a fixed height; non-scaling-stroke stops that
+    <!-- The fan: one curve per stage, from under its label to its section of
+         the bottom bar. Cubic with both control points at mid-height gives a
+         smoothstep — it leaves and arrives vertically, so the curves read as
+         the same stage narrowing rather than as a bundle of diagonals.
+         preserveAspectRatio=none lets x stay in percentages of the bar while
+         the band keeps a fixed height; non-scaling-stroke stops that
          distorting the line weight. -->
     <svg class="gb-fan" viewBox="0 0 100 100" preserveAspectRatio="none">
-      <line
+      <path
         v-for="s in laid"
         :key="`k${s.label}`"
-        :x1="s.xu"
-        y1="0"
-        :x2="s.xl"
-        y2="100"
+        :d="`M${s.xu} 0C${s.xu} 50 ${s.xl} 50 ${s.xl} 100`"
         :stroke="s.acc"
+        fill="none"
         vector-effect="non-scaling-stroke"
       />
     </svg>
@@ -159,11 +160,15 @@ const laid = computed(() => {
   min-width: 2px;
   border-radius: 3px;
 }
-/* Today reads as cost, not as colour: outlined and nearly empty, so the only
-   saturated thing on the chart is what Cambra leaves behind. */
+/* Same colour as the stage's section below, lighter: the pair is one stage in
+   two states, so the eye should match them by hue and read the difference as
+   length. */
 .gb-seg.today {
-  border: 1px solid rgba(255, 255, 255, 0.22);
-  background: rgba(255, 255, 255, 0.05);
+  border: 1px solid var(--acc);
+  /* 65%, not 20%: a translucent warm over this navy desaturates to grey-brown,
+     so anything lighter stops reading as the same colour as the bar below and
+     the pair no longer looks like one stage in two states. */
+  background: color-mix(in srgb, var(--acc) 65%, transparent);
 }
 .gb-labels {
   position: relative;
@@ -194,18 +199,31 @@ const laid = computed(() => {
   background: var(--acc);
   opacity: 0.55;
 }
+/* Name over multiplier rather than side by side: stacked, a label occupies
+   half the width, so the labels can sit closer before they collide and each
+   one reads as a unit. */
 .gb-text {
   display: flex;
-  align-items: baseline;
-  gap: 0.28rem;
+  flex-direction: column;
+  align-items: center;
+  line-height: 1.15;
   padding-top: 0.1rem;
   font-family: var(--f-mono);
   font-size: 0.68rem;
 }
+.gb-tag.first .gb-text {
+  align-items: flex-start;
+}
+.gb-tag.last .gb-text {
+  align-items: flex-end;
+}
+/* Tall enough for the curve to actually curve: in a short band the control
+   points sit too close together and every connector flattens into the same
+   near-horizontal swoosh. */
 .gb-fan {
   width: 100%;
-  height: 1.5rem;
-  opacity: 0.5;
+  height: 2.6rem;
+  opacity: 0.55;
   stroke-width: 1;
 }
 .gb-low {

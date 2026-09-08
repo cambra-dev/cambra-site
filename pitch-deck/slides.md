@@ -402,11 +402,10 @@ The reception of our thesis has also exceeded our expectations.
     <h2>Complex Applications</h2>
   </div>
   <div class="grow">
-    <div class="cols n2" style="align-items:center">
+    <div class="cols n2 venn-row">
       <div class="venn-col">
         <div class="venn-head">Categories</div>
         <div class="venn-stage">
-            <!-- TODO: make the ven diagram use the whole vertical space available to it. -->
       <div class="venn">
         <div class="venn-note">Combined<br>valuations</div>
         <div class="venn-circle serving" v-click="2"></div>
@@ -456,7 +455,6 @@ The reception of our thesis has also exceeded our expectations.
           <span class="vl-growth">1.3&ndash;2&times; / yr</span>
         </div>
         <div class="venn-lens serving-durable" v-click="4">
-            <!-- TODO: move down slightly so vl-dot doesn't touch edge. -->
           <span class="vl-co"><i class="vl-dot"></i>Convex</span>
           <span class="vl-val">$110M <span class="vl-qual">raised</span></span>
         </div>
@@ -511,8 +509,6 @@ The reception of our thesis has also exceeded our expectations.
     <div class="cols n2">
       <div class="col">
         <h3 class="disp">Confidence begets velocity</h3>
-        <!-- TODO: The straight lines from label to bottom look terrible. Put the multiplier below the label, and make the edges smoothstep. -->
-        <!-- TODO: Make the top bar the same colors as the lower bar. -->
         <GhostBar
           title="Time to production"
           :segments="[
@@ -656,18 +652,17 @@ These gains are enabled by the way Cambra spans every layer of the backend stack
   </div>
   <div class="grow">
     <div class="ask-phases">
-        <!-- TODO: Make the box heights proportional to monthly spend of each phase. -->
-      <div class="ask-phase">
+      <div class="ask-phase" style="--h:48%">
         <div class="ph"><span>OSS Core</span><span>months 0–6</span></div>
         <div class="amt">$0.6M<small>team of 6</small></div>
         <div class="deliv">Teams outgrowing their PaaS/BaaS reach for Cambra instead of a workflow engine and analytics stack.</div>
       </div>
-      <div class="ask-phase">
+      <div class="ask-phase" style="--h:69%">
         <div class="ph"><span>Cloud</span><span>months 6–18</span></div>
         <div class="amt">$1.8M<small>team of 8</small></div>
         <div class="deliv">The hosted runtime is <b>in production</b> with 3–5 paying design partners.</div>
       </div>
-      <div class="ask-phase warm">
+      <div class="ask-phase warm" style="--h:100%">
         <div class="ph"><span>Grow</span><span>months 18–24</span></div>
         <div class="amt">$1.3M<small>team of 11</small></div>
         <div class="deliv">Raise the Series A on production usage, leaving six months of runway.</div>

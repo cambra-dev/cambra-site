@@ -623,16 +623,29 @@ span.warm {
    UnoCSS utilities (`b` is its shorthand for `border`). */
 /* Names what the circles are; .venn-note beside them says what the numbers in
    them are, since the natural reading of "$300B" would otherwise be revenue. */
+/* The diagram is the slide's main object, so it takes the column's full
+   height and derives its width from that rather than being capped at a fixed
+   width and leaving vertical space empty.
+   The grid row has to have a definite height for any of that to resolve — a
+   percentage height against an auto row collapses, which shrinks the diagram
+   instead of growing it. */
+.cols.venn-row {
+  flex: 1;
+  min-height: 0;
+  align-items: stretch;
+}
 .venn-col {
   position: relative;
+  display: flex;
+  flex-direction: column;
+  min-height: 0;
 }
-/* Matches the diagram's own width so the side note can hang off its edge rather
-   than off the column's, which left it stranded in the gutter reading as part
-   of the prose alongside. */
 .venn-stage {
   position: relative;
-  max-width: 22rem;
-  margin: 0 auto;
+  flex: 1;
+  min-height: 0;
+  display: flex;
+  justify-content: center;
 }
 .venn-head {
   font-family: var(--f-mono);
@@ -670,7 +683,11 @@ span.warm {
      union is (2r + s) wide by (√3/2·s + 2r) tall, which fixes this ratio.
      Every percentage below falls out of that; re-derive them if k changes. */
   aspect-ratio: 1 / 0.9511;
-  max-width: 22rem;
+  /* Height-driven: width falls out of the aspect ratio. container-type is
+     still inline-size, so the cqw units below track the derived width. */
+  height: 100%;
+  width: auto;
+  max-width: 100%;
   margin: 0 auto;
 }
 .venn-circle {
@@ -862,9 +879,11 @@ span.warm {
   transform: translate(-50%, -50%);
   white-space: nowrap;
 }
+/* Low enough that the lune has widened to clear the row's leading dot — near
+   the top vertex the region pinches and the dot lands on the stroke. */
 .venn-lens.serving-durable {
   left: 50%;
-  top: 19.66%;
+  top: 24%;
 }
 .venn-core {
   position: absolute;
@@ -1226,6 +1245,7 @@ span.warm {
   min-width: 0;
   display: flex;
   flex-direction: column;
+  justify-content: center;
   gap: 1.1rem;
 }
 /* The theme's prose styles put vertical margins on <p>, which stack on top
@@ -1309,13 +1329,22 @@ span.warm {
   color: var(--fg-3);
   margin-top: 0.25rem;
 }
+/* Heights track monthly burn ($107K / $153K / $222K), bottom-aligned so the
+   three read as a ramp: the ask is a rising burn rate, not three equal boxes.
+   --h is that burn as a share of the largest. */
 .ask-phases {
   display: grid;
   grid-template-columns: repeat(3, 1fr);
+  align-items: end;
   gap: 0.9rem;
+  flex: 1;
+  min-height: 0;
   margin-top: 0.4rem;
 }
 .ask-phase {
+  height: var(--h, 100%);
+  box-sizing: border-box;
+  justify-content: flex-start;
   background: var(--bg-2);
   border: 1px solid var(--line);
   border-top: 3px solid var(--cool);
