@@ -412,6 +412,12 @@ The reception of our thesis has also exceeded our expectations.
         <div class="venn-circle serving" v-click="2"></div>
         <div class="venn-circle durable" v-click="3"></div>
         <div class="venn-circle analytics" v-click="1"></div>
+        <!-- Cambra is a region, not a point: the category it occupies has area
+             and takes a share of each neighbour. Path derived from the same
+             k = 1.15 the circles are — see .venn in style.css. -->
+        <svg class="venn-region" v-click="6" viewBox="0 0 315 299.59" aria-hidden="true">
+          <path d="M115.40 108.88A100 100 0 0 1 199.60 108.89A100 100 0 0 1 157.50 181.82A100 100 0 0 1 115.40 108.88Z" />
+        </svg>
         <div class="venn-label serving" v-click="2">
             <span class="vl-name">Serving<span style="font-family: var(--f-logo)">*</span></span>
           <span class="vl-logos">

@@ -678,25 +678,42 @@ span.warm {
   width: 63.49%;
   aspect-ratio: 1;
   border-radius: 50%;
-  border: 1.5px solid;
+  border: 1.5px solid rgba(108, 196, 200, 0.55);
+  /* Light, because three of these stack at the centre and whatever Cambra's
+     region is filled with has to sit on top of the sum without going olive. */
+  background: rgba(108, 196, 200, 0.055);
 }
+/* All three neighbours share one cool treatment. They are the setting, not
+   three competing claims — and identical translucent fills accumulate where
+   the circles overlap, so the diagram darkens toward the intersection on its
+   own. Warm is reserved for Cambra, which is the only figure on this slide. */
 .venn-circle.serving {
   left: 0;
   top: 0;
-  border-color: rgba(108, 196, 200, 0.55);
-  background: rgba(108, 196, 200, 0.08);
 }
 .venn-circle.durable {
   right: 0;
   top: 0;
-  border-color: rgba(245, 163, 55, 0.55);
-  background: rgba(245, 163, 55, 0.08);
 }
 .venn-circle.analytics {
   left: 18.25%;
   bottom: 0;
-  border-color: rgba(241, 139, 64, 0.55);
-  background: rgba(241, 139, 64, 0.08);
+}
+/* Cambra's region: the triple intersection, drawn as three arcs of the same
+   circles. Vertices are the pairwise intersections that fall inside the third
+   circle, so the shape re-derives from k rather than being traced by hand. */
+.venn-region {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  pointer-events: none;
+}
+.venn-region path {
+  fill: rgba(245, 163, 55, 0.32);
+  stroke: var(--warm);
+  stroke-width: 2.5;
+  vector-effect: non-scaling-stroke;
 }
 /* Each label is centred on a point 0.375 out from the centroid along the ray
    through its own circle's centre — the middle of that circle's exclusive
