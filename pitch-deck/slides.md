@@ -471,7 +471,7 @@ The reception of our thesis has also exceeded our expectations.
       <div class="beats">
         <p class="lead-p" v-click="5">Apps need all 3.</p>
         <p class="closer" v-click="6">Cambra is the only<br><span class="warm">backend application platform</span><br>that does all three.</p>
-        <p v-click="9"><strong>ICP</strong>: teams <span class="hot">outgrowing their PaaS.</span></p>
+        <p v-click="8"><strong>ICP</strong>: teams <span class="hot">outgrowing their PaaS.</span></p>
       </div>
     </div>
   </div>
