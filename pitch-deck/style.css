@@ -696,6 +696,8 @@ span.warm {
   width: 63.49%;
   aspect-ratio: 1;
   border-radius: 50%;
+  transition: left 0.7s ease, top 0.7s ease, right 0.7s ease, bottom 0.7s ease,
+    width 0.7s ease;
   border: 1.5px solid rgba(108, 196, 200, 0.55);
   /* Light, because three of these stack at the centre and whatever Cambra's
      region is filled with has to sit on top of the sum without going olive. */
@@ -754,6 +756,7 @@ span.warm {
    measuring the rendered ink, not by eye. */
 .venn-label {
   position: absolute;
+  transition: left 0.7s ease, top 0.7s ease, gap 0.7s ease;
   transform: translate(-50%, -50%);
   display: flex;
   flex-direction: column;
@@ -1042,6 +1045,156 @@ span.warm {
 .perf-col .stackint {
   height: 100%;
   grid-template-rows: auto repeat(4, minmax(2.6rem, 1fr));
+}
+
+
+/* ─── market venn: the segments state ─────────────────────────── */
+/* Same three sets, different population. In the categories view the circles
+   are drawn over products, so the overlap is small — few products do more than
+   one of these. In the segments view they are drawn over customers, where
+   almost every application needs all three, so the overlap is the majority and
+   the exclusive crescents are slivers.
+   Keeping one diagram in one place is the point: the sets do not change, only
+   what is being counted, so the circles moving IS the argument. A second
+   figure elsewhere would make the reader re-establish that the sets are the
+   same before they could see that.
+   k drops 1.15 -> 0.26, where the triple intersection is 60% of the union and
+   each crescent is ~7%. Positions below are derived from that k; re-derive
+   them together if it changes. */
+.venn-col.segments .venn-circle {
+  width: 52.57%;
+  right: auto;
+  bottom: auto;
+}
+.venn-col.segments .venn-circle.serving {
+  left: 20.3%;
+  top: 20.29%;
+}
+.venn-col.segments .venn-circle.durable {
+  left: 27.13%;
+  top: 20.29%;
+}
+.venn-col.segments .venn-circle.analytics {
+  left: 23.71%;
+  top: 26.51%;
+}
+/* Labels ride the same rays out past the union — there is no crescent left to
+   sit inside. */
+.venn-col.segments .venn-label.serving {
+  left: 16.67%;
+  top: 29.77%;
+}
+.venn-col.segments .venn-label.durable {
+  left: 83.33%;
+  top: 29.77%;
+}
+.venn-col.segments .venn-label.analytics {
+  left: 50%;
+  top: 90.47%;
+}
+/* Nothing but Cambra survives the change of population: the companies and the
+   valuations are facts about products, and products are no longer what is
+   being counted. */
+.venn-col.segments .venn-label {
+  gap: 0;
+}
+.venn-label .vl-logos,
+.venn-label .vl-val,
+.venn-label .vl-growth {
+  transition: opacity 0.35s ease, max-height 0.7s ease;
+  max-height: 6em;
+  overflow: hidden;
+}
+.venn-col.segments .vl-logos,
+.venn-col.segments .vl-val,
+.venn-col.segments .vl-growth,
+.venn-col.segments .venn-note,
+.venn-col.segments .venn-region.convex,
+.venn-col.segments .venn-lens {
+  opacity: 0;
+  max-height: 0;
+  pointer-events: none;
+}
+/* The asterisk points at a footnote about products; in the segments view there
+   are no products on the diagram for it to qualify. */
+.vl-star {
+  font-family: var(--f-logo);
+  transition: opacity 0.35s ease;
+}
+.venn-col.segments .vl-star {
+  opacity: 0;
+}
+/* Same reason: the sources note is entirely about valuations and vendors. */
+.venn-src {
+  transition: opacity 0.45s ease;
+}
+.venn-src.src-gone {
+  opacity: 0;
+}
+/* Three of these stack over the whole overlap now, not just a sliver of it, so
+   the per-circle wash has to come down or Cambra's amber lands on a teal that
+   is three times as strong as before and goes olive. */
+.venn-col.segments .venn-circle {
+  background: rgba(108, 196, 200, 0.035);
+}
+.venn-col.segments .venn-label {
+  width: 23%;
+}
+.venn-col.segments .vl-name {
+  font-size: 3.1cqw;
+  max-width: 9em;
+}
+/* The centroid moves to the box centre as the circles close up. */
+.venn-core {
+  transition: top 0.7s ease, width 0.7s ease, height 0.7s ease;
+}
+.venn-col.segments .venn-core {
+  top: 50%;
+  width: 16cqw;
+  height: 16cqw;
+}
+.venn-region path {
+  transition: opacity 0.45s ease;
+}
+.venn-region.cambra .for-seg {
+  opacity: 0;
+}
+.venn-col.segments .venn-region.cambra .for-cat {
+  opacity: 0;
+}
+.venn-col.segments .venn-region.cambra .for-seg {
+  opacity: 1;
+}
+/* Heavier than the categories region. It now covers most of the diagram, and
+   at 0.32 over the tripled teal it composites to olive-grey rather than amber
+   — and this shape is the whole claim, so it has to read as Cambra's colour. */
+.venn-region.cambra .for-seg {
+  fill: rgba(245, 163, 55, 0.55);
+}
+.venn-region.convex {
+  transition: opacity 0.35s ease;
+}
+.venn-lens {
+  transition: opacity 0.35s ease;
+}
+/* One header slot, two words, cross-faded — the label changes, the diagram
+   does not move house. */
+.venn-head {
+  position: relative;
+}
+.venn-head span {
+  transition: opacity 0.45s ease;
+}
+.venn-head .vh-seg {
+  position: absolute;
+  inset: 0;
+  opacity: 0;
+}
+.venn-col.segments .venn-head .vh-cat {
+  opacity: 0;
+}
+.venn-col.segments .venn-head .vh-seg {
+  opacity: 1;
 }
 
 /* ─── traction timeline ──────────────────────────────────────── */

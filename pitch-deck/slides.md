@@ -403,8 +403,11 @@ The reception of our thesis has also exceeded our expectations.
   </div>
   <div class="grow">
     <div class="cols n2 venn-row">
-      <div class="venn-col">
-        <div class="venn-head">Categories</div>
+      <div class="venn-col" :class="{ segments: $clicks >= 6 }">
+        <div class="venn-head">
+          <span class="vh-cat">Categories</span>
+          <span class="vh-seg">Segments</span>
+        </div>
         <div class="venn-stage">
       <div class="venn">
         <div class="venn-note">Combined<br>valuations</div>
@@ -421,7 +424,7 @@ The reception of our thesis has also exceeded our expectations.
         </div>
         <div class="venn-circle serving" v-click="2"></div>
         <div class="venn-label serving" v-click="2">
-            <span class="vl-name">Serving<span style="font-family: var(--f-logo)">*</span></span>
+            <span class="vl-name">Serving<span class="vl-star">*</span></span>
           <span class="vl-logos">
             <span class="vl-co"><i class="i-simple-icons-vercel"></i>Vercel</span>
             <span class="vl-co"><i class="i-simple-icons-supabase"></i>Supabase</span>
@@ -455,22 +458,25 @@ The reception of our thesis has also exceeded our expectations.
              analytics: their outline stops exactly on the arc where Cambra's
              region begins, so the two share a boundary instead of Convex
              appearing to contain us. -->
-        <svg class="venn-region cambra" v-click="6" viewBox="0 0 315 299.59" aria-hidden="true">
-          <path d="M115.40 108.88A100 100 0 0 1 199.60 108.89A100 100 0 0 1 157.50 181.82A100 100 0 0 1 115.40 108.88Z" />
+        <svg class="venn-region cambra" v-click="7" viewBox="0 0 315 299.59" aria-hidden="true">
+          <path class="for-cat" d="M115.40 108.88A100 100 0 0 1 199.60 108.89A100 100 0 0 1 157.50 181.82A100 100 0 0 1 115.40 108.88Z" />
+          <!-- Same construction at k = 0.26, where the triple intersection is
+               60% of the union and each exclusive crescent is ~7%. -->
+          <path class="for-seg" d="M91.78 111.85A82.80 82.80 0 0 1 223.22 111.85A82.80 82.80 0 0 1 157.50 225.68A82.80 82.80 0 0 1 91.78 111.85Z" />
         </svg>
-        <div class="venn-core" v-click="6"><img src="/brand/symbol.svg" alt="Cambra"></div>
+        <div class="venn-core" v-click="7"><img src="/brand/symbol.svg" alt="Cambra"></div>
       </div>
       </div>
       </div>
       <div class="beats">
         <p class="lead-p" v-click="4">Apps need all 3.</p>
-        <!-- TODO: after "need all 3" beat, the structure of these venn diagrams needs to change. Instead of a small overlap, the circles should come together so the overlap region becomes the majority, with mere slivers for the remainder. Need to think throught whether this should be an animation of the existing diagram, or a whole new one--does one even fit on the slide? Fundamentally, we're talking about a change in what's being diagrammed: product categories vs market segments. The central point we're trynig to make is that a single market segment (apps) is currently split across multiple product categories. A unified product can, in theory, take over the whole segment.  -->
-        <p class="closer" v-click="6">Cambra is the only<br><span class="warm">backend application platform</span><br>that does all three.</p>
-        <p v-click="7"><strong>ICP</strong>: teams <span class="hot">outgrowing their PaaS.</span></p>
+        <p class="lead-p" v-click="6">Same three needs.<br><strong>One segment</strong>, split three ways.</p>
+        <p class="closer" v-click="7">Cambra is the only<br><span class="warm">backend application platform</span><br>that does all three.</p>
+        <p v-click="8"><strong>ICP</strong>: teams <span class="hot">outgrowing their PaaS.</span></p>
       </div>
     </div>
   </div>
-  <div class="venn-src">
+  <div class="venn-src" :class="{ 'src-gone': $clicks >= 6 }">
       Last-priced valuations &middot; YoY revenue growth, rounded, Aug 2026. 
       <span v-click="1">Snowflake is a live market cap. Analytics growth covers Snowflake and Databricks.</span>
       <br>
