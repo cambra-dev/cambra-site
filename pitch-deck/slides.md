@@ -403,7 +403,7 @@ The reception of our thesis has also exceeded our expectations.
   </div>
   <div class="grow">
     <div class="cols n2 venn-row">
-      <div class="venn-col" :class="{ segments: $clicks >= 6 }">
+      <div class="venn-col" :class="{ segments: $clicks >= 7 }">
         <div class="venn-head">
           <span class="vh-cat">Categories</span>
           <span class="vh-seg">Segments</span>
@@ -444,10 +444,10 @@ The reception of our thesis has also exceeded our expectations.
           <span class="vl-val">$5B</span>
           <span class="vl-growth">5&times; / yr</span>
         </div>
-        <svg class="venn-region convex" v-click="5" viewBox="0 0 315 299.59" aria-hidden="true">
+        <svg class="venn-region convex" v-click="4" viewBox="0 0 315 299.59" aria-hidden="true">
           <path d="M157.50 18.18A100 100 0 0 1 199.60 108.89A100 100 0 0 0 115.40 108.88A100 100 0 0 1 157.50 18.18Z" />
         </svg>
-        <div class="venn-lens serving-durable" v-click="5">
+        <div class="venn-lens serving-durable" v-click="4">
           <span class="vl-co"><i class="vl-dot"></i>Convex</span>
           <span class="vl-val">$110M <span class="vl-qual">raised</span></span>
         </div>
@@ -464,19 +464,18 @@ The reception of our thesis has also exceeded our expectations.
                60% of the union and each exclusive crescent is ~7%. -->
           <path class="for-seg" d="M91.78 111.85A82.80 82.80 0 0 1 223.22 111.85A82.80 82.80 0 0 1 157.50 225.68A82.80 82.80 0 0 1 91.78 111.85Z" />
         </svg>
-        <div class="venn-core" v-click="7"><img src="/brand/symbol.svg" alt="Cambra"></div>
+        <div class="venn-core" v-click="6"><img src="/brand/symbol.svg" alt="Cambra"></div>
       </div>
       </div>
       </div>
       <div class="beats">
-        <p class="lead-p" v-click="4">Apps need all 3.</p>
-        <p class="lead-p" v-click="6">Same three needs.<br><strong>One segment</strong>, split three ways.</p>
-        <p class="closer" v-click="7">Cambra is the only<br><span class="warm">backend application platform</span><br>that does all three.</p>
-        <p v-click="8"><strong>ICP</strong>: teams <span class="hot">outgrowing their PaaS.</span></p>
+        <p class="lead-p" v-click="5">Apps need all 3.</p>
+        <p class="closer" v-click="6">Cambra is the only<br><span class="warm">backend application platform</span><br>that does all three.</p>
+        <p v-click="9"><strong>ICP</strong>: teams <span class="hot">outgrowing their PaaS.</span></p>
       </div>
     </div>
   </div>
-  <div class="venn-src" :class="{ 'src-gone': $clicks >= 6 }">
+  <div class="venn-src" :class="{ 'src-gone': $clicks >= 7 }">
       Last-priced valuations &middot; YoY revenue growth, rounded, Aug 2026. 
       <span v-click="1">Snowflake is a live market cap. Analytics growth covers Snowflake and Databricks.</span>
       <br>
