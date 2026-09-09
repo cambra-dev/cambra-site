@@ -131,7 +131,7 @@ The multipliers are gone from this slide on purpose — they land on Why It Wins
   <div class="grow">
     <div class="sdlc-canvas"><SdlcDiagram :stage="$clicks + 1" /></div>
     <div class="pillars compact">
-      <div v-click="2"><b>Today</b> — types and unit tests early. All the important stuff after after deploy, with a human in the loop.</div>
+      <div v-click="2"><b>Today</b> — types and unit tests early. All the important stuff after deploy, with a human in the loop.</div>
       <div v-click="3"><b>Cambra</b> — end-to-end properties checked before release, no human required.</div>
     </div>
     <div class="closer center" v-click="4">You can't bolt this on. <span class="warm">You have to design it in.</span></div>

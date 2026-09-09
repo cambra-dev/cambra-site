@@ -133,7 +133,7 @@ The multipliers are gone from this slide on purpose — they land on Why It Wins
   <div class="grow">
     <div class="sdlc-canvas"><SdlcDiagram :stage="3" fixed /></div>
     <div class="pillars compact">
-      <div><b>Today</b> — types and unit tests early. All the important stuff after after deploy, with a human in the loop.</div>
+      <div><b>Today</b> — types and unit tests early. All the important stuff after deploy, with a human in the loop.</div>
     </div>
     <div class="closer center">Today a <span class="hot">human</span> closes the loop.</div>
   </div>
