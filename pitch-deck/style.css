@@ -417,6 +417,7 @@ span.warm {
 /* ─── growing system diagram (Pain slide) ─────────────────────── */
 /* Vue Flow needs an explicitly sized box; it re-frames itself per stage. */
 .diagram-stack {
+  position: relative;
   flex: none;
   height: 15rem;
   width: 100%;
@@ -615,6 +616,75 @@ span.warm {
   letter-spacing: 0.08em;
   text-transform: uppercase;
   color: var(--fg-3);
+}
+
+
+/* ─── slide 01: the clock ─────────────────────────────────────── */
+/* One line above the diagram naming when each system arrives. Swapped rather
+   than stacked so it cannot crowd the diagram; the last one persists so the
+   Day 1 -> Week 6 span is still on screen when the beats land. */
+.when {
+  flex: none;
+  height: 1.5rem;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-family: var(--f-mono);
+  font-size: 0.78rem;
+  letter-spacing: 0.04em;
+  color: var(--fg-3);
+}
+.when span {
+  position: absolute;
+}
+.when b {
+  color: var(--cool);
+  font-weight: 700;
+}
+
+/* ─── pillar beats (slides 02 and 03) ─────────────────────────── */
+/* The lead clause carries the pillar, the rest is its consequence, so the
+   bold is the thing that repeats across the deck and the tail is what changes. */
+.pillars {
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+  margin-top: 0.2rem;
+}
+.pillars > div {
+  font-size: 0.95rem;
+  line-height: 1.35;
+  color: var(--fg-2);
+  padding-left: 0.85rem;
+  border-left: 3px solid var(--line-2);
+  max-width: 92ch;
+}
+.pillars > div:nth-child(1) {
+  border-left-color: var(--cool);
+}
+.pillars > div:nth-child(2) {
+  border-left-color: var(--warm);
+}
+.pillars > div:nth-child(3) {
+  border-left-color: var(--coral);
+}
+.pillars b {
+  color: var(--fg);
+  font-weight: 700;
+}
+.pillars.compact > div {
+  font-size: 0.88rem;
+}
+
+/* The line under the Cambra scope naming what "one program" contains. */
+.scope-sub {
+  font-family: var(--f-mono);
+  font-size: 0.66rem;
+  line-height: 1.4;
+  letter-spacing: 0.02em;
+  color: var(--fg-3);
+  text-align: center;
+  margin-top: 0.35rem;
 }
 
 /* ─── market venn ────────────────────────────────────────────── */

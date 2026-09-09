@@ -174,12 +174,18 @@ const ALL_EDGES = [
     label: stacked('reliability · integrity · security · performance'),
   }),
   // Cambra checks the same properties within the lifecycle: statically where it
-  // can, at test time where it must.
-  under('l-static', 'compile', { at: 4, offset: UNDER.after, label: stacked('integrity', 'security') }),
+  // can, at test time where it must. Labelled with the pillars rather than the
+  // properties, so the deck's spine lands on a lifecycle the audience knows —
+  // the properties themselves are carried by the beats beside the diagram.
+  under('l-static', 'compile', {
+    at: 4,
+    offset: UNDER.after,
+    label: stacked('proven before', 'it runs'),
+  }),
   under('l-dynamic', 'test', {
     at: 4,
     offset: UNDER.afterOuter,
-    label: stacked('performance', 'reliability'),
+    label: stacked('run against a branch', 'of production'),
   }),
 
   // The annotation hangs off the loops, not off a stage.

@@ -31,20 +31,27 @@ colorSchema: dark
   <div class="grow">
     <div class="grow split">
         <div class="diagram-stack">
+          <!-- The clock names the protagonist and the pace: an engineer with a
+               coding agent, six weeks, not six years. -->
+          <div class="when">
+            <span v-click="[1, 2]"><b>Day 1</b> — your agent ships the app.</span>
+            <span v-click="[2, 3]"><b>Week 2</b> — background jobs.</span>
+            <span v-click="[3, 4]"><b>Week 4</b> — analytics.</span>
+            <span v-click="4"><b>Week 6</b> — alerting.</span>
+          </div>
           <div class="diagram-canvas">
             <SystemDiagram :stage="$clicks" />
           </div>
           <div class="flow-note" v-click="5">Each arrow multiplies complexity</div>
         </div>
-        <!-- TODO: make it more obvious who has this problem. It's app builders--software engineers, using AI coding. Claude: don't just do this on your own; help me think through teh best way to present it. -->
         <div class="beats arc" v-click="6">
-            <div>You ship fast.</div>
-            <div>Then you slow down.</div>
-            <div class="hot">Then production breaks.</div>
+            <div>Ten systems, wired by hand.</div>
+            <div>Contracts kept in your head.</div>
+            <div class="hot">Production is where you find out.</div>
         </div>
     </div>
     <p class="closer center" v-click="7">
-        <span>AI doesn't fix this <span class="hot">— it makes it worse.</span></span></p>
+        <span>AI builds the stack faster. <span class="hot">It doesn't make it smaller.</span></span></p>
   </div>
   <div class="page-no">{{ $slidev.nav.currentPage - 1 }} / {{ $slidev.nav.total - 1 }}</div>
 </div>
@@ -66,7 +73,9 @@ And this is just a basic app.
 
 6. In practice, things are fine at first, but then development slows, performance crawls, and reliability falls.
 
-7. AI doesn't fix this. It makes it worse. It lets you build faster. But that just gets you in this mess sooner.
+7. AI builds the stack faster. It doesn't make it smaller. Building faster just gets you into this mess sooner.
+
+Say the wedge moment out loud on the last clicks: this is the week you reach for a workflow engine and an analytics store — Temporal and ClickHouse. The slide stays generic; the speech names them.
 -->
 
 ---
@@ -74,7 +83,7 @@ And this is just a basic app.
 <div class="frame">
   <div class="head">
     <div class="eyebrow">02 · The Solution</div>
-    <h2>A platform for coherent systems</h2>
+    <h2>One program on one engine.</h2>
   </div>
   <div class="grow">
     <div class="scopes">
@@ -85,18 +94,17 @@ And this is just a basic app.
       <figure class="scope" v-click="2">
         <figcaption>Cambra</figcaption>
         <div class="scope-canvas"><ScopeDiagram variant="system" /></div>
+        <figcaption class="scope-sub">Database, jobs, workflows, streams, analytics, API.<br>Written once, compiled together.</figcaption>
       </figure>
     </div>
-    <div></div>
-    <div class="closer" v-click="3">
-        With Cambra, building complex apps is <span class="cool">simple</span>.
+    <!-- The three pillars, and the only place all three sub-lines appear. The
+         multipliers moved to Why It Wins, where the charts can carry them. -->
+    <div class="pillars">
+      <div v-click="3"><b>One program on one engine.</b> Nothing to wire.</div>
+      <div v-click="4"><b>Proven before it runs.</b> The compiler checks your integrity and security rules everywhere they apply. Nothing to hand-check.</div>
+      <div v-click="5"><b>Run against a branch of production.</b> Every change gets a full branch: same program, same state, load shaped from live traffic. Nothing to stage.</div>
     </div>
-    <div class="closer" v-click="4">
-        You get 10× <span class="warm">productivity</span>.
-    </div>
-    <div class="closer" v-click="5">
-        Your app gets 100× <span class="hot">performance</span>.
-    </div>
+    <p class="closer center" v-click="6">Ship fast. <span class="hot">Break nothing.</span></p>
   </div>
   <div class="page-no">{{ $slidev.nav.currentPage - 1 }} / {{ $slidev.nav.total - 1 }}</div>
 </div>
@@ -109,11 +117,9 @@ This architecture implies that programming languages, which are the best tool de
 
 2. In Cambra, a program is a *logical* description of the relationships between the different parts of your application. Cambra takes care of distributing it across machines, how data is stored, and how the various parts communicate.
 
-3. We make building complex apps simple.
+3-5. The three pillars. This is where "collapse" belongs, not on the cover: the layers were only ever separate because no compiler could see across them. Nothing to wire, nothing to hand-check, nothing to stage.
 
-4. You get a huge productivity boost.
-
-5. Your app gets a massive performance boost.
+The multipliers are gone from this slide on purpose — they land on Why It Wins, where the charts carry them.
 -->
 
 ---
@@ -121,11 +127,15 @@ This architecture implies that programming languages, which are the best tool de
 <div class="frame">
   <div class="head">
     <div class="eyebrow">03 · The Insight</div>
-    <h2>Automated feedback unleashes AI.</h2>
+    <h2>Agents converge on feedback.</h2>
   </div>
   <div class="grow">
     <div class="sdlc-canvas"><SdlcDiagram :stage="$clicks + 1" /></div>
-    <div class="closer center" v-click="4">Only <span class="warm">Cambra</span> can do this.</div>
+    <div class="pillars compact">
+      <div v-click="2"><b>Today</b> — types and unit tests early. Everything that matters after deploy, with a human in the loop.</div>
+      <div v-click="3"><b>Cambra</b> — integrity, security, performance and behaviour, before release, no human required.</div>
+    </div>
+    <div class="closer center" v-click="4">You can't bolt this on. <span class="warm">You have to design it in.</span></div>
   </div>
   <div class="page-no">{{ $slidev.nav.currentPage - 1 }} / {{ $slidev.nav.total - 1 }}</div>
 </div>
@@ -141,6 +151,8 @@ This feedback needs a human in the loop to ensure the tests are realistic and do
 3. Cambra makes it possible to automate these feedback signals, moving them earlier in the lifecycle. Our type system checks integrity and security requirements automatically. And our runtime makes realistic testing trivial. That gets the human out of the loop, letting AI iterate unimpeded.
 
 4. These features aren't something you can bolt on to an existing development platform. It's something you have to design in. Cambra is the only system built for it.
+
+Competitor contrast in speech only: Convex's type safety catches a hallucinated field name. Our compiler checks the rule you wrote, everywhere the data flows.
 -->
 
 ---
