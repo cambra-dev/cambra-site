@@ -36,10 +36,10 @@ colorSchema: dark
           <!-- The clock names the protagonist and the pace: an engineer with a
                coding agent, six weeks, not six years. -->
           <div class="when">
-            <span v-click="[1, 2]"><b>Day 1</b> — your agent ships the app.</span>
-            <span v-click="[2, 3]"><b>Week 2</b> — background jobs.</span>
-            <span v-click="[3, 4]"><b>Week 4</b> — analytics.</span>
-            <span v-click="4"><b>Week 6</b> — alerting.</span>
+            <span v-click="1"><b>Day 1</b> the app</span>
+            <span v-click="2"><b>Week 2</b> jobs</span>
+            <span v-click="3"><b>Week 4</b> analytics</span>
+            <span v-click="4"><b>Week 6</b> alerting</span>
           </div>
           <div class="diagram-canvas">
             <SystemDiagram :stage="$clicks" />
@@ -303,11 +303,8 @@ We're the team you'd bet can solve this problem.
   </div>
   <div class="grow">
     <div class="cols n2 venn-row">
-      <div class="venn-col" :class="{ segments: $clicks >= 7 }">
-        <div class="venn-head">
-          <span class="vh-cat">Categories</span>
-          <span class="vh-seg">Segments</span>
-        </div>
+      <div class="venn-col">
+        <div class="venn-head">Categories</div>
         <div class="venn-stage">
       <div class="venn">
         <div class="venn-note">Combined<br>valuations</div>
@@ -360,9 +357,6 @@ We're the team you'd bet can solve this problem.
              appearing to contain us. -->
         <svg class="venn-region cambra" v-click="6" viewBox="0 0 315 299.59" aria-hidden="true">
           <path class="for-cat" d="M115.40 108.88A100 100 0 0 1 199.60 108.89A100 100 0 0 1 157.50 181.82A100 100 0 0 1 115.40 108.88Z" />
-          <!-- Same construction at k = 0.26, where the triple intersection is
-               60% of the union and each exclusive crescent is ~7%. -->
-          <path class="for-seg" d="M91.78 111.85A82.80 82.80 0 0 1 223.22 111.85A82.80 82.80 0 0 1 157.50 225.68A82.80 82.80 0 0 1 91.78 111.85Z" />
         </svg>
         <div class="venn-core" v-click="6"><img src="/brand/symbol.svg" alt="Cambra"></div>
       </div>
@@ -371,11 +365,10 @@ We're the team you'd bet can solve this problem.
       <div class="beats">
         <p class="lead-p" v-click="5">Apps need all 3.</p>
         <p class="closer" v-click="6">Cambra is the only<br><span class="warm">backend application platform</span><br>that does all three.</p>
-        <p v-click="8"><strong>ICP</strong>: teams <span class="hot">outgrowing their PaaS.</span></p>
       </div>
     </div>
   </div>
-  <div class="venn-src" :class="{ 'src-gone': $clicks >= 7 }">
+  <div class="venn-src">
       Last-priced valuations &middot; YoY revenue growth, rounded, Aug 2026. 
       <span v-click="1">Snowflake is a live market cap. Analytics growth covers Snowflake and Databricks.</span>
       <br>
@@ -407,7 +400,94 @@ We're the team you'd bet can solve this problem.
 
 <div class="frame">
   <div class="head">
-    <div class="eyebrow">07 · The Ask</div>
+    <div class="eyebrow">06 · Market</div>
+    <h2>One segment, split three ways.</h2>
+  </div>
+  <div class="grow">
+    <div class="cols n2 venn-row">
+      <!-- The same three sets over a different population, so the figure is the
+           same figure — only stripped. The companies and the valuations were
+           facts about products; here the circles are drawn over customers, and
+           .venn-col.segments moves them to k = 0.26. -->
+      <div class="venn-col segments">
+        <div class="venn-head">Segments</div>
+        <div class="venn-stage">
+          <div class="venn">
+            <div class="venn-circle serving"></div>
+            <div class="venn-label serving"><span class="vl-name">Serving</span></div>
+            <div class="venn-circle durable"></div>
+            <div class="venn-label durable"><span class="vl-name">Durable execution</span></div>
+            <div class="venn-circle analytics"></div>
+            <div class="venn-label analytics"><span class="vl-name">Analytics</span></div>
+            <svg class="venn-region cambra" v-click="2" viewBox="0 0 315 299.59" aria-hidden="true">
+              <path class="for-seg" d="M91.78 111.85A82.80 82.80 0 0 1 223.22 111.85A82.80 82.80 0 0 1 157.50 225.68A82.80 82.80 0 0 1 91.78 111.85Z" />
+            </svg>
+            <div class="venn-core" v-click="2"><img src="/brand/symbol.svg" alt="Cambra"></div>
+          </div>
+        </div>
+      </div>
+      <div class="beats">
+        <p class="lead-p" v-click="1">Those circles counted <strong>products</strong>.<br>These count <strong>customers</strong>.</p>
+        <p class="closer" v-click="2">Almost every app needs all three.<br>The <span class="warm">overlap is the market</span>.</p>
+        <p v-click="3"><strong>ICP</strong>: teams <span class="hot">outgrowing their PaaS.</span></p>
+      </div>
+    </div>
+  </div>
+  <div class="page-no">{{ $slidev.nav.currentPage - 1 }} / {{ $slidev.nav.total - 1 }}</div>
+</div>
+
+<!--
+Same three circles, different population. Over products the overlap is small — few products do more than one of these. Over customers it is the majority, because almost every application needs all three. Nothing here is a claim about vendors, so the companies and the valuations are gone.
+
+That is the whole reframe: a single segment, currently split across three product categories. A unified product can take the segment.
+-->
+
+---
+
+<div class="frame">
+  <div class="head">
+    <div class="eyebrow">07 · Business Model</div>
+    <h2>OSS ⇒ Cloud Service ⇒ AI Services</h2>
+  </div>
+  <div class="grow">
+    <div class="bm">
+      <TierStack />
+      <div class="bm-notes">
+        <div class="bm-note tier-2" v-click="3">
+          <div class="bm-tier">Value Added Services</div>
+          <h3 class="bm-h">AI Development Platform</h3>
+          <p>Only Cambra has the full context for AI to automate development.</p>
+          <div class="bm-tags">
+              <span>Experimentation</span>
+              <span>User simulation</span>
+              <span>Feature development</span>
+          </div>
+        </div>
+        <div class="bm-note tier-1" v-click="2">
+          <div class="bm-tier">Core revenue</div>
+          <h3 class="bm-h">Hosted, distributed runtime</h3>
+          <p>The easiest, cheapest way to run Cambra, from hobbyist to enterprise.</p>
+        </div>
+        <div class="bm-note tier-0" v-click="1">
+          <div class="bm-tier">Open Source</div>
+          <h3 class="bm-h">Compiler + runtime</h3>
+          <p>Useful standalone. Builds trust, community, and sales pipeline.</p>
+        </div>
+      </div>
+    </div>
+    <p class="closer" v-click=4>G2M: Bottom-up for early viral growth. Later stages invert to top-down.</p>
+  </div>
+  <div class="page-no">{{ $slidev.nav.currentPage - 1 }} / {{ $slidev.nav.total - 1 }}</div>
+</div>
+
+<!--
+-->
+
+---
+
+<div class="frame">
+  <div class="head">
+    <div class="eyebrow">08 · The Ask</div>
     <h2 style="font-family:var(--f-logo);font-size:2.6rem">$4M seed</h2>
     <div class="ask-sub">24 months to the Series A</div>
   </div>

@@ -620,26 +620,39 @@ span.warm {
 
 
 /* ─── slide 01: the clock ─────────────────────────────────────── */
-/* One line above the diagram naming when each system arrives. Swapped rather
-   than stacked so it cannot crowd the diagram; the last one persists so the
-   Day 1 -> Week 6 span is still on screen when the beats land. */
+/* A rail above the diagram naming when each system arrives. The entries
+   accumulate left to right rather than swapping: swapping reads fine live but
+   the export renders the last click only, which left the PDF showing "Week 6"
+   with nothing to measure it against. Accumulating means the Day 1 -> Week 6
+   span is on the page in both media. */
 .when {
   flex: none;
-  height: 1.5rem;
   display: flex;
-  align-items: center;
-  justify-content: center;
+  align-items: baseline;
+  gap: 0.9rem;
+  min-height: 1.4rem;
+  padding-left: 0.1rem;
   font-family: var(--f-mono);
-  font-size: 0.78rem;
-  letter-spacing: 0.04em;
+  font-size: 0.7rem;
+  letter-spacing: 0.02em;
+  white-space: nowrap;
   color: var(--fg-3);
 }
-.when span {
-  position: absolute;
+/* A tick between entries, so the rail reads as one timeline rather than four
+   loose labels. */
+.when span + span::before {
+  content: '';
+  display: inline-block;
+  width: 0.55rem;
+  height: 1px;
+  margin-right: 0.55rem;
+  vertical-align: 0.22em;
+  background: var(--line-2);
 }
 .when b {
   color: var(--cool);
   font-weight: 700;
+  margin-right: 0.3rem;
 }
 
 /* ─── pillar beats (slides 02 and 03) ─────────────────────────── */

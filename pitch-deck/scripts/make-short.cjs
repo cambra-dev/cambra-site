@@ -30,8 +30,10 @@ const SOLUTION = pick(4, 'The Solution')
 const INSIGHT  = pick(5, 'The Insight')
 const WHYNOW   = pick(6, 'Why Now')
 const TEAM     = pick(7, 'Team')
-const MARKET   = pick(8, 'Market')
-const ASK      = pick(14, 'The Ask')
+const MARKET   = pick(8, 'Market')   // categories
+const SEGMENTS = pick(9, 'Market')   // segments — the payoff of the one above
+const BIZ      = pick(14, 'Business Model')
+const ASK      = pick(15, 'The Ask')
 
 // --- Insight: one page per loop, each pinned to a stage -------------------
 const insightPage = (stage, keepBeat, closer) => {
@@ -53,9 +55,9 @@ let trend = 0
 WHYNOW_S = WHYNOW_S.replace(/<div class="trend" v-click=("?)\d\1>/g, () => `<div class="trend" v-click="${++trend}">`)
 if (trend !== 3) throw new Error(`Why Now: restaged ${trend} trends, expected 3`)
 
-const PAGES = [COVER, PROBLEM, SOLUTION, INSIGHT_A, INSIGHT_B, WHYNOW_S, TEAM, MARKET, ASK]
-// Insight's two pages share a number; the Ask is last whatever it was.
-const NUMBERS = [null, 1, 2, 3, 3, 4, 5, 6, 7]
+const PAGES = [COVER, PROBLEM, SOLUTION, INSIGHT_A, INSIGHT_B, WHYNOW_S, TEAM, MARKET, SEGMENTS, BIZ, ASK]
+// Insight's two pages share a number, and so do the two market pages.
+const NUMBERS = [null, 1, 2, 3, 3, 4, 5, 6, 6, 7, 8]
 const renumbered = PAGES.map((b, i) =>
   NUMBERS[i] == null ? b : b.replace(/(class="eyebrow"[^>]*>\s*)\d\d( · )/, `$1${String(NUMBERS[i]).padStart(2, '0')}$2`))
 
