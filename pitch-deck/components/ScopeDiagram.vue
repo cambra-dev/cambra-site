@@ -28,8 +28,12 @@ const { wrap, flowId, onPaneReady, fitOptions } = useFlowFit({
   alignLeft: { x: FRAME_X, margin: 2 },
 })
 
-// Left: a program per OS, each OS owning its own disk. The only path between
-// `user` and `cart` runs out of one OS as bytes and into the other.
+// Left: a program per OS, each OS owning its own disk. The boxes are pieces of
+// infrastructure — the DB and the queue from the Problem slide — because that
+// is what a "program" is today: one component of your stack, sealed in its own
+// process. The only path between them runs out of one OS as bytes and into the
+// other. The contrast with the right panel is the point: there, a program is
+// the application's own concepts, not the plumbing underneath them.
 const TODAY = (() => {
   const OS_PAD = 14
   const PROG_PAD = 16
@@ -76,13 +80,13 @@ const TODAY = (() => {
   const netX = TODAY_FRAME.x + OS.w + GAP
   const progY = FRAME_Y + OS_PAD
   return [
-    ...osBlock('a', TODAY_FRAME.x, ['user']),
+    ...osBlock('a', TODAY_FRAME.x, ['DB']),
     arch(
       'network',
       { x: netX, y: centred(progY, PROG.h, NET.h), ...NET },
       { title: 'Network', variant: 'lg' },
     ),
-    ...osBlock('b', netX + NET.w + GAP, ['product', 'cart']),
+    ...osBlock('b', netX + NET.w + GAP, ['Queue']),
   ]
 })()
 
