@@ -180,12 +180,12 @@ const ALL_EDGES = [
   under('l-static', 'compile', {
     at: 4,
     offset: UNDER.after,
-    label: stacked('proven before', 'it runs'),
+    label: stacked('integrity','security'),
   }),
   under('l-dynamic', 'test', {
     at: 4,
     offset: UNDER.afterOuter,
-    label: stacked('run against a branch', 'of production'),
+    label: stacked('reliability', 'performance'),
   }),
 
   // The annotation hangs off the loops, not off a stage.

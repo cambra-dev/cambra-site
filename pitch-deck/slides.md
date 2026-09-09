@@ -26,7 +26,7 @@ colorSchema: dark
 <div class="frame">
   <div class="head">
     <div class="eyebrow">01 · The Problem</div>
-    <h2>Your stack unravels in 15 minutes.</h2>
+    <h2>Your stack unravels in 1 week.</h2>
   </div>
   <div class="grow">
     <div class="grow split">
@@ -46,8 +46,8 @@ colorSchema: dark
         </div>
         <div class="beats arc" v-click="6">
             <div>Ten systems, wired by hand.</div>
-            <div>Contracts kept in your head.</div>
-            <div class="hot">Production is where you find out.</div>
+            <div>Contracts kept in comments.</div>
+            <div class="hot">Things work until production.</div>
         </div>
     </div>
     <p class="closer center" v-click="7">
@@ -94,15 +94,14 @@ Say the wedge moment out loud on the last clicks: this is the week you reach for
       <figure class="scope" v-click="2">
         <figcaption>Cambra</figcaption>
         <div class="scope-canvas"><ScopeDiagram variant="system" /></div>
-        <figcaption class="scope-sub">Database, jobs, workflows, streams, analytics, API.<br>Written once, compiled together.</figcaption>
       </figure>
     </div>
     <!-- The three pillars, and the only place all three sub-lines appear. The
          multipliers moved to Why It Wins, where the charts can carry them. -->
     <div class="pillars">
-      <div v-click="3"><b>One program on one engine.</b> Nothing to wire.</div>
-      <div v-click="4"><b>Proven before it runs.</b> The compiler checks your integrity and security rules everywhere they apply. Nothing to hand-check.</div>
-      <div v-click="5"><b>Run against a branch of production.</b> Every change gets a full branch: same program, same state, load shaped from live traffic. Nothing to stage.</div>
+      <div v-click="3"><b>One program on one engine.</b> Not dozens of separate components.</div>
+      <div v-click="4"><b>Proven before it runs.</b> The compiler checks your integrity and security rules end to end.</div>
+      <div v-click="5"><b>Run against a branch of production.</b> See the actual effect of deploying, without risking production.</div>
     </div>
     <p class="closer center" v-click="6">Ship fast. <span class="hot">Break nothing.</span></p>
   </div>
@@ -132,8 +131,8 @@ The multipliers are gone from this slide on purpose — they land on Why It Wins
   <div class="grow">
     <div class="sdlc-canvas"><SdlcDiagram :stage="$clicks + 1" /></div>
     <div class="pillars compact">
-      <div v-click="2"><b>Today</b> — types and unit tests early. Everything that matters after deploy, with a human in the loop.</div>
-      <div v-click="3"><b>Cambra</b> — integrity, security, performance and behaviour, before release, no human required.</div>
+      <div v-click="2"><b>Today</b> — types and unit tests early. All the important stuff after after deploy, with a human in the loop.</div>
+      <div v-click="3"><b>Cambra</b> — end-to-end properties checked before release, no human required.</div>
     </div>
     <div class="closer center" v-click="4">You can't bolt this on. <span class="warm">You have to design it in.</span></div>
   </div>
