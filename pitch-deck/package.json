@@ -8,7 +8,8 @@
     "export": "slidev export slides.md --output dist/cambra-deck.pdf",
     "export:short": "slidev export short.md --output dist/cambra-short.pdf",
     "dev:short": "slidev short.md --open --port 3143",
-    "sweep": "node scripts/deck-sweep.cjs"
+    "sweep": "node scripts/deck-sweep.cjs",
+    "short": "node scripts/make-short.cjs"
   },
   "dependencies": {
     "@slidev/cli": "latest",
