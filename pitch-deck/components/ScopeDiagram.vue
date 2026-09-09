@@ -28,12 +28,14 @@ const { wrap, flowId, onPaneReady, fitOptions } = useFlowFit({
   alignLeft: { x: FRAME_X, margin: 2 },
 })
 
-// Left: a program per OS, each OS owning its own disk. The boxes are pieces of
-// infrastructure — the DB and the queue from the Problem slide — because that
-// is what a "program" is today: one component of your stack, sealed in its own
-// process. The only path between them runs out of one OS as bytes and into the
-// other. The contrast with the right panel is the point: there, a program is
-// the application's own concepts, not the plumbing underneath them.
+// Left: a program per OS, each OS owning its own disk. The only path between
+// `user` and `cart` runs out of one OS as bytes and into the other.
+// The DB and the queue hang off that same network, in the infrastructure
+// colour rather than the program colour: today your business concepts and your
+// infra primitives are peers on a wire, and every relationship between them is
+// a byte stream you maintain by hand. That is the thing the right panel
+// removes — there, the concepts are inside one program and the primitives are
+// a runtime underneath it.
 const TODAY = (() => {
   const OS_PAD = 14
   const PROG_PAD = 16
@@ -79,14 +81,25 @@ const TODAY = (() => {
 
   const netX = TODAY_FRAME.x + OS.w + GAP
   const progY = FRAME_Y + OS_PAD
+  // Shared infrastructure sits under the network, between the two OS columns —
+  // reachable only across the wire, exactly like the other program.
+  const INFRA = { w: 88, h: 34, gap: 14 }
+  const infraY = centred(progY, PROG.h, NET.h) + NET.h + 21
+  const infraX = netX + NET.w / 2 - (INFRA.w * 2 + INFRA.gap) / 2
   return [
-    ...osBlock('a', TODAY_FRAME.x, ['DB']),
+    ...osBlock('a', TODAY_FRAME.x, ['user']),
     arch(
       'network',
       { x: netX, y: centred(progY, PROG.h, NET.h), ...NET },
       { title: 'Network', variant: 'lg' },
     ),
-    ...osBlock('b', netX + NET.w + GAP, ['Queue']),
+    arch('db', { x: infraX, y: infraY, w: INFRA.w, h: INFRA.h }, { title: 'DB', variant: 'store lg' }),
+    arch(
+      'queue',
+      { x: infraX + INFRA.w + INFRA.gap, y: infraY, w: INFRA.w, h: INFRA.h },
+      { title: 'Queue', variant: 'lg' },
+    ),
+    ...osBlock('b', netX + NET.w + GAP, ['product', 'cart']),
   ]
 })()
 
@@ -187,6 +200,9 @@ const TODAY_EDGES = [
   link('a-prog', 'a-gpu', { sourceHandle: 'bottom-s', targetHandle: 'top-t', both: true, offset: HW_OFFSET }),
   link('b-prog', 'b-disk', { sourceHandle: 'bottom-s', targetHandle: 'top-t', both: true, offset: HW_OFFSET }),
   link('b-prog', 'b-gpu', { sourceHandle: 'bottom-s', targetHandle: 'top-t', both: true, offset: HW_OFFSET }),
+  // The shared stores are on the wire too, not inside either program.
+  link('network', 'db', { sourceHandle: 'bottom-s', targetHandle: 'top-t', both: true, offset: HW_OFFSET }),
+  link('network', 'queue', { sourceHandle: 'bottom-s', targetHandle: 'top-t', both: true, offset: HW_OFFSET }),
 ]
 // Relationships, not transport — so no arrowheads and a quieter line.
 const SYSTEM_EDGES = [
