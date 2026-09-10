@@ -606,7 +606,7 @@ Showcase:
     <h2>The thesis resonates.</h2>
   </div>
   <div class="grow">
-    <div class="cols tl-split">
+    <div v-click="1" class="cols tl-split">
       <div class="tl-side">
         <h3>Timeline</h3>
         <div class="timeline-v">
@@ -618,7 +618,7 @@ Showcase:
         <div class="tlv-row hot"><span class="tlv-date">Aug 17</span><span class="tlv-dot"></span><span class="tlv-label">Verification consultant starts</span></div>
       </div>
       </div>
-      <div class="tl-stack">
+      <div v-click="2" class="tl-stack">
         <div class="col">
             <h3>Votes of confidence</h3>
             <div class="col-body">
@@ -636,7 +636,7 @@ Showcase:
         </div>
       </div>
     </div>
-    <div class="col">
+    <div v-click="3" class="col">
             <h3>Customer Validation</h3>
             <!-- TODO: add photos -->
             <div class="tl-quotes cols n2">
@@ -667,15 +667,17 @@ Showcase:
 </div>
 
 <!--
-We've been working at this full time for 7 months. In that time, we've made tremendous progress on our prototype, and are approaching our MVP faster than expected.
+0. We've been working at this full time for 7 months. In that time, we've made tremendous progress on our prototype, and are approaching our MVP faster than expected.
 
-The reception of our thesis has also exceeded our expectations.
+1. The reception of our thesis has also exceeded our expectations.
 - Our announcement blog post made it to the front page of HN completely organically.
 - The programming languages research group here at CU Boulder was eager to collaborate
 - We've brought on 2 key engineers, and received unsolicited inbound. BTW, our acceptance rate is 100% (including cofounders).
 - After our OSS announcement, we got unsolicited contributor inbound, eager to work for free (we said no for now).
-- Our angels include a Snowflake co-founder and the Redpanda CTO.
-- In our customer conversations, our product positioning has resonated. A tech lead at the growth-stage startup Nuvo said it would be amazing. A director at Nvidia said it would greatly simplify his stack, and be easy to justify the cost.
+
+2. Our angels include a Snowflake co-founder and the Redpanda CTO.
+
+3. In our customer conversations, our product positioning has resonated. A tech lead at the growth-stage startup Nuvo said it would be amazing. A director at Nvidia said it would greatly simplify his stack, and be easy to justify the cost.
 -->
 
 ---
