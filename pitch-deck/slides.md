@@ -9,7 +9,7 @@ colorSchema: dark
   <h1 style="font-size:3.4rem;margin:0">Ship fast. Break nothing.</h1>
   <p class="punch" style="margin-top:.6rem">
       Replace your stack with one program on one engine: 
-      <br>proven before it runs, run against a branch of production.
+      <br>proven before it runs, tested against a branch of production.
   </p>
   <div class="byline">
     <span><div>Dan Sotolongo<br>
@@ -42,7 +42,7 @@ colorSchema: dark
           <div class="diagram-canvas">
             <SystemDiagram :stage="$clicks" />
           </div>
-          <div class="flow-note" v-click="5">Each arrow multiplies complexity</div>
+          <div class="flow-note" v-click="5">Each arrow is unchecked</div>
         </div>
         <div class="beats arc" v-click="6">
             <div>Ten systems, wired by hand.</div>
@@ -51,7 +51,7 @@ colorSchema: dark
         </div>
     </div>
     <p class="closer center" v-click="7">
-        <span>AI builds the stack faster. <span class="hot">It doesn't make it smaller.</span></span></p>
+        <span>AI builds faster. <span class="hot">It doesn't build simpler.</span></span></p>
   </div>
   <div class="page-no">{{ $slidev.nav.currentPage - 1 }} / {{ $slidev.nav.total - 1 }}</div>
 </div>
@@ -101,7 +101,7 @@ Say the wedge moment out loud on the last clicks: this is the week you reach for
     <div class="pillars">
       <div v-click="3"><b>One program on one engine.</b> Not dozens of separate components.</div>
       <div v-click="4"><b>Proven before it runs.</b> The compiler checks your integrity and security rules end to end.</div>
-      <div v-click="5"><b>Run against a branch of production.</b> See the actual effect of deploying, without risking production.</div>
+      <div v-click="5"><b>Tested against a branch of production.</b> See the actual effect of deploying, without risking production.</div>
     </div>
     <p class="closer center" v-click="6">Ship fast. <span class="hot">Break nothing.</span></p>
   </div>
@@ -131,7 +131,7 @@ The multipliers are gone from this slide on purpose — they land on Why It Wins
   <div class="grow">
     <div class="sdlc-canvas"><SdlcDiagram :stage="$clicks + 1" /></div>
     <div class="pillars compact">
-      <div v-click="2"><b>Today</b> — types and unit tests early. All the important stuff after deploy, with a human in the loop.</div>
+      <div v-click="2"><b>Today</b> — types and unit tests early. All the important stuff late, with a human in the loop.</div>
       <div v-click="3"><b>Cambra</b> — end-to-end properties checked before release, no human required.</div>
     </div>
     <div class="closer center" v-click="4">You can't bolt this on. <span class="warm">You have to design it in.</span></div>
@@ -943,7 +943,7 @@ skepticism rather than as a claim in the main line.)
 <div class="frame">
   <div class="head">
     <div class="eyebrow">Appendix · Ideal Customer Profile</div>
-    <h2>Miserable Temporal Users</h2>
+    <h2>Developers outgrowing their PaaS</h2>
   </div>
   <div class="grow">
     <div class="cols n2">
@@ -957,7 +957,7 @@ skepticism rather than as a claim in the main line.)
         </ul>
       </div>
       <div style="display:flex;flex-direction:column;gap:.8rem">
-        <h3 style="font-family:var(--f-mono);font-size:.7rem;letter-spacing:.14em;text-transform:uppercase;color:var(--fg-3);margin:0">Unhappily using</h3>
+        <h3 style="font-family:var(--f-mono);font-size:.7rem;letter-spacing:.14em;text-transform:uppercase;color:var(--fg-3);margin:0">About to pick up</h3>
         <div class="cols n3">
           <div class="col warm" style="padding:.8rem"><div class="vlogo i-simple-icons-supabase"></div><h3 style="font-family:var(--f-disp);text-transform:none;font-size:.9rem;color:var(--fg);letter-spacing:0">Supabase</h3><p style="font-size:.72rem">Not extensible, not scalable</p></div>
           <div class="col warm" style="padding:.8rem"><div class="vlogo i-simple-icons-temporal"></div><h3 style="font-family:var(--f-disp);text-transform:none;font-size:.9rem;color:var(--fg);letter-spacing:0">Temporal</h3><p style="font-size:.72rem">Non-determinism, replay issues</p></div>
