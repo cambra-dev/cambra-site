@@ -37,7 +37,7 @@ colorSchema: dark
             <span v-click="1"><b>Day 1</b> the app</span>
             <span v-click="2"><b>Week 2</b> jobs</span>
             <span v-click="3"><b>Week 4</b> analytics</span>
-            <span v-click="4"><b>Week 6</b> alerting</span>
+            <span v-click="4"><b>Week 6</b> observability</span>
           </div>
           <div class="diagram-canvas">
             <SystemDiagram :stage="$clicks" />
@@ -45,9 +45,9 @@ colorSchema: dark
           <div class="flow-note" v-click="5">Each arrow is unchecked</div>
         </div>
         <div class="beats arc" v-click="6">
-            <div>Ten systems, wired by hand.</div>
-            <div>Contracts kept in comments.</div>
-            <div class="hot">Things work until production.</div>
+            <div>More systems, more arrows.</div>
+            <div>More places things can go wrong.</div>
+            <div class="hot">You can't be sure until production.</div>
         </div>
     </div>
     <p class="closer center" v-click="7">
@@ -57,25 +57,24 @@ colorSchema: dark
 </div>
 
 <!--
-0. The problem we're solving is the fragmentation of software systems.
+0. Here's the problem we're solving. Say you're a software developer building an application.
 
-1. When you're building a software application, you almost always start with the 3-tier architecture: a database, a server, and a client.
+1. You start with the 3-tier architecture: a database, a server, and a client. You get up and running in a day, and iterate with your agent to get the MVP done in under a week.
 
-2. Unfortunately, that architecture lasts about 15 minutes. You need background tasks. You need a system for that.
+2. Then, you realize you need to handle long-lived background tasks. So you add a workflow system.
 
-3. You need analytics. You need a system for that.
+3. Then, you notice that you need to understand how customers are using your app. So you add an analytics system.
 
-4. You need to know if something is broken. You need a system for that.
+4. Then something breaks, and you remember that you need observability across the whole system. So you add a telemetry system.
 
 And this is just a basic app.
 
-5. The big problem is that system complexity quadratically as you add components.
+5. The big problem is that all of the connections between these systems are unchecked. 
 
-6. In practice, things are fine at first, but then development slows, performance crawls, and reliability falls.
+6. As you add systems, the number of places things can go wrong grows faster. And often, the only way to know when something breaks is to see it in production.
 
 7. AI builds the stack faster. It doesn't make it smaller. Building faster just gets you into this mess sooner.
 
-Say the wedge moment out loud on the last clicks: this is the week you reach for a workflow engine and an analytics store — Temporal and ClickHouse. The slide stays generic; the speech names them.
 -->
 
 ---
@@ -109,16 +108,22 @@ Say the wedge moment out loud on the last clicks: this is the week you reach for
 </div>
 
 <!--
-0. Solving this problem requires rethinking the stack of tools we take for granted.
+0. Solving this problem requires rethinking the software stack we take for granted.
 
-1. In the traditional stack, a program runs as a process inside of the operating system. The OS mediates communication with storage and other programs.
-This architecture implies that programming languages, which are the best tool developers have to wrangle complexity, **cannot** solve problems that reach outside of an OS process.
+1. In the traditional stack, a program runs as a process inside of the operating system. The OS handles storage and communication, and we can plug in components to add capabilities.
+The thing that checks whether or not our program makes sense is the compiler.
+So this architecture makes it **impossible** for the compiler to check properties that reach outside of an OS process. That's the root cause of the problem.
 
-2. In Cambra, a program is a *logical* description of the relationships between the different parts of your application. Cambra takes care of distributing it across machines, how data is stored, and how the various parts communicate.
+2. So the solution is to take the program out of the box. In Cambra, a program is a *logical* description of the relationships between the different parts of your application. Cambra's runtime takes care of distributing it across machines, how data is stored, and how the various parts communicate.
 
-3-5. The three pillars. This is where "collapse" belongs, not on the cover: the layers were only ever separate because no compiler could see across them. Nothing to wire, nothing to hand-check, nothing to stage.
+3. With Cambra, you write your entire application as a single program, and it runs on a single engine. You don't have to wire together endless components.
 
-The multipliers are gone from this slide on purpose — they land on Why It Wins, where the charts carry them.
+4. The compiler checks the integrity and security of your program end-to-end.
+
+5. The runtime lets you test new versions of your program against a branch of production, letting you get 100% fidelity without endangering live traffic.
+
+6. So you get to ship with complete confidence.
+
 -->
 
 ---
@@ -132,29 +137,31 @@ The multipliers are gone from this slide on purpose — they land on Why It Wins
     <div class="sdlc-canvas"><SdlcDiagram :stage="$clicks + 1" /></div>
     <div class="pillars compact">
       <div v-click="2"><b>Today</b> — types and unit tests early. All the important stuff late, with a human in the loop.</div>
-      <div v-click="3"><b>Cambra</b> — end-to-end properties checked before release, no human required.</div>
-      <div v-click="4"><b>Transactional hot reload</b> — the edit loop you already use, against real state. Code, data and in-flight work move together, or not at all.</div>
+      <div v-click="3"><b>Cambra</b> — end-to-end properties checked before deployment, no human required. 
+        <div class="bm-tags" style="margin-left:9em">
+            <span>Static Assertions</span>
+            <span>Program Branching</span>
+            <span>Transactional Hot Reload</span>
+        </div>
+      </div>
     </div>
-    <div class="closer center" v-click="5">You can't bolt this on. <span class="warm">You have to design it in.</span></div>
+    <div class="closer center" v-click="4">You can't bolt this on. <span class="warm">You have to design it in.</span></div>
   </div>
   <div class="page-no">{{ $slidev.nav.currentPage - 1 }} / {{ $slidev.nav.total - 1 }}</div>
 </div>
 
 <!--
-0. The software development lifecycle involves the following steps. Each of these steps happens in a loop, where feedback from each step informs the next iteration of the code.
+0. The real impact of this shift manifests when agents are building your application. Consider the software development lifecycle.
 
-1. Programming languages give excellent feedback. They help us structure our programs with syntax and types, and tests reproduce bugs.
+1. The programmer writes some code, and compiles it. The compiler tells them if they did something that doesn't make sense. They write and run tests, which tells when the test cases have bugs.
 
 2. But feedback on the most important properties — reliability, integrity, security, performance — is very limited until we deploy to a production-like environment: staging, load tests, audit logging, etc.
-This feedback needs a human in the loop to ensure the tests are realistic and don't risk production.
+This feedback is slow and expensive. It often needs a human in the loop to ensure the tests are realistic and don't endanger production.
 
-3. Cambra makes it possible to automate these feedback signals, moving them earlier in the lifecycle. Our type system checks integrity and security requirements automatically. And our runtime makes realistic testing trivial. That gets the human out of the loop, letting AI iterate unimpeded.
+3. Cambra automates these feedback signals with groundbreaking features: static assertions, program branching, and transactional hot reload. That gets the human out of the loop, letting AI iterate unimpeded.
 
-4. These features aren't something you can bolt on to an existing development platform. It's something you have to design in. Cambra is the only system built for it.
+4. These features aren't something you can bolt on to an existing application platform. It's something you have to design in. Cambra is the only system built for it.
 
-Competitor contrast in speech only: Convex's type safety catches a hallucinated field name. Our compiler checks the rule you wrote, everywhere the data flows.
-
-Hot reload is the familiar half — every engineer has it, and every engineer's version runs on fake data on a laptop. Ours is transactional over code, state and in-progress work, so it holds against real state, and it runs in production too. Working prototype; the demo is this.
 -->
 
 ---
@@ -233,15 +240,15 @@ Hot reload is the familiar half — every engineer has it, and every engineer's 
 <!--
 0. 3 trends make this the perfect moment for this kind of innovation.
 
-1. We all know AI coding has massive potential. But that potential has not yet been realized. A recent Microsoft study showed that adopting coding agents only increased productivity by 24%.
+1. First, the potential of AI has not yet been realized. A recent Microsoft study showed that adopting coding agents only increased productivity by 24%.
 
-2. I recently had a conversation with a respected former colleague who joined an analytics startup as its founding engineer, and her experience supports this. Their codebase reached a tipping point in complexity past which it was brittle and everything slowed down.
+2. I recently had a conversation with a former colleague. She joined an analytics startup as its founding engineer. She found that their codebase reached a tipping point in complexity past which it was brittle and everything slowed down.
 
-3. Historically, there were huge barriers to adopting new programming languages. Agents have completely demolished that barrier. A powerful example is the migration of Bun from Zig to Rust, which ported 500k lines over 11 days with light human supervision. This would have been unthinkable a year ago. Now, it was done in pursuit of agent productivity: Rust gives better feedback than Zig. That's Cambra's thesis in action at large scale.
+3. Second, historically, there were huge barriers to adopting new programming languages. Agents have completely demolished that barrier. A powerful example is the rewrite of Bun. They ported 500k lines of Zig to Rust, and it took less than 2 weeks. That would have been unthinkable a year ago. Now, they did it for the sake of agent productivity: Rust's compiler gives better feedback than Zig. My takeaway is that better languages make agents better, and agents let you adopt better languages easily.
 
-4. I spoke with another respected colleague who is now at Anthropic, who said essentially the same thing: the barrier to entry has substantially reduced.
+4. I spoke with another colleague who is now at Anthropic, who said essentially the same thing: the barrier to entry has substantially reduced.
 
-5. While these adoption barriers have existed, major innovations developed in academia have been kept out of the market. This is the moment for them to break through. Cambra weaves together numerous threads of cutting edge research into a groundbreaking product, something that's only possible with the advent of AI.
+5. Third, brilliant research has been locked out of the market. AI has made it possible to synthesize this research into a product faster than ever before, from discovery, to understanding, to implementation. There's going to be a tidal wave of research going mainstream. We're just riding that wave.
 -->
 
 ---
@@ -277,7 +284,7 @@ Hot reload is the familiar half — every engineer has it, and every engineer's 
 <!--
 Our team is world class. We each have over a decade of experience working on this problem from above and below.
 
-I've organized the last 10 years of my career around solving this problem. 
+I've organized my whole career around solving this problem. 
 
 Daniel and I co-created Dynamic Tables at Snowflake, which grew into a $100M business over 4 years. Daniel co-created Google Dataflow Streaming. Skylar is our expert generalist, who has hit this problem from many different angles and knows developer infrastructure at scale.
 
@@ -289,7 +296,7 @@ We're the team you'd bet can solve this problem.
 <div class="frame">
   <div class="head">
     <div class="eyebrow">06 · Market</div>
-    <h2>Complex Applications</h2>
+    <h2>&ldquo;Complex&rdquo; Applications</h2>
   </div>
   <div class="grow">
     <div class="cols n2 venn-row">
@@ -338,23 +345,16 @@ We're the team you'd bet can solve this problem.
           <span class="vl-co"><i class="vl-dot"></i>Convex</span>
           <span class="vl-val">$110M <span class="vl-qual">raised</span></span>
         </div>
-        <!-- Territories, not points: each has area and takes a share of its
-             neighbours. Both paths are derived from the same k = 1.15 as the
-             circles — see .venn in style.css.
-             Convex is serving ∩ durable MINUS analytics, because they have no
-             analytics: their outline stops exactly on the arc where Cambra's
-             region begins, so the two share a boundary instead of Convex
-             appearing to contain us. -->
-        <svg class="venn-region cambra" v-click="6" viewBox="0 0 315 299.59" aria-hidden="true">
+        <svg class="venn-region cambra" v-click="5" viewBox="0 0 315 299.59" aria-hidden="true">
           <path class="for-cat" d="M115.40 108.88A100 100 0 0 1 199.60 108.89A100 100 0 0 1 157.50 181.82A100 100 0 0 1 115.40 108.88Z" />
         </svg>
-        <div class="venn-core" v-click="6"><img src="/brand/symbol.svg" alt="Cambra"></div>
+        <div class="venn-core" v-click="5"><img src="/brand/symbol.svg" alt="Cambra"></div>
       </div>
       </div>
       </div>
       <div class="beats">
-        <p class="lead-p" v-click="5">Apps need all 3.</p>
-        <p class="closer" v-click="6">Cambra is the only<br><span class="warm">backend application platform</span><br>that does all three.</p>
+        <p v-click="4"><span class="hot">Convex</span> unifies 2 categories.</p>
+        <p class="closer" v-click="5">Only <span class="warm">Cambra</span> does all 3.</p>
       </div>
     </div>
   </div>
@@ -373,17 +373,13 @@ We're the team you'd bet can solve this problem.
 
 1. Analytics is a behemoth with major incumbents like Snowflake, Databricks, and Clickhouse, cumulative valuations in the hundreds of billions, and annual growth between 30 and 80 percent.
 
-2. Serving backend APIs is a huge business. We selected a few players with a lot of momentum as representative of the use cases we would target. Their combined valuations is $20B, with a yearly growth rate of 2-3x.
+2. Serving backend APIs is a huge business. We picked a few examples with a lot of momentum as representative of the use cases we would target. Their combined valuations is $20B, with a yearly growth rate of 2-3x.
 
-3. Durable execution is a new category, but it's seeing explosive growth. Temporal is the dominant player, with a last-raise valuation of $5B, but rumored to be raising at $12B and growing at 5x.
+3. Durable execution is a new category, but it's seeing explosive growth. Temporal is the dominant player, with a valuation of $5B 6 months ago, but rumored to be raising at $12B and growing at 5x.
 
-4. In fact, most applications need to buy all 3 categories. But there's a reason these are separate: building a system that spans them is traditionally regarded as impossible. That's changing.
+4. Convex blends serving with durable execution. They're growth stage, so numbers aren't public, but they've raised $110M. They are positioning themselves as a new category: "Backend Application Platform".
 
-5. Convex blends serving with durable execution. They're growth stage, so numbers aren't public, but they've raised $100M. They are positioning themselves as a new category: "Backend Application Platform".
-
-6. Cambra rejects that contention, and our prototype proves out many of the core pieces. We will serve all 3 categories. And once we do, we'll have access to a gigantic market full of incumbents with structural limitations.
-
-7. Our wedge hypothesis is teams who have outgrown their PaaS, and are about to adopt into a new technology.
+5. Cambra is the only product that unifies all 3 categories. I would argue you're not a true backend application platform unless you do that.
 -->
 
 ---
@@ -391,7 +387,7 @@ We're the team you'd bet can solve this problem.
 <div class="frame">
   <div class="head">
     <div class="eyebrow">07 · Market</div>
-    <h2>One segment, split three ways.</h2>
+    <h2>3 Categories, 1 market.</h2>
   </div>
   <div class="grow">
     <div class="cols n2 venn-row">
@@ -401,7 +397,7 @@ We're the team you'd bet can solve this problem.
            .venn-col.segments moves them to k = 0.26. -->
       <div class="venn-col segments">
         <div class="venn-head">Segments</div>
-        <div class="venn-stage">
+        <div class="venn-stage" v-click="1">
           <div class="venn">
             <div class="venn-circle serving"></div>
             <div class="venn-label serving"><span class="vl-name">Serving</span></div>
@@ -417,9 +413,10 @@ We're the team you'd bet can solve this problem.
         </div>
       </div>
       <div class="beats">
-        <p class="lead-p" v-click="1">Those circles counted <strong>products</strong>.<br>These count <strong>customers</strong>.</p>
-        <p class="closer" v-click="2">Almost every app needs all three.<br>The <span class="warm">overlap is the market</span>.</p>
-        <p v-click="3"><strong>ICP</strong>: teams <span class="hot">outgrowing their PaaS.</span></p>
+        <p class="lead-p">Instead of counting <strong>products</strong>, <br>let's count <strong>customers</strong>.</p>
+        <p v-click="1">Almost every app needs all three.</p>
+        <p class="closer" v-click="2">Cambra's TAM is <span class="warm">software applications</span>.</p>
+        <p v-click="3"><strong>Wedge ICP</strong>: teams <span class="hot">outgrowing their PaaS.</span></p>
       </div>
     </div>
   </div>
@@ -427,9 +424,13 @@ We're the team you'd bet can solve this problem.
 </div>
 
 <!--
-Same three circles, different population. Over products the overlap is small — few products do more than one of these. Over customers it is the majority, because almost every application needs all three. Nothing here is a claim about vendors, so the companies and the valuations are gone.
+0. Those are the product categories, but the market segmentation looks very different.
 
-That is the whole reframe: a single segment, currently split across three product categories. A unified product can take the segment.
+1. In fact, most applications need to buy all 3 categories. But they've been kept separate because people think unifying them is impossible.
+
+2. We disagree. Cambra unifies all 3 categories, and this market structure means our addressable market is something like "all software applications"— a gigantic market full of incumbents with structural limitations. A unified product stands to take the whole market—it's the iPhone to the cameras, GPSes, and dumb phones of software.
+
+3. Of course, we're not chasing that right out of the gate. Our wedge hypothesis is to focus on teams who have outgrown their PaaS, and are about to adopt a durable execution framework or analytics stack.
 -->
 
 ---
@@ -442,7 +443,7 @@ That is the whole reframe: a single segment, currently split across three produc
   <div class="grow">
     <p class="lead-p">Cambra gives developers confidence and simplicity.</p>
     <div class="cols n2">
-      <div class="col">
+      <div class="col" v-click="1">
         <h3 class="disp">Confidence begets velocity</h3>
         <GhostBar
           title="Time to production"
@@ -454,10 +455,18 @@ That is the whole reframe: a single segment, currently split across three produc
             { label: 'Operate', value: 3, keep: 1 },
           ]"
         />
-        <p>Estimates. Verification removes the review wait; branch testing and transactional hot reload remove the deploy wait.</p>
+        <p>
+          <ul style="row-gap:0">
+              <li><span class="cool"><strong>Review</strong></span> ⟸ static assertions, program branching</li>
+              <li><span class="cool"><strong>Deploy</strong></span> ⟸ transactional hot reload</li>
+              <li><span class="cool"><strong>Operations</strong></span> ⟸ native observability</li>
+              <li><span class="warm"><strong>Code, Test</strong></span>  ⟸  time ~ LoC</li>
+          </ul>
+        </p>
       </div>
-      <div class="col">
+      <div class="col" v-click="2">
         <h3 class="disp">Less code, less mess</h3>
+        <!-- TODO: tiers are too close. -->
         <GhostBar
           title="Lines of code"
           accent="warm"
@@ -471,13 +480,29 @@ That is the whole reframe: a single segment, currently split across three produc
             { label: 'Config &amp; infra', value: 490, keep: 48 },
           ]"
         />
-        <p>Agent-built app built on a conventional stack vs Cambra.</p>
+        <p>Agent-built example app built on a conventional stack vs Cambra.</p>
       </div>
     </div>
-    <p class="closer">Only with <span style="color:var(--coral)">Cambra</span> &mdash; <span style="color:var(--lagoon)">inaccessible</span> to frameworks.</p>
+    <p v-click="3" class="closer">Only with <span style="color:var(--coral)">Cambra</span> &mdash; <span style="color:var(--lagoon)">inaccessible</span> to frameworks.</p>
   </div>
   <div class="page-no">{{ $slidev.nav.currentPage - 1 }} / {{ $slidev.nav.total - 1 }}</div>
 </div>
+
+<!--
+0. Why do we think we can win? It comes down to 2 things: programmer productivity and application performance. The productivity comes from confidence and simplicity.
+
+1. Let's think through how long it takes to get a new feature into production. If have any experience with the development lifecycle, you'll know that most of that time is spent waiting. Waiting for review, waiting for release.
+We spend all of that time because we don't have confidence in what was built.
+Cambra's features give you the confidence to ship without waiting.
+That gets you velocity.
+
+2. The other piece is simplicity. The best way to save time is to do less work. When your work is coding, that means writing less code.
+We had agents build an example application that incorporates serving, durable execution, and analytics on a conventional stack, and with Cambra. We categorized the lines of code, and compared the two codebases.
+The result was a 5x reduction in total code. But what's interesting is where the savings happened: everything _except_ the domain logic, ranging from 3x savings to 20x.
+Of course, this is just a random example. The numbers may change in the real world. But it provides early validation of our thesis.
+
+3. The thing to realize is that these gains are only possible with Cambra's architecture. The conventional architecture is fundamentally unable to do it.
+-->
 
 ---
 
@@ -487,54 +512,39 @@ That is the whole reframe: a single segment, currently split across three produc
     <h2>Transformative performance</h2>
   </div>
   <div class="grow">
-    <p class="lead-p">Deep abstractions fuse layers of the stack. Each layer fused nets major gains.</p>
-    <div class="perf-col">
+    <p v-click="2" class="lead-p">Deep abstractions fuse layers of the stack. Each layer fused nets major gains.</p>
+    <div v-click="1" class="perf-col">
       <div class="stackint">
         <div class="si-axis">Layer</div>
-        <div class="si-head">Depth of Abstraction</div>
+        <div class="si-head" v-click="2">Depth of Abstraction</div>
         <div class="si-layers">
           <div class="si-layer">Application (Distributed)</div>
           <div class="si-layer">Database</div>
           <div class="si-layer">Operating System</div>
           <div class="si-layer">Hardware</div>
         </div>
-        <div class="si-int weld" v-click="1"><span class="si-mult">30&times;</span><span class="si-name">Weld</span></div>
-        <div class="si-int hyper" v-click="2"><span class="si-mult">10&times;</span><span class="si-name">HyPer<br>Halide</span></div>
-        <div class="si-int mojo" v-click="3"><span class="si-mult">50&times;</span><span class="si-name">Mojo</span></div>
-        <div class="si-int cambra" v-click="4"><span class="si-mult">100&times;</span><span class="si-name">Cambra</span></div>
+        <div class="si-int weld" v-click="3"><span class="si-mult">30&times;</span><span class="si-name">Weld</span></div>
+        <div class="si-int hyper" v-click="4"><span class="si-mult">10&times;</span><span class="si-name">HyPer<br>Halide</span></div>
+        <div class="si-int mojo" v-click="5"><span class="si-mult">50&times;</span><span class="si-name">Mojo</span></div>
+        <!-- TODO: add an interval across app|db for Viaduct at 10x -->
+        <div class="si-int cambra" v-click="6"><span class="si-mult">100&times;</span><span class="si-name">Cambra</span></div>
       </div>
     </div>
-    <p class="closer">Only with <span style="color:var(--coral)">Cambra</span> &mdash; <span style="color:var(--lagoon)">inaccessible</span> to frameworks.</p>
+    <p v-click="7" class="closer">Only with <span style="color:var(--coral)">Cambra</span> &mdash; <span style="color:var(--lagoon)">inaccessible</span> to frameworks.</p>
   </div>
   <div class="page-no">{{ $slidev.nav.currentPage - 1 }} / {{ $slidev.nav.total - 1 }}</div>
 </div>
 
 <!--
-Cambra wins because using it yields unparalleled productivity and performance gains.
+0. Now let's talk about performance. We haven't tried optimizing the performance of our prototype yet, so I don't have real figures to show you. But we are very confident that Cambra will have shockingly good performance. That's because it's well known how to get good performance, and we've built Cambra in a way that we can apply _all_ of those techniques.
 
-These gains are enabled by the way Cambra spans every layer of the backend stack.
+1. I'm going to get a bit philosophical. Please bear with me. Consider the computing stack we all know and love. You can think of tools as sitting on different layers of this stack. Users of the tool interact with the top surface of the tool, but the tools also have depth.
 
-## Unprecedented productivity
+2. When a tool is deep, it fuses layers of the stack. When you get it right, fusing those layers net major performance gains.
 
-### Ship in hours:
-  - actual delivery of code is bottlenecked on *waiting for confidence*.
-  - Cambra meaningfully accelerates coding and testing
-  - the biggest gains come from having the confidence to not wait for code review and slow releases
-  - these come from:
-    1. our verification features, which provide hard guarantees about security and integrity
-    2. our validation features, which ensure performance and reliability are robust through upgrades.
+3-5. I chose some specific examples that demonstrate pretty clearly what I mean: orders of magnitude of performance. Depending on the specific tool and the layers it fused, you get different gains. But generally, going deeper makes more gains available.
 
-### Lines of Code
-
-
-## Transformative performance
-  - scalability: automatic parallelization & distribution
-    (caching)
-  - Precedents:
-    - HyPer got 10× from JIT compilation vs interpretation
-    - Weld got 30× from creating a unified IR for Numpy & Pandas
-    - Halide got 10× from optimizing GPU compute vs *hand-optimized CUDA*
-    - Mojo got 50× on unmodified Python code
+6. We learned from those other systems, building on their insights, and taking it further. By fusing the application layer into the rest of the stack, we believe we have the opportunity to yield multiple orders of magnitude of performance gains compared to conventional applications. These gains come from not doing work: skip the network by colocating related logic, skip the disk by caching aggressively, skip interpretation overhead by JIT compiling, skip unnecessary lookups by reordering joins. They're all well-known optimizations, but without a unified abstraction like Cambra, they've hit boundaries at the edge of an OS process.
 
 ##
 
