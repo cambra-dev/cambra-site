@@ -1050,6 +1050,63 @@ span.warm {
   align-items: stretch;
   gap: 1.4rem;
 }
+/* Go-to-market: two labels to the right of the tiers, each with an arrow into
+   the two tiers its motion moves between. They replace a sentence that asserted
+   the same thing underneath the stack.
+
+   Colour carries the direction — coral comes down from services, cool runs up
+   from open source — and both point at the hosted engine, which is where the
+   two motions meet.
+
+   The arrows are one SVG in the column's own design pixels rather than rotated
+   boxes, so each one ends exactly on the tier it names. "Enterprise Sales" is
+   five times the width of "PLG", so it starts further left and its arrows are
+   correspondingly shorter; lining the two labels up would have pushed it off
+   the slide. */
+.bm-g2m {
+  position: relative;
+  flex: 0 0 auto;
+  width: 10.5rem;
+}
+.g2m-wires {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  overflow: visible;
+  fill: none;
+  stroke-width: 1.6;
+  stroke-linecap: round;
+}
+.g2m-wires .w-ent {
+  stroke: var(--coral);
+  marker-end: url(#g2m-tip-ent);
+}
+.g2m-wires .w-plg {
+  stroke: var(--cool);
+  marker-end: url(#g2m-tip-plg);
+}
+.g2m-label {
+  position: absolute;
+  transform: translateY(-50%);
+  font-family: var(--f-mono);
+  font-size: 0.62rem;
+  font-weight: 700;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  white-space: nowrap;
+}
+.lbl-ent {
+  left: 29.8%;
+  top: 35.2%;
+  color: var(--coral);
+}
+.lbl-plg {
+  left: 70.2%;
+  top: 68.2%;
+  color: var(--cool);
+}
+
 .bm-notes {
   flex: 1;
   min-width: 0;

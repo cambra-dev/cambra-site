@@ -4,15 +4,15 @@
 //
 // Co-tangent rather than concentric. Concentric rings say "three sizes of the
 // same thing"; circles rising from a common base say what is actually true —
-// the hosted runtime is only sellable because the open-source core exists, and
-// the self-building apps only because the hosted runtime does. Each tier both
+// the hosted engine is only sellable because the open-source core exists, and
+// the self-building apps only because the hosted engine does. Each tier both
 // rests on the same ground and encloses everything under it.
 //
 // The innermost circle is never filled: the open-source core is the part nobody
 // pays for, and leaving it hollow says so without a caption.
 //
 // The tiers arrive one click at a time, innermost first, so the figure is built
-// up in the order the business is: open source, then the hosted runtime on top
+// up in the order the business is: open source, then the hosted engine on top
 // of it, then the services on top of that. The ground line is there from the
 // start — it is the stage, not one of the tiers.
 //

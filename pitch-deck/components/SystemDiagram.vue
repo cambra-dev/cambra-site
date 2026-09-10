@@ -111,17 +111,19 @@ const ALL_EDGES = [
   // The async tier ends up owning its own datastore — more fragmentation.
   edge('e-wp-js', 'wp', 'right-s', 'js', 'left-t', { at: 2, color: WARM, both: true }),
 
-  edge('e-db-etl', 'db', 'right-s', 'etl', 'left-t', { at: 3, color: WARM, dash: '5 4' }),
+  edge('e-db-etl', 'db', 'right-s', 'etl', 'left-t', { at: 3, color: WARM }),
   edge('e-etl-dl', 'etl', 'right-s', 'dl', 'left-t', { at: 3, color: WARM }),
   edge('e-dl-bi', 'dl', 'right-s', 'bi', 'left-t', { at: 3, color: WARM }),
 
   // One feed per cluster, each entering a different face of the telemetry box
-  // so the three dashed runs stay apart. Async has to go around the right —
-  // analytics sits directly beneath it. The offsets keep those detours clear
-  // of the cluster borders they run alongside.
-  edge('e-app-tel', 'c-app', 'bottom-s', 'tel', 'left-t', { at: 4, color: CORAL, dash: '3 4'}),
-  edge('e-async-tel', 'c-async', 'right-s', 'tel', 'right-t', { at: 4, color: CORAL, dash: '3 4' }),
-  edge('e-ana-tel', 'c-analytics', 'bottom-s', 'tel', 'top-t', { at: 4, color: CORAL, dash: '3 4', offset: 17 }),
+  // so the three runs stay apart. Async has to go around the right — analytics
+  // sits directly beneath it. The offsets keep those detours clear of the
+  // cluster borders they run alongside. Colour is what separates these from the
+  // warm runs above; they were dashed as well, which read as tentative on a
+  // projector rather than as a different kind of edge.
+  edge('e-app-tel', 'c-app', 'bottom-s', 'tel', 'left-t', { at: 4, color: CORAL }),
+  edge('e-async-tel', 'c-async', 'right-s', 'tel', 'right-t', { at: 4, color: CORAL }),
+  edge('e-ana-tel', 'c-analytics', 'bottom-s', 'tel', 'top-t', { at: 4, color: CORAL, offset: 17 }),
 ]
 
 const { wrap, flowId, onPaneReady, fitOptions } = useFlowFit({ padding: 0.1 })

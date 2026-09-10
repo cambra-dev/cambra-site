@@ -10,7 +10,7 @@ import { arch, centred, cluster, column, row, spanOf } from '../composables/layo
 const props = defineProps({
   // 'today': programs sealed inside operating systems, each with its own disk,
   // talking to each other as bytes over the network. 'system': one program over
-  // a runtime that owns the resources.
+  // an engine that owns the resources.
   variant: { type: String, default: 'today' },
 })
 
@@ -22,10 +22,28 @@ const FRAME_X = 8
 const TODAY_FRAME = { x: FRAME_X, y: FRAME_Y, w: 466, h: FRAME_H }
 const NEED_FRAME = { x: FRAME_X, y: FRAME_Y, w: 380, h: FRAME_H }
 
+// Both pictures are one application. That is the whole point of showing them
+// side by side — what changes between them is how many pieces the application
+// is made of, not how much of it is the application — so the box is
+// deliberately boring: the same neutral frame around each, no colour, no
+// emphasis, drawn first so it sits behind everything else.
+const APP_PAD = 14
+const appBox = (frame) =>
+  cluster(
+    'application',
+    {
+      x: frame.x - APP_PAD,
+      y: frame.y - APP_PAD,
+      w: frame.w + APP_PAD * 2,
+      h: frame.h + APP_PAD * 2,
+    },
+    { label: 'Application', variant: 'lg' },
+  )
+
 // fitView centres; align the frames' left edge with the captions instead.
 const { wrap, flowId, onPaneReady, fitOptions } = useFlowFit({
   padding: 0.14,
-  alignLeft: { x: FRAME_X, margin: 2 },
+  alignLeft: { x: FRAME_X - APP_PAD, margin: 2 },
 })
 
 // Left: a program per OS, each OS owning its own disk. The only path between
@@ -35,7 +53,7 @@ const { wrap, flowId, onPaneReady, fitOptions } = useFlowFit({
 // infra primitives are peers on a wire, and every relationship between them is
 // a byte stream you maintain by hand. That is the thing the right panel
 // removes — there, the concepts are inside one program and the primitives are
-// a runtime underneath it.
+// an engine underneath it.
 const TODAY = (() => {
   const OS_PAD = 14
   const PROG_PAD = 16
@@ -87,6 +105,7 @@ const TODAY = (() => {
   const infraY = centred(progY, PROG.h, NET.h) + NET.h + 21
   const infraX = netX + NET.w / 2 - (INFRA.w * 2 + INFRA.gap) / 2
   return [
+    appBox(TODAY_FRAME),
     ...osBlock('a', TODAY_FRAME.x, ['user']),
     arch(
       'network',
@@ -103,14 +122,14 @@ const TODAY = (() => {
   ]
 })()
 
-// Right: one program in terms of the application's own concepts, over a runtime
+// Right: one program in terms of the application's own concepts, over an engine
 // that owns the machine. Nothing to seal into, no wire to cross.
 const SYSTEM = (() => {
   const PROG_PAD = 20
   const CONCEPT = { w: 100, h: 44, gap: 20 }
   const RES = { w: 100, h: 32, gap: 20 }
   const PROG_H = CONCEPT.h + PROG_PAD * 2
-  const RUNTIME_H = FRAME_H - PROG_H - 12
+  const ENGINE_H = FRAME_H - PROG_H - 12
 
   const concepts = ['user', 'product', 'cart']
   const inner = row(
@@ -121,24 +140,25 @@ const SYSTEM = (() => {
       ...CONCEPT,
     },
   )
-  const runtimeY = FRAME_Y + PROG_H + 12
+  const engineY = FRAME_Y + PROG_H + 12
   const resources = ['memory', 'compute', 'storage']
   const res = row(
     resources.map((title) => ({ id: title, data: { title, variant: 'lg dashed' } })),
     {
       x: centred(NEED_FRAME.x, NEED_FRAME.w, spanOf(resources.length, RES.w, RES.gap)),
-      y: centred(runtimeY, RUNTIME_H, RES.h),
+      y: centred(engineY, ENGINE_H, RES.h),
       ...RES,
     },
   )
   return [
+    appBox(NEED_FRAME),
     cluster('program', { x: NEED_FRAME.x, y: FRAME_Y, w: NEED_FRAME.w, h: PROG_H }, {
       label: 'Program',
       variant: 'warm solid lg',
     }),
     ...inner,
-    cluster('runtime', { x: NEED_FRAME.x, y: runtimeY, w: NEED_FRAME.w, h: RUNTIME_H }, {
-      label: 'Runtime',
+    cluster('engine', { x: NEED_FRAME.x, y: engineY, w: NEED_FRAME.w, h: ENGINE_H }, {
+      label: 'Engine',
       variant: 'cool solid lg',
     }),
     ...res,

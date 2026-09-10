@@ -25,8 +25,8 @@ colorSchema: dark
 
 <div class="frame">
   <div class="head">
-    <div class="eyebrow">01 · The Problem</div>
-    <h2>Your stack unravels in 1 week.</h2>
+    <div class="eyebrow">{{ $slidev.nav.currentPage }} ·  The Problem</div>
+    <h2>Your stack unravels in a month.</h2>
   </div>
   <div class="grow">
     <div class="grow split">
@@ -53,7 +53,7 @@ colorSchema: dark
     <p class="closer center" v-click="7">
         <span>AI builds faster. <span class="hot">It doesn't build simpler.</span></span></p>
   </div>
-  <div class="page-no">{{ $slidev.nav.currentPage - 1 }} / {{ $slidev.nav.total - 1 }}</div>
+  <div class="page-no">{{ $slidev.nav.currentPage }} / {{ $slidev.nav.total }}</div>
 </div>
 
 <!--
@@ -81,8 +81,9 @@ And this is just a basic app.
 
 <div class="frame">
   <div class="head">
-    <div class="eyebrow">02 · The Solution</div>
+    <div class="eyebrow">{{ $slidev.nav.currentPage }} ·  The Solution</div>
     <h2>One program on one engine.</h2>
+    <!-- TODO: put "application" box around each diagram. -->
   </div>
   <div class="grow">
     <div class="scopes">
@@ -104,7 +105,7 @@ And this is just a basic app.
     </div>
     <p class="closer center" v-click="6">Ship fast. <span class="hot">Break nothing.</span></p>
   </div>
-  <div class="page-no">{{ $slidev.nav.currentPage - 1 }} / {{ $slidev.nav.total - 1 }}</div>
+  <div class="page-no">{{ $slidev.nav.currentPage }} / {{ $slidev.nav.total }}</div>
 </div>
 
 <!--
@@ -114,13 +115,13 @@ And this is just a basic app.
 The thing that checks whether or not our program makes sense is the compiler.
 So this architecture makes it **impossible** for the compiler to check properties that reach outside of an OS process. That's the root cause of the problem.
 
-2. So the solution is to take the program out of the box. In Cambra, a program is a *logical* description of the relationships between the different parts of your application. Cambra's runtime takes care of distributing it across machines, how data is stored, and how the various parts communicate.
+2. So the solution is to take the program out of the box. In Cambra, a program is a *logical* description of the relationships between the different parts of your application. Cambra's engine takes care of distributing it across machines, how data is stored, and how the various parts communicate.
 
 3. With Cambra, you write your entire application as a single program, and it runs on a single engine. You don't have to wire together endless components.
 
 4. The compiler checks the integrity and security of your program end-to-end.
 
-5. The runtime lets you test new versions of your program against a branch of production, letting you get 100% fidelity without endangering live traffic.
+5. The engine lets you test new versions of your program against a branch of production, letting you get 100% fidelity without endangering live traffic.
 
 6. So you get to ship with complete confidence.
 
@@ -130,8 +131,8 @@ So this architecture makes it **impossible** for the compiler to check propertie
 
 <div class="frame">
   <div class="head">
-    <div class="eyebrow">03 · The Insight</div>
-    <h2>Agents converge on feedback.</h2>
+    <div class="eyebrow">{{ $slidev.nav.currentPage }} ·  The Insight</div>
+    <h2>Shift left. Automate more.</h2>
   </div>
   <div class="grow">
     <div class="sdlc-canvas"><SdlcDiagram :stage="$clicks + 1" /></div>
@@ -145,9 +146,9 @@ So this architecture makes it **impossible** for the compiler to check propertie
         </div>
       </div>
     </div>
-    <div class="closer center" v-click="4">You can't bolt this on. <span class="warm">You have to design it in.</span></div>
+    <div class="closer center" v-click="4">You can't bolt this on. <span class="warm">Cambra designs it in.</span></div>
   </div>
-  <div class="page-no">{{ $slidev.nav.currentPage - 1 }} / {{ $slidev.nav.total - 1 }}</div>
+  <div class="page-no">{{ $slidev.nav.currentPage }} / {{ $slidev.nav.total }}</div>
 </div>
 
 <!--
@@ -168,15 +169,15 @@ This feedback is slow and expensive. It often needs a human in the loop to ensur
 
 <div class="frame">
   <div class="head">
-    <div class="eyebrow">04 · Why Now</div>
-    <h2>Converging trends</h2>
+    <div class="eyebrow">{{ $slidev.nav.currentPage }} ·  Why Now</div>
+    <h2>Mutually reinforcing trends</h2>
   </div>
   <div class="grow">
     <div class="cols n3 trends">
       <div class="trend" v-click="1">
         <div class="metaphor cool"><div class="i-ph-users-three-fill"></div></div>
         <div class="col">
-          <h3>Market opportunity</h3>
+          <h3>Huge Market opportunity</h3>
           AI coding is bottlenecked.
           <div class="col-body">
             <div align=center class="cool" style="padding: .6em">only <span style="font-size: 28pt; font-weight: bold;">24% </span> gains</div>
@@ -197,7 +198,7 @@ This feedback is slow and expensive. It often needs a human in the loop to ensur
       <div class="trend" v-click="3">
         <div class="metaphor hot"><div class="i-ph-wall-fill"></div></div>
         <div class="col warm">
-          <h3>Adoption barriers</h3>
+          <h3>Falling Adoption barriers</h3>
           PL adoption is easy.
           <div class="col-body">
             <div class="flex" style="color: var(--amber); align-items: center"><div align=center style="font-weight: bold; line-height: 1; padding: 1em">535,000 lines<br>
@@ -224,7 +225,7 @@ This feedback is slow and expensive. It often needs a human in the loop to ensur
       <div class="trend" v-click=5>
         <div class="metaphor"><img src="/brand/symbol.svg" alt="" /></div>
         <div class="col">
-          <h3>Technical feasibility</h3>
+          <h3>Rising feasibility</h3>
             Research is pent up.
           <div class="col-body">
             <div class="converge-canvas"><ConvergeDiagram /></div>
@@ -234,7 +235,7 @@ This feedback is slow and expensive. It often needs a human in the loop to ensur
     </div>
     <div v-click="2"></div>
   </div>
-  <div class="page-no">{{ $slidev.nav.currentPage - 1 }} / {{ $slidev.nav.total - 1 }}</div>
+  <div class="page-no">{{ $slidev.nav.currentPage }} / {{ $slidev.nav.total }}</div>
 </div>
 
 <!--
@@ -255,53 +256,50 @@ This feedback is slow and expensive. It often needs a human in the loop to ensur
 
 <div class="frame">
   <div class="head">
-    <div class="eyebrow">05 · Team</div>
+    <div class="eyebrow">{{ $slidev.nav.currentPage }} ·  Team</div>
     <h2>Passionate, clear-eyed experts</h2>
   </div>
   <div class="grow">
-      <p>We're passionate about this problem. 
-      <br>We have the right expertise. 
-      <br>We're clear-eyed about the solution.</p>
+      <p>Each with over a decade of experience working on this problem.</p>
+      <p>Created and grew Dynamic Tables at Snowflake to $100M ARR over 4 years.</p>
       <br>
     <div class="cols" style="grid-template-columns:1fr 1fr 1fr">
       <TeamCard photo="/team/dan.jpg" name="Dan Sotolongo" role="Founder/CEO"
         :companies="['i-simple-icons-snowflake', 'i-simple-icons-google', 'i-simple-icons-twitter', 'Caltech']">
-        <p>Co-created Dynamic Tables (w/o PM) — <strong>$100M+ ARR in 4 years</strong>. Worked on this problem his whole career.</p>
+        <p>Product visionary. Co-created Dynamic Tables. Worked on stream processing, observability. </p>
       </TeamCard>
       <TeamCard photo="/team/daniel.jpg" name="Daniel Mills" role="Co-founder"
         :companies="['i-simple-icons-snowflake', 'i-simple-icons-google', 'UW']">
-        <p>Co-created Dynamic Tables &amp; Google Dataflow Streaming.</p>
+        <p>Implementor extraordinaire. Co-created Dynamic Tables. Google Dataflow Streaming founding team.</p>
       </TeamCard>
       <TeamCard photo="/team/skylar.jpg" name="Skylar Cook" role="Co-founder"
         :companies="['Datadog', 'Noom', 'Verily', 'Caltech']">
-            <p><strong>Expert generalist.</strong> Distributed systems, developer infra, biotech at scale. </p>
+            <p>DX Expert. Worked on distributed systems, developer infra, biotech. Used Temporal in anger.</p>
       </TeamCard>
     </div>
   </div>
-  <div class="page-no">{{ $slidev.nav.currentPage - 1 }} / {{ $slidev.nav.total - 1 }}</div>
+  <div class="page-no">{{ $slidev.nav.currentPage }} / {{ $slidev.nav.total }}</div>
 </div>
 
 <!--
 Our team is world class. We each have over a decade of experience working on this problem from above and below.
 
-I've organized my whole career around solving this problem. 
+Daniel and I tag-teamed the creation of Dynamic Tables at Snowflake, which grew into a $100M business over 4 years. I'm the product guy, he blasts through implementation. Before that we worked on groundbreaking stream processing systems. Skylar drives our developer experience, having hit this problem from many different angles and built developer infrastructure at scale.
 
-Daniel and I co-created Dynamic Tables at Snowflake, which grew into a $100M business over 4 years. Daniel co-created Google Dataflow Streaming. Skylar is our expert generalist, who has hit this problem from many different angles and knows developer infrastructure at scale.
-
-We're the team you'd bet can solve this problem.
+We have the right technical knowledge, and the experience of bringing cutting edge products to market. We're the team you'd bet can solve this problem.
 -->
 
 ---
 
 <div class="frame">
   <div class="head">
-    <div class="eyebrow">06 · Market</div>
-    <h2>&ldquo;Complex&rdquo; Applications</h2>
+    <div class="eyebrow">{{ $slidev.nav.currentPage }} · Market positioning</div>
+    <h2>Turnkey Application Platform</h2>
   </div>
   <div class="grow">
     <div class="cols n2 venn-row">
       <div class="venn-col">
-        <div class="venn-head">Categories</div>
+        <div class="venn-head">Product Categories</div>
         <div class="venn-stage">
       <div class="venn">
         <div class="venn-note">Combined<br>valuations</div>
@@ -365,7 +363,7 @@ We're the team you'd bet can solve this problem.
       <span v-click="2"><span style="font-family: var(--f-logo)">*</span> Select independents only. Hyperscalers dominate the category. <br><span class="vl-dot vl-dot-inline"></span> do not disclose revenue.</span>
       
   </div>
-  <div class="page-no">{{ $slidev.nav.currentPage - 1 }} / {{ $slidev.nav.total - 1 }}</div>
+  <div class="page-no">{{ $slidev.nav.currentPage }} / {{ $slidev.nav.total }}</div>
 </div>
 
 <!--
@@ -386,7 +384,7 @@ We're the team you'd bet can solve this problem.
 
 <div class="frame">
   <div class="head">
-    <div class="eyebrow">07 · Market</div>
+    <div class="eyebrow">{{ $slidev.nav.currentPage }} ·  Market Size</div>
     <h2>3 Categories, 1 market.</h2>
   </div>
   <div class="grow">
@@ -396,7 +394,7 @@ We're the team you'd bet can solve this problem.
            facts about products; here the circles are drawn over customers, and
            .venn-col.segments moves them to k = 0.26. -->
       <div class="venn-col segments">
-        <div class="venn-head">Segments</div>
+        <div class="venn-head">Market Segments</div>
         <div class="venn-stage" v-click="1">
           <div class="venn">
             <div class="venn-circle serving"></div>
@@ -420,7 +418,7 @@ We're the team you'd bet can solve this problem.
       </div>
     </div>
   </div>
-  <div class="page-no">{{ $slidev.nav.currentPage - 1 }} / {{ $slidev.nav.total - 1 }}</div>
+  <div class="page-no">{{ $slidev.nav.currentPage }} / {{ $slidev.nav.total }}</div>
 </div>
 
 <!--
@@ -428,7 +426,7 @@ We're the team you'd bet can solve this problem.
 
 1. In fact, most applications need to buy all 3 categories. But they've been kept separate because people think unifying them is impossible.
 
-2. We disagree. Cambra unifies all 3 categories, and this market structure means our addressable market is something like "all software applications"— a gigantic market full of incumbents with structural limitations. A unified product stands to take the whole market—it's the iPhone to the cameras, GPSes, and dumb phones of software.
+2. We disagree. Cambra unifies all 3 categories, and this market structure means our addressable market is something like "all software applications"— a gigantic market full of incumbents with structural limitations. A unified product stands to take the whole market—it's the iPhone to the cameras, GPSes, and dumb phones of software infrastructure.
 
 3. Of course, we're not chasing that right out of the gate. Our wedge hypothesis is to focus on teams who have outgrown their PaaS, and are about to adopt a durable execution framework or analytics stack.
 -->
@@ -437,7 +435,7 @@ We're the team you'd bet can solve this problem.
 
 <div class="frame">
   <div class="head">
-    <div class="eyebrow">08 · Why It Wins</div>
+    <div class="eyebrow">{{ $slidev.nav.currentPage }} ·  Why It Wins</div>
     <h2>Unprecedented productivity</h2>
   </div>
   <div class="grow">
@@ -482,9 +480,9 @@ We're the team you'd bet can solve this problem.
         <p>Agent-built example app built on a conventional stack vs Cambra.</p>
       </div>
     </div>
-    <p v-click="3" class="closer">Only with <span style="color:var(--coral)">Cambra</span> &mdash; <span style="color:var(--lagoon)">inaccessible</span> to frameworks.</p>
+    <p v-click="3" class="closer">Only with <span style="color:var(--coral)">Cambra</span> &mdash; <span style="color:var(--lagoon)">inaccessible</span> to conventional stack.</p>
   </div>
-  <div class="page-no">{{ $slidev.nav.currentPage - 1 }} / {{ $slidev.nav.total - 1 }}</div>
+  <div class="page-no">{{ $slidev.nav.currentPage }} / {{ $slidev.nav.total }}</div>
 </div>
 
 <!--
@@ -495,10 +493,12 @@ We spend all of that time because we don't have confidence in what was built.
 Cambra's features give you the confidence to ship without waiting.
 That gets you velocity.
 
+This diagram shows our estimation of the reduction in time to production that Cambra's features would yield. These features have no real precedent, so the best way to understand them is through our demo at the end. The short version is: static assertions give you formal guarantees on the correctness of your program, hot reload lets you evolve your system with extreme ease, and program branching lets you try programs in production without risk.
+
 2. The other piece is simplicity. The best way to save time is to do less work. When your work is coding, that means writing less code.
 We had agents build an example application that incorporates serving, durable execution, and analytics on a conventional stack, and with Cambra. We categorized the lines of code, and compared the two codebases.
-The result was a 5x reduction in total code. But what's interesting is where the savings happened: everything _except_ the domain logic, ranging from 3x savings to 20x.
-Of course, this is just a random example. The numbers may change in the real world. But it provides early validation of our thesis.
+The result was a 5x reduction in total code. 5x less code means 5x less time to develop and test.
+What's interesting is where the savings happened: everything _except_ the domain logic, ranging from 3x savings to 20x.
 
 3. The thing to realize is that these gains are only possible with Cambra's architecture. The conventional architecture is fundamentally unable to do it.
 -->
@@ -507,7 +507,7 @@ Of course, this is just a random example. The numbers may change in the real wor
 
 <div class="frame">
   <div class="head">
-    <div class="eyebrow">09 · Why It Wins</div>
+    <div class="eyebrow">{{ $slidev.nav.currentPage }} ·  Why It Wins</div>
     <h2>Transformative performance</h2>
   </div>
   <div class="grow">
@@ -529,15 +529,14 @@ Of course, this is just a random example. The numbers may change in the real wor
         <div class="si-int cambra" v-click="7"><span class="si-mult">100&times;</span><span class="si-name">Cambra</span></div>
       </div>
     </div>
-    <p v-click="8" class="closer">Only with <span style="color:var(--coral)">Cambra</span> &mdash; <span style="color:var(--lagoon)">inaccessible</span> to shallower abstractions.</p>
   </div>
-  <div class="page-no">{{ $slidev.nav.currentPage - 1 }} / {{ $slidev.nav.total - 1 }}</div>
+  <div class="page-no">{{ $slidev.nav.currentPage }} / {{ $slidev.nav.total }}</div>
 </div>
 
 <!--
-0. Now let's talk about performance. We haven't tried optimizing the performance of our prototype yet, so I don't have real figures to show you. But we are very confident that Cambra will have shockingly good performance. That's because it's well known how to get good performance, and we've built Cambra in a way that we can apply _all_ of those techniques.
+0. Now let's talk about application performance. We haven't tried optimizing the performance of our prototype yet, so I don't have real figures to show you. But we are very confident that Cambra will have shockingly good performance. That's because it's well known how to get good performance, and we've built Cambra in a way that we can apply _all_ of those techniques.
 
-1. I'm going to get a bit philosophical. Please bear with me. Consider the computing stack we all know and love. You can think of tools as sitting on different layers of this stack. Users of the tool interact with the top surface of the tool, but the tools also have depth.
+1. I'm going to get a bit philosophical. Please bear with me. Consider the layers of the computing stack we all know and love. You can think of tools as sitting on different layers of this stack. Users of the tool interact with the top surface of the tool, but the tools also have depth.
 
 2. When a tool is deep, it fuses layers of the stack. When you get it right, fusing those layers net major performance gains.
 
@@ -546,23 +545,220 @@ Of course, this is just a random example. The numbers may change in the real wor
 7. We learned from those other systems, building on their insights, and taking it further. By fusing the application layer into the rest of the stack, we believe we have the opportunity to yield multiple orders of magnitude of performance gains compared to conventional applications. 
 These gains always come from not doing work: skip the network by colocating related logic, skip the disk by caching aggressively, skip interpretation overhead by JIT compiling, skip unnecessary lookups by reordering joins.
 
-8. These are well-known optimizations. But it's been impossible to apply them without a unified abstraction like Cambra. Anytime you go beyond the boundary of the system, you lose all of the optimization opportunities.
+8. These are well-known optimizations. But it's been impossible to apply them across entire applications without a unified abstraction like Cambra.
 
 ##
 
+-->
+
+
+---
+
+<div class="frame">
+  <div class="head">
+    <div class="eyebrow">{{ $slidev.nav.currentPage }} ·  Traction</div>
+    <h2>Our value prop resonates.</h2>
+  </div>
+  <div class="grow">
+    <div v-click="1" class="cols tl-split">
+      <div class="tl-side">
+        <h3>Timeline</h3>
+        <div class="timeline-v">
+        <div class="tlv-row cool"><span class="tlv-date">Feb</span><span class="tlv-dot"></span><span class="tlv-label">Cofounders join full-time</span></div>
+        <div class="tlv-row cool"><span class="tlv-date">Apr</span><span class="tlv-dot"></span><span class="tlv-label"><strong>Announcement</strong> &middot; HN front page</span></div>
+        <div class="tlv-row cool"><span class="tlv-date">Jun</span><span class="tlv-dot"></span><span class="tlv-label">CU PL/V group collaboration</span></div>
+        <div class="tlv-row cool"><span class="tlv-date">Jul</span><span class="tlv-dot"></span><span class="tlv-label">Founding engineer accepts</span></div>
+        <div class="tlv-row hot"><span class="tlv-date">Aug 10</span><span class="tlv-dot"></span><span class="tlv-label"><strong>OSS announcement</strong> &middot; Unsolicited contributor interest</span></div>
+        <div class="tlv-row hot"><span class="tlv-date">Aug 17</span><span class="tlv-dot"></span><span class="tlv-label">Verification consultant starts</span></div>
+      </div>
+      </div>
+      <div v-click="2" class="tl-stack">
+        <div class="col">
+            <h3>Votes of confidence</h3>
+            <div class="col-body">
+                Angels
+                <ul>
+                    <li>Snowflake co-founder</li>
+                    <li>Redpanda CTO</li>
+                </ul>
+                Hiring
+                <ul>
+                    <li>100% offer acceptance (of 4)</li>
+                    <li>Unsolicited talent inbound</li>
+                </ul>
+            </div>
+        </div>
+      </div>
+    </div>
+    <div v-click="3" class="col">
+            <h3>Customer Validation</h3>
+            <!-- TODO: add photos -->
+            <div class="tl-quotes cols n2">
+            <div class="col-body">
+                <QuoteCard
+                    initials="BJ"
+                expand-at="0"
+                    quote="&quot;That would be amazing.&quot;"
+                    full-quote="&quot;I think that would be amazing. [...] My ideal model would be like, here's old. This is new. Do it. [...] If you're taking over hosting our backends, probably hundreds of thousands a year.&quot;"
+                    name="Bryan Jadot"
+                    title="Tech Lead, Nuvo"
+                />
+            </div>
+            <div class="col-body">
+                <QuoteCard
+                    initials="AM"
+                expand-at="0"
+                    quote="&quot;...unify[ing] the logic for all this stuff would simplify it a ton.&quot"
+                    full-quote="&quot;Unify[ing] the logic for all this stuff would simplify it a ton. [...] If I had one more engineer, it would give me less value than just being able to pay for this.&quot;"
+                    name="Alan Menezes"
+                    title="Director, Nvidia"
+                />
+            </div>
+          </div>
+        </div>
+  </div>
+  <div class="page-no">{{ $slidev.nav.currentPage }} / {{ $slidev.nav.total }}</div>
+</div>
+
+<!--
+0. We've been working at this full time for 7 months. In that time, we've made tremendous progress on our prototype, and are approaching our MVP faster than expected.
+
+1. The reception of our thesis has also exceeded our expectations.
+- Our announcement blog post made it to the front page of HN completely organically.
+- The programming languages research group here at CU Boulder was eager to collaborate\
+- After our OSS announcement, we got unsolicited contributor inbound, eager to work for free (we said no for now).
+
+2. Our angels include a Snowflake co-founder and the Redpanda CTO. Everyone I've asked to join the team has. And I've had to say no to others.
+
+3. In our customer conversations, our value proposition has resonated. A tech lead at the growth-stage startup Nuvo said it would be amazing. A director at Nvidia said it would greatly simplify his stack, and easily justify the cost.
 -->
 
 ---
 
 <div class="frame">
   <div class="head">
-    <div class="eyebrow">10 · Demo</div>
+    <div class="eyebrow">{{ $slidev.nav.currentPage }} ·  Business Model</div>
+    <h2>OSS ⇒ Cloud Service ⇒ AI Services</h2>
+  </div>
+  <div class="grow">
+    <div class="bm">
+      <TierStack />
+      <div class="bm-notes">
+        <div class="bm-note tier-2" v-click="3">
+          <div class="bm-tier">Value Added Services</div>
+          <h3 class="bm-h">AI Development Platform</h3>
+          <p>Only Cambra has the full context for AI to automate development.</p>
+          <div class="bm-tags">
+              <span>Experimentation</span>
+              <span>User simulation</span>
+              <span>Feature development</span>
+          </div>
+        </div>
+        <div class="bm-note tier-1" v-click="2">
+          <div class="bm-tier">Core revenue</div>
+          <h3 class="bm-h">Hosted, distributed engine</h3>
+          <p>Multi-tenant, proprietary. The easiest, cheapest way to run Cambra, from hobbyist to enterprise.</p>
+        </div>
+        <div class="bm-note tier-0" v-click="1">
+          <div class="bm-tier">Open Source</div>
+          <h3 class="bm-h">Compiler + engine</h3>
+          <p>Single-tenant. Useful standalone. Builds trust, community, and sales pipeline.</p>
+        </div>
+      </div>
+      <div class="bm-g2m" v-click="4">
+        <!-- Drawn in the column's own design pixels (168 x 381); the tier
+             centres it points at are y 69, 199 and 320. -->
+        <svg class="g2m-wires" viewBox="0 0 168 381" preserveAspectRatio="none" aria-hidden="true">
+          <defs>
+            <marker id="g2m-tip-ent" markerUnits="userSpaceOnUse" markerWidth="7" markerHeight="7"
+                    refX="6" refY="3.5" orient="auto">
+              <path d="M0,0 L7,3.5 L0,7 z" fill="var(--coral)" />
+            </marker>
+            <marker id="g2m-tip-plg" markerUnits="userSpaceOnUse" markerWidth="7" markerHeight="7"
+                    refX="6" refY="3.5" orient="auto">
+              <path d="M0,0 L7,3.5 L0,7 z" fill="var(--cool)" />
+            </marker>
+          </defs>
+          <path class="w-ent" d="M44,128 L6,71" />
+          <path class="w-ent" d="M44,140 L6,197" />
+          <path class="w-plg" d="M112,254 L6,202" />
+          <path class="w-plg" d="M112,266 L6,318" />
+        </svg>
+        <span class="g2m-label lbl-ent">Enterprise Sales</span>
+        <span class="g2m-label lbl-plg">PLG</span>
+      </div>
+    </div>
+  </div>
+  <div class="page-no">{{ $slidev.nav.currentPage }} / {{ $slidev.nav.total }}</div>
+</div>
+
+<!--
+-->
+
+---
+
+<div class="frame">
+  <div class="head">
+    <div class="eyebrow">{{ $slidev.nav.currentPage }} ·  The Ask</div>
+    <h2 style="font-family:var(--f-logo);font-size:2.6rem">$4M seed</h2>
+    <div class="ask-sub">18-24 months to the Series A</div>
+  </div>
+  <div class="grow">
+    <div class="ask-phases">
+      <div class="ask-phase" style="--h:48%">
+        <div class="ph"><span>Open Source</span><span>months 0–6</span></div>
+        <div class="amt">$0.6M<small>team of 6</small></div>
+        <div class="deliv">Teams outgrowing their PaaS/BaaS reach for Cambra instead of a workflow engine and analytics stack.</div>
+      </div>
+      <div class="ask-phase" style="--h:69%">
+        <div class="ph"><span>Hosted Engine</span><span>months 6–18</span></div>
+        <div class="amt">$1.8M<small>team of 8</small></div>
+        <div class="deliv">The hosted engine is <b class="cool">in production</b> with 3–5 paying design partners. Grow OSS community to prime sales funnel for launch.</div>
+      </div>
+      <div class="ask-phase warm" style="--h:100%">
+        <div class="ph"><span>Grow</span><span>months 18–24</span></div>
+        <div class="amt">$1.3M<small>team of 11</small></div>
+        <div class="deliv">Raise the Series A on production usage, leaving six months of runway. Launch public Beta, freemium tier. Ramp up marketing.</div>
+      </div>
+    </div>
+    <div class="ask-footer">
+      <div><strong>Where it goes</strong> &middot; people 87% &middot; cloud + inference 7% &middot; legal, accounting, travel 6% &middot; plan $3.8M + reserve</div>
+      <div><strong>Already in</strong> &middot; Snowflake co-founder &middot; Redpanda CTO &middot; SAFEs at a $20M cap</div>
+    </div>
+  </div>
+  <div class="page-no">{{ $slidev.nav.currentPage }} / {{ $slidev.nav.total }}</div>
+</div>
+
+<!--
+
+-->
+
+---
+
+<div class="frame center">
+  <div class="bg-glow" style="bottom:-16rem;left:-12rem;width:36rem;height:36rem;background:radial-gradient(circle,rgba(28,136,167,.2),transparent 70%)"></div>
+  <div class="eyebrow">{{ $slidev.nav.currentPage }} ·  Vision</div>
+  <h2 style="font-size:2.6rem;max-width:22ch;margin-top:.6rem">The <strong class="hot">development</strong> platform.</h2>
+
+  <p class="lead-p" style="font-size:1.05rem">Our platform accumulates the context AI needs to take over not just operations, but <strong>application development</strong>.</p>
+  <div style="font-family:var(--f-mono);font-size:.7rem;color:var(--fg-3);margin-top:.6rem">cambra.d{{ $slidev.nav.currentPage }} ·  dan@cambra.dev</div>
+</div>
+
+<!--
+When you extrapolate, Cambra's capabilities uniquely position it to take over application devolopment, in the same way that cloud platforms absorbed datacenter operations and application platforms absorbed software infra.
+-->
+
+---
+
+<div class="frame">
+  <div class="head">
+    <div class="eyebrow">{{ $slidev.nav.currentPage }} ·  Demo</div>
     <h2>The system as a program</h2>
   </div>
   <div class="grow" data-waitfor=".cart-demo">
     <CartDemo />
   </div>
-  <div class="page-no">{{ $slidev.nav.currentPage - 1 }} / {{ $slidev.nav.total - 1 }}</div>
+  <div class="page-no">{{ $slidev.nav.currentPage }} / {{ $slidev.nav.total }}</div>
 </div>
 
 <!--
@@ -606,7 +802,7 @@ it:
    — three endpoints and a feed running beside each other, so its graph is
    thousands of pixels wide and reads as a smear at slide scale. `☰ Panes`, top
    right of the inspector, restores it. Not a diagram of the program: the
-   program, as the runtime holds it. Say "operator graph", not "dataflow" — the
+   program, as the engine holds it. Say "operator graph", not "dataflow" — the
    edges are construction edges.
 6. *Edit the program in front of them.* The source pane is editable, and edits
    like an editor: select a block and **Tab** / **Shift-Tab** moves it two
@@ -625,7 +821,7 @@ it:
 7. *Ship the upgrade — press **v2** on the strip* (or **Shift-U**), **then
    Reload.** Two presses, deliberately: `v2` puts the new program in the pane
    and compiles nothing, so you can read it to the room — the strip says `v2
-   shown · not compiled` while you do — and `Reload` is what swaps it in. The
+   sho{{ $slidev.nav.currentPage }} ·  not compiled` while you do — and `Reload` is what swaps it in. The
    same machinery as beat 6, carrying a change nobody would make by hand on
    stage. Two things then happen at once and both are worth naming:
    - **The product list grows.** v1 subscribes to BTC and LTC; v2 subscribes to
@@ -691,7 +887,7 @@ rejecting rows. The deck's README says what is kept where.
 the running one: every operator whose computation is unchanged keeps running as
 the same operator, and every mutable variable resumes from the value it was
 holding. The tally counts exactly that — `kept` of `bound` operators taken from
-the version being replaced. Nothing in the runtime serializes a `Mut` cell and
+the version being replaced. Nothing in the engine serializes a `Mut` cell and
 nothing needs to.
 
 The deck used to do this by replaying a journal of every row the host had ever
@@ -711,197 +907,6 @@ having one figure the room can see the app compute.
 
 **Numbers, if asked:** 2.1 MB module, ~160 ms to compile the program in the
 browser, ~116 ms per price row against a 430 ms budget.
--->
-
----
-
-<div class="frame">
-  <div class="head">
-    <div class="eyebrow">11 · Traction</div>
-    <h2>The thesis resonates.</h2>
-  </div>
-  <div class="grow">
-    <div v-click="1" class="cols tl-split">
-      <div class="tl-side">
-        <h3>Timeline</h3>
-        <div class="timeline-v">
-        <div class="tlv-row cool"><span class="tlv-date">Feb</span><span class="tlv-dot"></span><span class="tlv-label">Cofounders join full-time</span></div>
-        <div class="tlv-row cool"><span class="tlv-date">Apr</span><span class="tlv-dot"></span><span class="tlv-label"><strong>Announcement</strong> &middot; HN front page</span></div>
-        <div class="tlv-row cool"><span class="tlv-date">Jun</span><span class="tlv-dot"></span><span class="tlv-label">CU PL/V group collaboration</span></div>
-        <div class="tlv-row cool"><span class="tlv-date">Jul</span><span class="tlv-dot"></span><span class="tlv-label">Founding engineer accepts</span></div>
-        <div class="tlv-row hot"><span class="tlv-date">Aug 10</span><span class="tlv-dot"></span><span class="tlv-label"><strong>OSS announcement</strong> &middot; Unsolicited contributor interest</span></div>
-        <div class="tlv-row hot"><span class="tlv-date">Aug 17</span><span class="tlv-dot"></span><span class="tlv-label">Verification consultant starts</span></div>
-      </div>
-      </div>
-      <div v-click="2" class="tl-stack">
-        <div class="col">
-            <h3>Votes of confidence</h3>
-            <div class="col-body">
-                Angels
-                <ul>
-                    <li>Snowflake co-founder</li>
-                    <li>Redpanda CTO</li>
-                </ul>
-                Hiring
-                <ul>
-                    <li>100% offer acceptance (of 4)</li>
-                    <li>Unsolicited talent inbound</li>
-                </ul>
-            </div>
-        </div>
-      </div>
-    </div>
-    <div v-click="3" class="col">
-            <h3>Customer Validation</h3>
-            <!-- TODO: add photos -->
-            <div class="tl-quotes cols n2">
-            <div class="col-body">
-                <QuoteCard
-                    initials="BJ"
-                expand-at="0"
-                    quote="&quot;That would be amazing.&quot;"
-                    full-quote="&quot;I think that would be amazing. [...] My ideal model would be like, here's old. This is new. Do it. [...] If you're taking over hosting our backends, probably hundreds of thousands a year.&quot;"
-                    name="Bryan Jadot"
-                    title="Tech Lead, Nuvo"
-                />
-            </div>
-            <div class="col-body">
-                <QuoteCard
-                    initials="AM"
-                expand-at="0"
-                    quote="&quot;...unify[ing] the logic for all this stuff would simplify it a ton.&quot"
-                    full-quote="&quot;Unify[ing] the logic for all this stuff would simplify it a ton. [...] If I had one more engineer, it would give me less value than just being able to pay for this.&quot;"
-                    name="Alan Menezes"
-                    title="Director, Nvidia"
-                />
-            </div>
-          </div>
-        </div>
-  </div>
-  <div class="page-no">{{ $slidev.nav.currentPage - 1 }} / {{ $slidev.nav.total - 1 }}</div>
-</div>
-
-<!--
-0. We've been working at this full time for 7 months. In that time, we've made tremendous progress on our prototype, and are approaching our MVP faster than expected.
-
-1. The reception of our thesis has also exceeded our expectations.
-- Our announcement blog post made it to the front page of HN completely organically.
-- The programming languages research group here at CU Boulder was eager to collaborate
-- We've brought on 2 key engineers, and received unsolicited inbound. BTW, our acceptance rate is 100% (including cofounders).
-- After our OSS announcement, we got unsolicited contributor inbound, eager to work for free (we said no for now).
-
-2. Our angels include a Snowflake co-founder and the Redpanda CTO.
-
-3. In our customer conversations, our product positioning has resonated. A tech lead at the growth-stage startup Nuvo said it would be amazing. A director at Nvidia said it would greatly simplify his stack, and be easy to justify the cost.
--->
-
----
-
-<div class="frame">
-  <div class="head">
-    <div class="eyebrow">12 · Business Model</div>
-    <h2>OSS ⇒ Cloud Service ⇒ AI Services</h2>
-  </div>
-  <div class="grow">
-    <div class="bm">
-      <TierStack />
-      <div class="bm-notes">
-        <div class="bm-note tier-2" v-click="3">
-          <div class="bm-tier">Value Added Services</div>
-          <h3 class="bm-h">AI Development Platform</h3>
-          <p>Only Cambra has the full context for AI to automate development.</p>
-          <div class="bm-tags">
-              <span>Experimentation</span>
-              <span>User simulation</span>
-              <span>Feature development</span>
-          </div>
-        </div>
-        <div class="bm-note tier-1" v-click="2">
-          <div class="bm-tier">Core revenue</div>
-          <h3 class="bm-h">Hosted, distributed runtime</h3>
-          <p>The easiest, cheapest way to run Cambra, from hobbyist to enterprise.</p>
-        </div>
-        <div class="bm-note tier-0" v-click="1">
-          <div class="bm-tier">Open Source</div>
-          <h3 class="bm-h">Compiler + runtime</h3>
-          <p>Useful standalone. Builds trust, community, and sales pipeline.</p>
-        </div>
-      </div>
-    </div>
-    <p class="closer" v-click=4>G2M: Bottom-up for early viral growth. Later stages invert to top-down.</p>
-  </div>
-  <div class="page-no">{{ $slidev.nav.currentPage - 1 }} / {{ $slidev.nav.total - 1 }}</div>
-</div>
-
-<!--
--->
-
----
-
-<div class="frame">
-  <div class="head">
-    <div class="eyebrow">13 · The Ask</div>
-    <h2 style="font-family:var(--f-logo);font-size:2.6rem">$4M seed</h2>
-    <div class="ask-sub">24 months to the Series A</div>
-  </div>
-  <div class="grow">
-    <div class="ask-phases">
-      <div class="ask-phase" style="--h:48%">
-        <div class="ph"><span>OSS Core</span><span>months 0–6</span></div>
-        <div class="amt">$0.6M<small>team of 6</small></div>
-        <div class="deliv">Teams outgrowing their PaaS/BaaS reach for Cambra instead of a workflow engine and analytics stack.</div>
-      </div>
-      <div class="ask-phase" style="--h:69%">
-        <div class="ph"><span>Cloud</span><span>months 6–18</span></div>
-        <div class="amt">$1.8M<small>team of 8</small></div>
-        <div class="deliv">The hosted runtime is <b class="cool">in production</b> with 3–5 paying design partners. Grow OSS community to prime sales funnel for launch.</div>
-      </div>
-      <div class="ask-phase warm" style="--h:100%">
-        <div class="ph"><span>Grow</span><span>months 18–24</span></div>
-        <div class="amt">$1.3M<small>team of 11</small></div>
-        <div class="deliv">Raise the Series A on production usage, leaving six months of runway. Launch public Beta, freemium tier. Ramp up marketing.</div>
-      </div>
-    </div>
-    <div class="ask-footer">
-      <div><strong>Where it goes</strong> &middot; people 87% &middot; cloud + inference 7% &middot; legal, accounting, travel 6% &middot; plan $3.8M + reserve</div>
-      <div><strong>Already in</strong> &middot; Snowflake co-founder &middot; Redpanda CTO &middot; SAFEs at a $20M cap</div>
-    </div>
-  </div>
-  <div class="page-no">{{ $slidev.nav.currentPage - 1 }} / {{ $slidev.nav.total - 1 }}</div>
-</div>
-
-<!--
-One number, one sentence, three phases, one line of percentages. The spreadsheet is the
-answer to the follow-up question, not the slide.
-
-Back pocket (Seed Worksheet rev 2, 2026-09-03; vault: projects/seed-round/round-size.md):
-- Monthly burn: $107K (months 0–6) → $153K (6–18) → $222K (18–24). Exit burn $222K/mo, 11 people.
-- Headcount at 24 months: 3 founders, 7 engineers (Leon + Nick + 5 hires), 1 devrel (0.3 FTE from
-  month 6). No recruiters — network hiring, extremely selective.
-- Where it goes (post-close $3.81M): people $3.30M (87%), cloud + inference $0.27M (7%),
-  legal/accounting/insurance $0.15M (4%), travel/misc $0.09M (2%). Founders at benchmark seed
-  salaries; engineers priced senior.
-- Reserve: ~$0.2M on top of the plan, plus the option to hold headcount flat at the month-18
-  level during the raise (~$300K). Cloud credits (AWS Activate / Google for Startups) cover most
-  of year-one infra.
-- The month-18 milestone is what a Series A investor will argue about; the phase wording here
-  is a draft for Dan to put in his own words.
-- Nnamdi (08-19) asked for the headcount and runway math behind the ask — this is it.
--->
-
----
-
-<div class="frame center">
-  <div class="bg-glow" style="bottom:-16rem;left:-12rem;width:36rem;height:36rem;background:radial-gradient(circle,rgba(28,136,167,.2),transparent 70%)"></div>
-  <div class="eyebrow">14 · Vision</div>
-  <h2 style="font-size:2.6rem;max-width:22ch;margin-top:.6rem">The <strong class="hot">development</strong> platform.</h2>
-
-  <p class="lead-p" style="font-size:1.05rem">Our platform accumulates the context AI needs to take over not just operations, but <strong>application development</strong>.</p>
-  <div style="font-family:var(--f-mono);font-size:.7rem;color:var(--fg-3);margin-top:.6rem">cambra.dev · dan@cambra.dev</div>
-</div>
-
-<!--
-When you extrapolate, Cambra's capabilities uniquely position it to take over application devolopment, in the same way that cloud platforms absorbed datacenter operations and application platforms absorbed software infra.
 -->
 
 ---
@@ -935,14 +940,14 @@ When you extrapolate, Cambra's capabilities uniquely position it to take over ap
       </div>
     </div>
   </div>
-  <div class="page-no">{{ $slidev.nav.currentPage - 1 }} / {{ $slidev.nav.total - 1 }}</div>
+  <div class="page-no">{{ $slidev.nav.currentPage  }} / {{ $slidev.nav.total  }}</div>
 </div>
 
 <!--
 Source, verbatim:
 
 Product/architecture. Product: a programming language for your system.
-OSS for single-instance runtime. Cloud for scaling, fault-tolerance,
+OSS for single-instance engine. Cloud for scaling, fault-tolerance,
 production operations. (visual: programmer, laptop, cloud; cambra logo
 in both)
 
@@ -973,11 +978,11 @@ split out because it was too dense for one slide.
         <div class="stack">
           <div class="layer">
             <div class="k">CHL</div>
-            <div class="t">Parser · LSP · package manager</div>
+            <div class="t">Pars{{ $slidev.nav.currentPage }} ·  LSP · package manager</div>
           </div>
           <div class="layer">
             <div class="k">IR</div>
-            <div class="t">Compiler · optimizer</div>
+            <div class="t">Compil{{ $slidev.nav.currentPage }} ·  optimizer</div>
           </div>
         </div>
         <div class="bracket db" style="margin-top:.5rem"><span class="lbl">Database</span></div>
@@ -996,14 +1001,14 @@ split out because it was too dense for one slide.
         <div>
           <h3 style="font-family:var(--f-mono);font-size:.7rem;letter-spacing:.14em;text-transform:uppercase;color:var(--fg-3);margin:0 0 .6rem">How it ships</h3>
           <div class="pills">
-            <div class="pill on">OSS — single-instance runtime</div>
+            <div class="pill on">OSS — single-instance engine</div>
             <div class="pill">Cloud — scaling, fault tolerance, prod ops</div>
           </div>
         </div>
       </div>
     </div>
   </div>
-  <div class="page-no">{{ $slidev.nav.currentPage - 1 }} / {{ $slidev.nav.total - 1 }}</div>
+  <div class="page-no">{{ $slidev.nav.currentPage }} / {{ $slidev.nav.total }}</div>
 </div>
 
 <!--
@@ -1048,7 +1053,7 @@ behind it, for when someone asks.
     <p class="lead-p">Each of these was met with the same skepticism, and each won: <strong>C over assembly</strong>, <strong>the relational database over hand-rolled storage</strong>, <strong>Mojo over PyTorch, CUDA and ROCm</strong>.</p>
     <p class="closer">The pieces are proven. Cambra is the first to put them behind <span class="hot">one language.</span></p>
   </div>
-  <div class="page-no">{{ $slidev.nav.currentPage - 1 }} / {{ $slidev.nav.total - 1 }}</div>
+  <div class="page-no">{{ $slidev.nav.currentPage }} / {{ $slidev.nav.total }}</div>
 </div>
 
 <!--
@@ -1100,7 +1105,7 @@ skepticism rather than as a claim in the main line.)
       </div>
     </div>
   </div>
-  <div class="page-no">{{ $slidev.nav.currentPage - 1 }} / {{ $slidev.nav.total - 1 }}</div>
+  <div class="page-no">{{ $slidev.nav.currentPage }} / {{ $slidev.nav.total }}</div>
 </div>
 
 <!--
