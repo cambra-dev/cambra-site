@@ -530,7 +530,7 @@ Of course, this is just a random example. The numbers may change in the real wor
         <div class="si-int cambra" v-click="7"><span class="si-mult">100&times;</span><span class="si-name">Cambra</span></div>
       </div>
     </div>
-    <p v-click="8" class="closer">Only with <span style="color:var(--coral)">Cambra</span> &mdash; <span style="color:var(--lagoon)">inaccessible</span> to frameworks.</p>
+    <p v-click="8" class="closer">Only with <span style="color:var(--coral)">Cambra</span> &mdash; <span style="color:var(--lagoon)">inaccessible</span> to shallower abstractions.</p>
   </div>
   <div class="page-no">{{ $slidev.nav.currentPage - 1 }} / {{ $slidev.nav.total - 1 }}</div>
 </div>
@@ -542,9 +542,12 @@ Of course, this is just a random example. The numbers may change in the real wor
 
 2. When a tool is deep, it fuses layers of the stack. When you get it right, fusing those layers net major performance gains.
 
-3-5. I chose some specific examples that demonstrate pretty clearly what I mean: orders of magnitude of performance. Depending on the specific tool and the layers it fused, you get different gains. But generally, going deeper makes more gains available.
+3-6. I chose some specific examples that demonstrate pretty clearly what I mean: orders of magnitude of performance. Depending on the specific tool and the layers it fused, you get different gains. But generally, going deeper makes more gains available.
 
-6. We learned from those other systems, building on their insights, and taking it further. By fusing the application layer into the rest of the stack, we believe we have the opportunity to yield multiple orders of magnitude of performance gains compared to conventional applications. These gains come from not doing work: skip the network by colocating related logic, skip the disk by caching aggressively, skip interpretation overhead by JIT compiling, skip unnecessary lookups by reordering joins. They're all well-known optimizations, but without a unified abstraction like Cambra, they've hit boundaries at the edge of an OS process.
+6. We learned from those other systems, building on their insights, and taking it further. By fusing the application layer into the rest of the stack, we believe we have the opportunity to yield multiple orders of magnitude of performance gains compared to conventional applications. 
+These gains always come from not doing work: skip the network by colocating related logic, skip the disk by caching aggressively, skip interpretation overhead by JIT compiling, skip unnecessary lookups by reordering joins.
+
+7. These are well-known optimizations. But it's been impossible to apply them without a unified abstraction like Cambra. Anytime you go beyond the boundary of the system, you lose all of the optimization opportunities.
 
 ##
 
