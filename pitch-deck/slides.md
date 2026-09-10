@@ -133,8 +133,9 @@ The multipliers are gone from this slide on purpose — they land on Why It Wins
     <div class="pillars compact">
       <div v-click="2"><b>Today</b> — types and unit tests early. All the important stuff late, with a human in the loop.</div>
       <div v-click="3"><b>Cambra</b> — end-to-end properties checked before release, no human required.</div>
+      <div v-click="4"><b>Transactional hot reload</b> — the edit loop you already use, against real state. Code, data and in-flight work move together, or not at all.</div>
     </div>
-    <div class="closer center" v-click="4">You can't bolt this on. <span class="warm">You have to design it in.</span></div>
+    <div class="closer center" v-click="5">You can't bolt this on. <span class="warm">You have to design it in.</span></div>
   </div>
   <div class="page-no">{{ $slidev.nav.currentPage - 1 }} / {{ $slidev.nav.total - 1 }}</div>
 </div>
@@ -152,6 +153,8 @@ This feedback needs a human in the loop to ensure the tests are realistic and do
 4. These features aren't something you can bolt on to an existing development platform. It's something you have to design in. Cambra is the only system built for it.
 
 Competitor contrast in speech only: Convex's type safety catches a hallucinated field name. Our compiler checks the rule you wrote, everywhere the data flows.
+
+Hot reload is the familiar half — every engineer has it, and every engineer's version runs on fake data on a laptop. Ours is transactional over code, state and in-progress work, so it holds against real state, and it runs in production too. Working prototype; the demo is this.
 -->
 
 ---
@@ -451,7 +454,7 @@ That is the whole reframe: a single segment, currently split across three produc
             { label: 'Operate', value: 3, keep: 1 },
           ]"
         />
-        <p>Estimates of Cambra's verification and validation features.</p>
+        <p>Estimates. Verification removes the review wait; branch testing and transactional hot reload remove the deploy wait.</p>
       </div>
       <div class="col">
         <h3 class="disp">Less code, less mess</h3>
@@ -555,6 +558,7 @@ These gains are enabled by the way Cambra spans every layer of the backend stack
           <li style="font-size:.85rem;color:var(--fg-2);display:flex;gap:.5rem"><span>—</span>Cross-component optimizations, left on the table</li>
           <li style="font-size:.85rem;color:var(--fg-2);display:flex;gap:.5rem"><span>—</span>Deployment risk — DB migrations, workflow versioning</li>
         </ul>
+        <p class="punch" style="font-size:.9rem;margin-top:auto">Changed live, while it runs: <strong>code, data and in-flight work</strong> move in one transaction.</p>
       </div>
     </div>
   </div>

@@ -36,17 +36,25 @@ const BIZ      = pick(14, 'Business Model')
 const ASK      = pick(15, 'The Ask')
 
 // --- Insight: one page per loop, each pinned to a stage -------------------
-const insightPage = (stage, keepBeat, closer) => {
+// Every beat on the Insight slide, so a beat added to slides.md cannot be
+// silently dropped or left with a click number this page never reaches.
+const INSIGHT_BEATS = /( *)<div v-click="\d"><b>([^<]+)<\/b>[\s\S]*?<\/div>\n/g
+const insightPage = (stage, keep, closer) => {
   let b = INSIGHT
     .replace(/<SdlcDiagram :stage="\$clicks \+ 1" \/>/, `<SdlcDiagram :stage="${stage}" fixed />`)
     .replace(/<div class="closer center"[^>]*>[\s\S]*?<\/div>/, `<div class="closer center">${closer}</div>`)
-  // Keep only this page's half of the Today/Cambra pair, always visible.
-  const beats = [...b.matchAll(/ *<div v-click="\d"><b>(Today|Cambra)<\/b>[\s\S]*?<\/div>\n/g)]
-  for (const m of beats) if (!m[0].includes(`<b>${keepBeat}</b>`)) b = b.replace(m[0], '')
-  return b.replace(/ v-click="\d"(?=><b>(?:Today|Cambra)<\/b>)/g, '')
+  const found = [...b.matchAll(INSIGHT_BEATS)].map((m) => m[2])
+  const unknown = found.filter((n) => !INSIGHT_ASSIGNED.includes(n))
+  if (unknown.length) throw new Error(`Insight beat "${unknown[0]}" is not assigned to a short-deck page — add it to INSIGHT_ASSIGNED`)
+  for (const m of [...b.matchAll(INSIGHT_BEATS)]) if (!keep.includes(m[2])) b = b.replace(m[0], '')
+  // Whatever stays is always visible: these pages have no clicks of their own.
+  return b.replace(/ v-click="\d"(?=><b>)/g, '')
 }
-const INSIGHT_A = insightPage(3, 'Today', 'Today a <span class="hot">human</span> closes the loop.')
-const INSIGHT_B = insightPage(4, 'Cambra', "You can't bolt this on. <span class=\"warm\">You have to design it in.</span>")
+const INSIGHT_A_BEATS = ['Today']
+const INSIGHT_B_BEATS = ['Cambra', 'Transactional hot reload']
+const INSIGHT_ASSIGNED = [...INSIGHT_A_BEATS, ...INSIGHT_B_BEATS]
+const INSIGHT_A = insightPage(3, INSIGHT_A_BEATS, 'Today a <span class="hot">human</span> closes the loop.')
+const INSIGHT_B = insightPage(4, INSIGHT_B_BEATS, "You can't bolt this on. <span class=\"warm\">You have to design it in.</span>")
 
 // --- Why Now: drop the pull-quotes, then close the click gaps they left ---
 let WHYNOW_S = WHYNOW.replace(/ *<QuoteCard[\s\S]*?\/>\n/g, '')

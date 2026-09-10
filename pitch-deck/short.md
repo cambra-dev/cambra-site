@@ -11,7 +11,7 @@ colorSchema: dark
   <h1 style="font-size:3.4rem;margin:0">Ship fast. Break nothing.</h1>
   <p class="punch" style="margin-top:.6rem">
       Replace your stack with one program on one engine: 
-      <br>proven before it runs, run against a branch of production.
+      <br>proven before it runs, tested against a branch of production.
   </p>
   <div class="byline">
     <span><div>Dan Sotolongo<br>
@@ -44,7 +44,7 @@ colorSchema: dark
           <div class="diagram-canvas">
             <SystemDiagram :stage="$clicks" />
           </div>
-          <div class="flow-note" v-click="5">Each arrow multiplies complexity</div>
+          <div class="flow-note" v-click="5">Each arrow is unchecked</div>
         </div>
         <div class="beats arc" v-click="6">
             <div>Ten systems, wired by hand.</div>
@@ -53,7 +53,7 @@ colorSchema: dark
         </div>
     </div>
     <p class="closer center" v-click="7">
-        <span>AI builds the stack faster. <span class="hot">It doesn't make it smaller.</span></span></p>
+        <span>AI builds faster. <span class="hot">It doesn't build simpler.</span></span></p>
   </div>
   <div class="page-no">{{ $slidev.nav.currentPage - 1 }} / {{ $slidev.nav.total - 1 }}</div>
 </div>
@@ -103,7 +103,7 @@ Say the wedge moment out loud on the last clicks: this is the week you reach for
     <div class="pillars">
       <div v-click="3"><b>One program on one engine.</b> Not dozens of separate components.</div>
       <div v-click="4"><b>Proven before it runs.</b> The compiler checks your integrity and security rules end to end.</div>
-      <div v-click="5"><b>Run against a branch of production.</b> See the actual effect of deploying, without risking production.</div>
+      <div v-click="5"><b>Tested against a branch of production.</b> See the actual effect of deploying, without risking production.</div>
     </div>
     <p class="closer center" v-click="6">Ship fast. <span class="hot">Break nothing.</span></p>
   </div>
@@ -133,7 +133,7 @@ The multipliers are gone from this slide on purpose — they land on Why It Wins
   <div class="grow">
     <div class="sdlc-canvas"><SdlcDiagram :stage="3" fixed /></div>
     <div class="pillars compact">
-      <div><b>Today</b> — types and unit tests early. All the important stuff after deploy, with a human in the loop.</div>
+      <div><b>Today</b> — types and unit tests early. All the important stuff late, with a human in the loop.</div>
     </div>
     <div class="closer center">Today a <span class="hot">human</span> closes the loop.</div>
   </div>
@@ -153,6 +153,8 @@ This feedback needs a human in the loop to ensure the tests are realistic and do
 4. These features aren't something you can bolt on to an existing development platform. It's something you have to design in. Cambra is the only system built for it.
 
 Competitor contrast in speech only: Convex's type safety catches a hallucinated field name. Our compiler checks the rule you wrote, everywhere the data flows.
+
+Hot reload is the familiar half — every engineer has it, and every engineer's version runs on fake data on a laptop. Ours is transactional over code, state and in-progress work, so it holds against real state, and it runs in production too. Working prototype; the demo is this.
 -->
 
 ---
@@ -166,6 +168,7 @@ Competitor contrast in speech only: Convex's type safety catches a hallucinated 
     <div class="sdlc-canvas"><SdlcDiagram :stage="4" fixed /></div>
     <div class="pillars compact">
       <div><b>Cambra</b> — end-to-end properties checked before release, no human required.</div>
+      <div><b>Transactional hot reload</b> — the edit loop you already use, against real state. Code, data and in-flight work move together, or not at all.</div>
     </div>
     <div class="closer center">You can't bolt this on. <span class="warm">You have to design it in.</span></div>
   </div>
@@ -185,6 +188,8 @@ This feedback needs a human in the loop to ensure the tests are realistic and do
 4. These features aren't something you can bolt on to an existing development platform. It's something you have to design in. Cambra is the only system built for it.
 
 Competitor contrast in speech only: Convex's type safety catches a hallucinated field name. Our compiler checks the rule you wrote, everywhere the data flows.
+
+Hot reload is the familiar half — every engineer has it, and every engineer's version runs on fake data on a laptop. Ours is transactional over code, state and in-progress work, so it holds against real state, and it runs in production too. Working prototype; the demo is this.
 -->
 
 ---
