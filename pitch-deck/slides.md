@@ -466,7 +466,6 @@ We're the team you'd bet can solve this problem.
       </div>
       <div class="col" v-click="2">
         <h3 class="disp">Less code, less mess</h3>
-        <!-- TODO: tiers are too close. -->
         <GhostBar
           title="Lines of code"
           accent="warm"
@@ -544,10 +543,10 @@ Of course, this is just a random example. The numbers may change in the real wor
 
 3-6. I chose some specific examples that demonstrate pretty clearly what I mean: orders of magnitude of performance. Depending on the specific tool and the layers it fused, you get different gains. But generally, going deeper makes more gains available.
 
-6. We learned from those other systems, building on their insights, and taking it further. By fusing the application layer into the rest of the stack, we believe we have the opportunity to yield multiple orders of magnitude of performance gains compared to conventional applications. 
+7. We learned from those other systems, building on their insights, and taking it further. By fusing the application layer into the rest of the stack, we believe we have the opportunity to yield multiple orders of magnitude of performance gains compared to conventional applications. 
 These gains always come from not doing work: skip the network by colocating related logic, skip the disk by caching aggressively, skip interpretation overhead by JIT compiling, skip unnecessary lookups by reordering joins.
 
-7. These are well-known optimizations. But it's been impossible to apply them without a unified abstraction like Cambra. Anytime you go beyond the boundary of the system, you lose all of the optimization opportunities.
+8. These are well-known optimizations. But it's been impossible to apply them without a unified abstraction like Cambra. Anytime you go beyond the boundary of the system, you lose all of the optimization opportunities.
 
 ##
 
