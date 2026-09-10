@@ -523,14 +523,14 @@ Of course, this is just a random example. The numbers may change in the real wor
           <div class="si-layer">Operating System</div>
           <div class="si-layer">Hardware</div>
         </div>
-        <div class="si-int weld" v-click="3"><span class="si-mult">30&times;</span><span class="si-name">Weld</span></div>
-        <div class="si-int hyper" v-click="4"><span class="si-mult">10&times;</span><span class="si-name">HyPer<br>Halide</span></div>
-        <div class="si-int mojo" v-click="5"><span class="si-mult">50&times;</span><span class="si-name">Mojo</span></div>
-        <!-- TODO: add an interval across app|db for Viaduct at 10x -->
-        <div class="si-int cambra" v-click="6"><span class="si-mult">100&times;</span><span class="si-name">Cambra</span></div>
+        <div class="si-int viaduct" v-click="3"><span class="si-mult">10&times;</span><span class="si-name">Viaduct</span></div>
+        <div class="si-int weld" v-click="4"><span class="si-mult">30&times;</span><span class="si-name">Weld</span></div>
+        <div class="si-int hyper" v-click="5"><span class="si-mult">10&times;</span><span class="si-name">HyPer<br>Halide</span></div>
+        <div class="si-int mojo" v-click="6"><span class="si-mult">50&times;</span><span class="si-name">Mojo</span></div>
+        <div class="si-int cambra" v-click="7"><span class="si-mult">100&times;</span><span class="si-name">Cambra</span></div>
       </div>
     </div>
-    <p v-click="7" class="closer">Only with <span style="color:var(--coral)">Cambra</span> &mdash; <span style="color:var(--lagoon)">inaccessible</span> to frameworks.</p>
+    <p v-click="8" class="closer">Only with <span style="color:var(--coral)">Cambra</span> &mdash; <span style="color:var(--lagoon)">inaccessible</span> to frameworks.</p>
   </div>
   <div class="page-no">{{ $slidev.nav.currentPage - 1 }} / {{ $slidev.nav.total - 1 }}</div>
 </div>

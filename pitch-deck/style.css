@@ -465,9 +465,10 @@ span.warm {
    that is the claim, and the reason distributed systems has no precedent bar. */
 .stackint {
   display: grid;
-  /* Column 1 is the "layer" axis label, 2 the strata, 3-6 the proof brackets.
-     Row 1 is the brackets' heading; rows 2-5 are the four layers. */
-  grid-template-columns: 1.5rem minmax(0, 17rem) 4.6rem 4.6rem 4.6rem 5.4rem;
+  /* Column 1 is the "layer" axis label, 2 the strata, 3-7 the proof brackets,
+     ordered by how deep they reach. Row 1 is the brackets' heading; rows 2-5
+     are the four layers. */
+  grid-template-columns: 1.5rem minmax(0, 15rem) 4.6rem 4.6rem 4.6rem 4.6rem 5.4rem;
   grid-template-rows: auto repeat(4, 1fr);
   column-gap: 0.9rem;
   /* No row gap: the strata are contiguous, and a bracket spanning rows only
@@ -492,7 +493,7 @@ span.warm {
   color: var(--fg-3);
 }
 .si-head {
-  grid-column: 3 / 7;
+  grid-column: 3 / 8;
   grid-row: 1;
   padding-bottom: 0.55rem;
   text-align: center;
@@ -578,20 +579,26 @@ span.warm {
   width: 0.78rem;
   height: 5px;
 }
-.si-int.weld {
+/* Ordered left to right by how deep each one reaches: Viaduct spans the top
+   two layers, Cambra all four. */
+.si-int.viaduct {
   grid-column: 3;
+  grid-row: 2 / 4;
+}
+.si-int.weld {
+  grid-column: 4;
   grid-row: 3 / 5;
 }
 .si-int.hyper {
-  grid-column: 4;
+  grid-column: 5;
   grid-row: 4 / 6;
 }
 .si-int.mojo {
-  grid-column: 5;
+  grid-column: 6;
   grid-row: 3 / 6;
 }
 .si-int.cambra {
-  grid-column: 6;
+  grid-column: 7;
   grid-row: 2 / 6;
   border-left: 5px solid var(--coral);
   padding-left: 1rem;

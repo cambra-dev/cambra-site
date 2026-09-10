@@ -139,7 +139,7 @@ const laid = computed(() => {
         :key="`t${s.label}`"
         class="gb-tag"
         :class="[`tier-${rowOf[i] || 0}`, { first: s.xu < 6, last: s.xu > 94 }]"
-        :style="{ left: `calc(${s.xu} * 1%)`, '--stem': `${0.2 + (rowOf[i] || 0) * 1.3}rem`, '--acc': s.acc }"
+        :style="{ left: `calc(${s.xu} * 1%)`, '--stem': `calc(0.2rem + ${rowOf[i] || 0} * var(--row-step))`, '--acc': s.acc }"
       >
         <span class="gb-stem" />
         <span class="gb-text">
@@ -219,7 +219,10 @@ const laid = computed(() => {
 }
 .gb-labels {
   position: relative;
-  height: calc(0.35rem + var(--tiers, 2) * 1.3rem);
+  /* One place to set the gap between label rows. The stems below derive from
+     it, so rows and stems cannot drift apart. */
+  --row-step: 1.75rem;
+  height: calc(0.35rem + var(--tiers, 2) * var(--row-step));
 }
 .gb-tag {
   position: absolute;
