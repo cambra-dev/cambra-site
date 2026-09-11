@@ -1,0 +1,50 @@
+# A live asset cart. Four host channels, declared beside this file; prices are
+# integers scaled by 10^8. See `mod.rs` for the rules this shape obeys, and for
+# the TODO: one reader over one keyed collection, once `Mut(Map(K, V), Txn)`
+# lands and a multi-slot read stops costing what it does.
+
+btc_updates = [u for u in price_updates() if u.ticker == "BTC-USD"]
+eth_updates = [u for u in price_updates() if u.ticker == "ETH-USD"]
+sol_updates = [u for u in price_updates() if u.ticker == "SOL-USD"]
+
+btc_changes = [c for c in cart_changes() if c.ticker == "BTC-USD"]
+eth_changes = [c for c in cart_changes() if c.ticker == "ETH-USD"]
+sol_changes = [c for c in cart_changes() if c.ticker == "SOL-USD"]
+
+btc_px: Mut(Int, Txn) := 0
+eth_px: Mut(Int, Txn) := 0
+sol_px: Mut(Int, Txn) := 0
+
+btc_qty: Mut(Int, Txn) := 0
+eth_qty: Mut(Int, Txn) := 0
+sol_qty: Mut(Int, Txn) := 0
+
+for u in btc_updates:
+    with begin():
+        btc_px := u.price
+for u in eth_updates:
+    with begin():
+        eth_px := u.price
+for u in sol_updates:
+    with begin():
+        sol_px := u.price
+
+for c in btc_changes:
+    with begin():
+        btc_qty := c.qty
+for c in eth_changes:
+    with begin():
+        eth_qty := c.qty
+for c in sol_changes:
+    with begin():
+        sol_qty := c.qty
+
+for req in view_requests():
+    with begin():
+        btc_line << (qty=btc_qty, price=btc_px, total=btc_qty * btc_px)
+for req in view_requests():
+    with begin():
+        eth_line << (qty=eth_qty, price=eth_px, total=eth_qty * eth_px)
+for req in view_requests():
+    with begin():
+        sol_line << (qty=sol_qty, price=sol_px, total=sol_qty * sol_px)
