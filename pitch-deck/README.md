@@ -14,12 +14,18 @@ npm run dev              # opens the deck; slide 6 is the live demo
 ## Slide 6 — the live demo
 
 One Cambra program, compiled to WebAssembly **in the page** and running while the slide is open. The
-left panel is the program inspector — source, operator graph, and the values flowing through it. The
-right panel is the app, at a quarter of the width, so its proportions are a phone's.
+left panel is the program inspector — its source above the values flowing through it, stacked so
+each pane gets the full width. The right panel, and the larger half of the slide, is the app: a
+light surface against the inspector's navy, so the slide reads as the tool beside the thing it runs.
 
+- **The operator graph is hidden by default.** `cart.cambra` is three parallel sinks, so its graph
+  is thousands of pixels wide and reads as a smear at slide scale. It is one gesture away rather
+  than gone: `☰ Panes` in the inspector's header lists every pane with a checkbox, and re-checking
+  the operator one (`post-conversion`) brings it back. `HIDDEN_PANES` in `CartDemo.vue` is what
+  starts it hidden — no pane is hidden from CSS, because a pane hidden that way is unreachable.
 - **The feed replays a recorded Coinbase slice** at the rate it was captured: 4,187 rows over 30
-  minutes across 20 products, looping. Click the status line at the foot of the phone to switch to
-  the live Coinbase socket, and again to go back.
+  minutes across 20 products, looping. Click the status line at the foot of the order pad to switch
+  to the live Coinbase socket, and again to go back.
 - **The program tracks three of the twenty.** The rest are greyed `not tracked`; they still reach
   the program, because the ingest filter rejecting them is the thing being shown.
 - **Every cart figure comes from the program.** The panel divides by the 10⁸ price scale and
@@ -38,8 +44,23 @@ which are files in `public/`.
 | `demo/feed.ts` | replay and live Coinbase, both emitting scaled-integer prices |
 | `demo/transport.ts` | the one interface the panels talk to |
 | `components/CartDemo.vue` | wires them together; owns the host in module scope |
-| `components/AssetCart.vue` | the phone panel |
-| `components/ProgramInspector.vue` | the inspector, as a `srcdoc` frame with an injected snapshot and frame stream |
+| `components/AssetCart.vue` | the app panel: prices beside the order, on a light surface |
+| `components/ProgramInspector.vue` | the inspector, as a `srcdoc` frame with an injected snapshot, frame stream and skin |
+
+### Restyling the inspector without rebuilding it
+
+`public/inspector/index.html` is a generated blob, and the deck never edits it. The frame is
+`srcdoc`, same-origin and carries no CSP, so `ProgramInspector.vue` takes a `skin` prop — CSS text
+— and appends it to the frame's head after the bundle is written. The bundle's own stylesheet is
+the last element in its head, so the skin wins ties on order alone; only CodeMirror, whose base
+theme is generated at run time and inserted at the top of the head, needs `!important`.
+
+`INSPECTOR_SKIN` in `CartDemo.vue` is that CSS, and it is the one place the deck reaches into a
+bundle it does not own: it stacks the panes vertically, raises the inspector's contrast (its own
+dark palette is a 1.47:1 border, which disappears on a projector) and moves it into the deck's
+navy. Every rule names the class it targets and what it is defeating. A `cambra` rebuild that
+renames a class silently drops the corresponding rule, so check the skin after a
+`scripts/sync-cambra.sh`.
 
 ### The artifacts
 

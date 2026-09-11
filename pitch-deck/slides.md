@@ -567,9 +567,10 @@ These gains always come from not doing work: skip the network by colocating rela
 
 <!--
 The whole slide is one Cambra program, compiled to WebAssembly in this page and
-running now. Left: the program inspector — its source, its operator graph and
-the values flowing through it. Right: the app, at a quarter of the width because
-it is a phone.
+running now. Left: the program inspector — the source, and the values flowing
+through it, stacked so each gets the full width. Right, and the larger half: the
+app the program serves. The light surface is the point — the tool beside the
+thing it runs.
 
 **The argument the old bullets made** — say it over the demo rather than beside
 it:
@@ -582,16 +583,20 @@ it:
 
 1. *The prices are moving.* A recorded Coinbase slice, replaying at the rate it
    was captured — 2.33 rows/s across 20 products. Click the status line at the
-   foot of the phone to go to the live feed.
+   foot of the order pad to go to the live feed.
 2. *The program keeps three of the twenty.* Scroll the product list: the greyed
    ones say `not tracked`. That filter is three lines of Cambra, and the values
    pane shows the stream arriving and the filtered slot changing.
-3. *Tap `+` on BTC.* The quantity, the price and the line total all come out of
-   the program — the app divides by the 10^8 scale and formats. Watch the values
-   pane update in the same beat.
-4. *The middle pane is the operator graph.* Not a diagram of the program: the
-   program, as the runtime holds it. Say "operator graph", not "dataflow" — the
-   edges are construction edges.
+3. *Press **Add** on BTC.* The quantity, the price and the line total all come
+   out of the program — the app divides by the 10^8 scale and formats. The
+   Prices column and the Order column sit side by side, so the tap and its
+   consequence are one glance apart; the values pane updates in the same beat.
+4. *Bring up the operator graph, if the room wants it.* It is hidden by default
+   — this program is three parallel sinks, so its graph is thousands of pixels
+   wide and reads as a smear at slide scale. `☰ Panes`, top right of the
+   inspector, restores it. Not a diagram of the program: the program, as the
+   runtime holds it. Say "operator graph", not "dataflow" — the edges are
+   construction edges.
 5. *Edit the program in front of them.* The source pane is editable. Add a
    ticker to the filter — `sol_updates` is the shortest edit — and press
    **Cmd-Enter**. The program recompiles in the page and **the cart keeps what

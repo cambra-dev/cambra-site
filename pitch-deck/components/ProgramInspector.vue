@@ -30,6 +30,15 @@ const props = defineProps<{
    * editor read-only when there is nothing behind the chord.
    */
   rebuild?: (source: string, options: { keepState: boolean }) => Promise<unknown>;
+  /**
+   * CSS appended to the frame's head once the bundle has been written.
+   *
+   * The seam between the deck and a bundle it does not build: the frame is
+   * same-origin and carries no CSP, so the deck can retheme the inspector's
+   * internals without a `cambra` rebuild. See `CartDemo.vue`'s `INSPECTOR_SKIN`
+   * for what the deck passes and why each rule is there.
+   */
+  skin?: string;
 }>();
 
 const frame = ref<HTMLIFrameElement | null>(null);
@@ -91,6 +100,16 @@ function mount(html: string, snapshot: string): void {
     doc.open();
     doc.write(html);
     doc.close();
+
+    // The skin goes in last, and has to: the bundle's own stylesheet is the
+    // final element in its `<head>`, so a sheet appended after it wins every
+    // tie at equal specificity. Re-applied on every mount, because each mount
+    // rewrites the document from `html`.
+    if (props.skin) {
+      const style = doc.createElement("style");
+      style.textContent = props.skin;
+      doc.head.appendChild(style);
+    }
   };
 }
 
@@ -107,7 +126,7 @@ async function load(): Promise<void> {
 void load();
 
 watch(
-  () => [bundle.value, props.snapshot] as const,
+  () => [bundle.value, props.snapshot, props.skin] as const,
   ([html, snapshot]) => {
     if (html && snapshot) mount(html, snapshot);
   },
