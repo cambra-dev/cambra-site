@@ -10,26 +10,51 @@
  * proportions were honest; at hero width a phone frame would be a costume.
  *
  * Every cart figure comes from the program — the panel divides by the 10⁸ scale
- * and formats, and adds the three line totals into a subtotal. The subtotal is
- * the one number the program does not compute, because a block reading all six
- * slots costs about two seconds per price row against twenty-two milliseconds
- * for the three the program has (`cart.cambra` says so, and the vault note
- * `as-of-read-cost` measures it).
+ * and formats, and adds the line totals into a subtotal. The subtotal is the one
+ * number the program does not compute, because a block reading every slot costs
+ * about two seconds per price row against twenty-two milliseconds for the three
+ * the four-channel program had (`cart-v0.cambra` says so, and the vault note
+ * `as-of-read-cost` measures it). The route-shaped program computes it happily —
+ * `sum([...])` over the cart is one line of `PUT /checkout` — and still does not
+ * put it in the view reply, so the addition stays here.
  *
  * Prices for products the program does not track come from the panel's own copy
  * of the feed. The program has no opinion about a ticker it never sees, which is
  * exactly what the greyed `not tracked` rows are there to show.
+ *
+ * Quantities are in whole units of the asset, always. What the program counts in
+ * — base units, thousandths of one on the stepper — is `CartDemo.vue`'s problem,
+ * and it converts on both crossings. A panel that dealt in satoshi would have to
+ * know which asset it was drawing, and the panel is the half of this slide that
+ * is meant to look like software anyone has used.
  */
 import { computed, ref } from "vue";
 
-import { PRODUCTS, formatPrice, type FeedMode } from "../demo/feed";
-import { LINE_SINKS, SCALE, TRACKED } from "../demo/transport";
+import {
+  PRODUCTS,
+  formatDollars,
+  formatPrice,
+  formatQuantity,
+  type FeedMode,
+} from "../demo/feed";
 
 const props = defineProps<{
   /** Last price seen per product, scaled, from the feed. */
   prices: Record<string, number>;
-  /** The line each tracked ticker's sink last produced. */
+  /** The cart the program last reported, keyed by product, quantities in whole units. */
   lines: Record<string, { qty: number; price: number; total: number }>;
+  /** What the account holds, keyed by product, in whole units. Empty where the program has none. */
+  positions: Record<string, number>;
+  /** The account's cash, scaled, or `null` where the program does not report one. */
+  cash: number | null;
+  /** What the program said about the last write, if it said anything. */
+  notice: string | null;
+  /** The products the program is subscribed to; the rest are listed but greyed. */
+  tracked: readonly string[];
+  /** What one press of the stepper adds, in whole units. */
+  step: number;
+  /** Whether the program serves a checkout. */
+  canCheckout: boolean;
   /** What the feed is doing. */
   status: { mode: FeedMode; detail: string };
   /** Whether the program has compiled and is running. */
@@ -40,6 +65,7 @@ const props = defineProps<{
 
 const emit = defineEmits<{
   (e: "quantity", ticker: string, qty: number): void;
+  (e: "checkout"): void;
   (e: "toggle-feed"): void;
 }>();
 
@@ -50,28 +76,41 @@ const matches = computed(() => {
   const needle = query.value.trim().toUpperCase();
   const all = PRODUCTS.filter((p) => p.includes(needle));
   return [...all].sort((a, b) => {
-    const at = TRACKED.includes(a as (typeof TRACKED)[number]) ? 0 : 1;
-    const bt = TRACKED.includes(b as (typeof TRACKED)[number]) ? 0 : 1;
+    const at = isTracked(a) ? 0 : 1;
+    const bt = isTracked(b) ? 0 : 1;
     return at - bt || a.localeCompare(b);
   });
 });
 
 function isTracked(ticker: string): boolean {
-  return ticker in LINE_SINKS;
+  return props.tracked.includes(ticker);
 }
 
-/** The cart's rows: a tracked ticker the program says has a quantity. */
+/**
+ * The cart's rows: a tracked product the program says has a quantity.
+ *
+ * Ordered by the tracked list rather than by the reply, so a line does not jump
+ * the moment the program returns them in another order — the route-shaped
+ * program iterates a map, and a map's order is not the panel's to depend on.
+ */
 const cart = computed(() =>
-  TRACKED.map((ticker) => ({ ticker, line: props.lines[ticker] })).filter(
-    (entry) => (entry.line?.qty ?? 0) > 0,
-  ),
+  props.tracked
+    .map((ticker) => ({ ticker, line: props.lines[ticker] }))
+    .filter((entry) => (entry.line?.qty ?? 0) > 0),
+);
+
+/** What the account holds, in the same order, and only what it holds. */
+const held = computed(() =>
+  props.tracked
+    .map((ticker) => ({ ticker, qty: props.positions[ticker] ?? 0 }))
+    .filter((entry) => entry.qty > 0),
 );
 
 /**
  * The subtotal, added here rather than in the program.
  *
- * Three additions, over figures the program computed. See the component's own
- * note for why the program does not do it.
+ * A handful of additions, over figures the program computed. See the
+ * component's own note for why the program does not do it.
  */
 const subtotal = computed(() =>
   cart.value.reduce((sum, entry) => sum + (entry.line?.total ?? 0), 0),
@@ -83,20 +122,31 @@ function money(scaled: number, ticker: string): string {
 
 /** A line total or subtotal, always at two decimals — these are dollars. */
 function dollars(scaled: number): string {
-  return (scaled / SCALE).toLocaleString("en-US", {
-    minimumFractionDigits: 2,
-    maximumFractionDigits: 2,
-  });
+  return formatDollars(scaled);
+}
+
+/** A quantity in whole units: `0.003`, or `2` for a round holding. */
+function quantity(units: number): string {
+  return formatQuantity(units);
 }
 
 function add(ticker: string): void {
   if (!isTracked(ticker)) return;
-  emit("quantity", ticker, (props.lines[ticker]?.qty ?? 0) + 1);
+  emit("quantity", ticker, (props.lines[ticker]?.qty ?? 0) + props.step);
 }
 
+/**
+ * Move a line by one press of the stepper.
+ *
+ * Floored at zero rather than removing the line: zero is a quantity the program
+ * holds and reports, and a cart row that vanishes on the way down is a row the
+ * presenter cannot step back up. The rounding is the panel's own — a sum of
+ * thousandths in binary floating point drifts, and the drift would otherwise
+ * reach the program as a quantity nobody pressed.
+ */
 function step(ticker: string, by: number): void {
-  const next = Math.max(0, (props.lines[ticker]?.qty ?? 0) + by);
-  emit("quantity", ticker, next);
+  const next = Math.max(0, (props.lines[ticker]?.qty ?? 0) + by * props.step);
+  emit("quantity", ticker, Number(next.toFixed(6)));
 }
 </script>
 
@@ -157,11 +207,21 @@ function step(ticker: string, by: number): void {
             <span class="order-ticker">{{ entry.ticker }}</span>
             <span class="stepper">
               <button class="step" @click="step(entry.ticker, -1)">−</button>
-              <span class="order-qty">{{ entry.line?.qty }}</span>
+              <span class="order-qty">{{ quantity(entry.line?.qty ?? 0) }}</span>
               <button class="step" @click="step(entry.ticker, 1)">+</button>
             </span>
             <span class="order-total">{{ dollars(entry.line?.total ?? 0) }}</span>
           </div>
+        </div>
+        <!-- What the account owns, which is where a committed checkout puts
+             what was in the cart. Absent entirely under a program that has no
+             holdings, rather than shown empty: an empty rail below the order
+             reads as a thing that is broken. -->
+        <div v-if="held.length" class="holdings">
+          <span class="sec-label">Holdings</span>
+          <span v-for="entry in held" :key="entry.ticker" class="holding">
+            {{ entry.ticker }} <b>{{ quantity(entry.qty) }}</b>
+          </span>
         </div>
       </div>
     </div>
@@ -171,6 +231,19 @@ function step(ticker: string, by: number): void {
         <span class="subtotal-label">Subtotal</span>
         <span class="subtotal-figure">{{ dollars(subtotal) }}</span>
       </div>
+      <!-- The checkout beat: the balance the program is about to spend, and the
+           one control that spends it. Both are hidden under a program that
+           serves no `PUT /checkout`, because a button that cannot be answered is
+           worse than no button — the room reads a dead control as a broken demo,
+           not as a feature that is not there yet. -->
+      <div v-if="canCheckout" class="settle">
+        <span class="cash-label">Cash</span>
+        <span class="cash-figure">{{ cash === null ? "—" : dollars(cash) }}</span>
+        <button class="checkout" :disabled="cart.length === 0" @click="emit('checkout')">
+          Checkout
+        </button>
+      </div>
+      <div v-if="notice" class="notice">{{ notice }}</div>
       <button class="status" @click="emit('toggle-feed')">
         <span v-if="fault" class="status-fault">{{ fault }}</span>
         <span v-else>{{ status.mode }} · {{ status.detail }}</span>
@@ -440,9 +513,85 @@ function step(ticker: string, by: number): void {
   text-align: right;
 }
 
+/* Holdings, as a wrapped strip rather than a third list: it is a footnote to
+   the order — two or three short figures — and a scrolling pane for it would
+   take height from the two lists that carry the demo. */
+.holdings {
+  flex: none;
+  display: flex;
+  flex-wrap: wrap;
+  align-items: baseline;
+  gap: 0.3rem 0.55rem;
+  padding: 0.35rem 0.7rem;
+  border-top: 1px solid var(--rule);
+}
+.holding {
+  font-family: var(--f-mono);
+  font-size: 0.66rem;
+  font-variant-numeric: tabular-nums;
+  color: var(--ink-2);
+  white-space: nowrap;
+}
+.holding b {
+  color: var(--ink);
+}
+
 .app-foot {
   flex: none;
   border-top: 1px solid var(--rule);
+}
+/* One row: the balance on the left, the control on the right. The cash figure
+   is quiet — it is context for the subtotal above it, not a second headline. */
+.settle {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  padding: 0 0.9rem 0.5rem;
+}
+.cash-label {
+  font-family: var(--f-mono);
+  font-size: 0.6rem;
+  font-weight: 700;
+  letter-spacing: 0.16em;
+  text-transform: uppercase;
+  color: var(--ink-3);
+}
+.cash-figure {
+  font-family: var(--f-mono);
+  font-size: 0.8rem;
+  font-variant-numeric: tabular-nums;
+  color: var(--ink-2);
+}
+.checkout {
+  margin-left: auto;
+  padding: 0.25rem 0.75rem;
+  border: 1px solid var(--ocean);
+  border-radius: 0.3rem;
+  background: var(--ocean);
+  color: #fff;
+  font-family: var(--f-body);
+  font-size: 0.72rem;
+  font-weight: 700;
+  letter-spacing: 0.02em;
+  cursor: pointer;
+}
+.checkout:disabled {
+  border-color: var(--rule-2);
+  background: transparent;
+  color: var(--ink-3);
+  cursor: default;
+}
+/* What the program said in reply: charged, declined, rejected. Ink on sand with
+   an ocean rule, for the same reason the fault line is ink with an ember rule —
+   10px of coloured text on this surface is under the contrast floor. */
+.notice {
+  margin: 0 0.9rem 0.5rem;
+  padding-left: 0.4rem;
+  border-left: 3px solid var(--ocean);
+  font-family: var(--f-mono);
+  font-size: 0.64rem;
+  letter-spacing: 0.02em;
+  color: var(--ink);
 }
 .subtotal {
   display: flex;

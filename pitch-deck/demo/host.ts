@@ -3,13 +3,14 @@
  * the journal that makes a replay possible.
  */
 
-import type { CambraTransport, Row, SinkRows } from "./transport";
+import { ChannelMap } from "./transport";
+import type { CambraTransport, ChannelDecl, Row, RouteHandle, SinkRows, Value } from "./transport";
 import type { Response } from "./worker";
 
 /** One thing the host pushed, in the order it pushed it. */
 export interface JournalEntry {
   source: string;
-  rows: Row[];
+  rows: readonly Value[];
 }
 
 /**
@@ -19,11 +20,35 @@ export interface JournalEntry {
  * mints its keys from arrival order — so a fresh program fed this journal
  * reaches the state the old one held. That is the whole mechanism for carrying
  * state across a recompile: nothing in the runtime serializes a `Mut` cell.
+ *
+ * The route rewrite makes that mechanism carry a `PUT /checkout` — a row that
+ * spends money — and the question is whether replaying one double-charges. It
+ * does not, and the reason is worth stating, because the intuition from every
+ * system that replays a message queue says otherwise. A replay here is not an
+ * append onto live state: the recompiled program starts from its declarations
+ * with empty `Mut` cells, and the journal is the *whole* history, pushed in the
+ * order it was pushed the first time. A deterministic program re-derives the
+ * same state, so the replayed checkout re-runs against the same balance, makes
+ * the same `cash >= due` decision and lands on the same figure. An `at-least
+ * once` delivery onto surviving state would double-charge; a re-derivation
+ * from nothing cannot.
+ *
+ * The one case where the replay *should* differ is the case the chord exists
+ * for: an edited program. A checkout that committed under the old source may be
+ * denied under the new one — a different price, a different guard — and that is
+ * the correct answer for the program now running, not a fault in the replay.
+ *
+ * What must stay out of the journal is a read. `GET /cart` changes nothing, so
+ * replaying it only re-emits replies the panel then overwrites; `CartDemo.vue`
+ * asks for one view after a replay instead, which keeps the journal to the rows
+ * that are actually history. Journaling the reads would not be wrong, only
+ * wasteful — and since a view is requested on every tracked price tick, it is
+ * most of the volume.
  */
 export class Journal {
   private readonly entries: JournalEntry[] = [];
 
-  append(source: string, rows: Row[]): void {
+  append(source: string, rows: readonly Value[]): void {
     this.entries.push({ source, rows });
   }
 
@@ -55,16 +80,19 @@ export class WorkerTransport implements CambraTransport {
   private snapshotText: Promise<string>;
   private resolveSnapshot!: (text: string) => void;
   private rejectSnapshot!: (reason: Error) => void;
+  /** The declarations, indexed by route — see `ChannelMap`. */
+  readonly channels: ChannelMap;
 
   constructor(
     private readonly options: {
       wasmUrl: string;
       moduleUrl: URL;
       source: string;
-      channels: unknown[];
+      channels: ChannelDecl[];
       onError?: (message: string) => void;
     },
   ) {
+    this.channels = new ChannelMap(options.channels);
     this.snapshotText = new Promise<string>((resolve, reject) => {
       this.resolveSnapshot = resolve;
       this.rejectSnapshot = reject;
@@ -97,8 +125,33 @@ export class WorkerTransport implements CambraTransport {
     for (const h of this.frameHandlers) h(message.frame);
   }
 
-  push(source: string, rows: Row[]): void {
+  push(source: string, rows: readonly Value[]): void {
     this.worker.postMessage({ kind: "push", source, rows });
+  }
+
+  /**
+   * The two channels `wasm_serve(method, path)` bound, as one handle.
+   *
+   * Resolved once, at the call: the declarations do not change while a program
+   * runs, and a handle held across a recompile stays valid because the same
+   * `channels` are passed to it (`recompile` sends `this.options.channels`
+   * again). A handle that re-read the file on every send would be the only
+   * thing on this page doing per-row work for no reason.
+   *
+   * `ChannelMap.pair` throws when the route is not declared, and this does not
+   * catch it: a missing route is a wiring fault the slide should show, not a
+   * control that silently does nothing.
+   */
+  route(method: string, path: string): RouteHandle {
+    const { requests, replies } = this.channels.pair(method, path);
+    return {
+      method,
+      path,
+      requests,
+      replies,
+      send: (rows: readonly Row[]) => this.push(requests, rows),
+      onReply: (cb: (rows: Row[]) => void) => this.sink(replies, cb),
+    };
   }
 
   sink(name: string, cb: (rows: Row[]) => void): () => void {

@@ -120,6 +120,35 @@ export class Program {
         }
     }
     /**
+     * Make one call against the route `method path`, as `rows`.
+     *
+     * The page is the listener a `wasm_serve` in the program binds, so this is
+     * what a `fetch` in the page turns into: the request crosses as rows of the
+     * route's declared record type rather than as a body, and the reply comes
+     * back in the next `tick`'s `outputs` under the route's own name
+     * (`"PATCH /cart"`). Nothing in the program parses or renders a body.
+     * @param {string} method
+     * @param {string} path
+     * @param {any} rows
+     */
+    request(method, path, rows) {
+        try {
+            const retptr = wasm.__wbindgen_add_to_stack_pointer(-16);
+            const ptr0 = passStringToWasm0(method, wasm.__wbindgen_export, wasm.__wbindgen_export2);
+            const len0 = WASM_VECTOR_LEN;
+            const ptr1 = passStringToWasm0(path, wasm.__wbindgen_export, wasm.__wbindgen_export2);
+            const len1 = WASM_VECTOR_LEN;
+            wasm.program_request(retptr, this.__wbg_ptr, ptr0, len0, ptr1, len1, addHeapObject(rows));
+            var r0 = getDataViewMemory0().getInt32(retptr + 4 * 0, true);
+            var r1 = getDataViewMemory0().getInt32(retptr + 4 * 1, true);
+            if (r1) {
+                throw takeObject(r0);
+            }
+        } finally {
+            wasm.__wbindgen_add_to_stack_pointer(16);
+        }
+    }
+    /**
      * The `/api/snapshot` payload, computed once at compile.
      *
      * What the inspector renders its source and IR panes from.

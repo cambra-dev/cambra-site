@@ -581,28 +581,46 @@ it:
 
 **What to point at, in order:**
 
-1. *The prices are moving.* A recorded Coinbase slice, replaying at the rate it
-   was captured — 2.33 rows/s across 20 products. Click the status line at the
-   foot of the order pad to go to the live feed.
-2. *The program keeps three of the twenty.* Scroll the product list: the greyed
-   ones say `not tracked`. That filter is three lines of Cambra, and the values
-   pane shows the stream arriving and the filtered slot changing.
-3. *Press **Add** on BTC.* The quantity, the price and the line total all come
-   out of the program — the app divides by the 10^8 scale and formats. The
-   Prices column and the Order column sit side by side, so the tap and its
-   consequence are one glance apart; the values pane updates in the same beat.
-4. *Bring up the operator graph, if the room wants it.* It is hidden by default
-   — this program is three parallel sinks, so its graph is thousands of pixels
-   wide and reads as a smear at slide scale. `☰ Panes`, top right of the
-   inspector, restores it. Not a diagram of the program: the program, as the
-   runtime holds it. Say "operator graph", not "dataflow" — the edges are
-   construction edges.
-5. *Edit the program in front of them.* The source pane is editable. Add a
-   ticker to the filter — `sol_updates` is the shortest edit — and press
-   **Cmd-Enter**. The program recompiles in the page and **the cart keeps what
-   is in it**: that is the claim on this slide's own punchline, made rather than
-   asserted. **Cmd-Shift-Enter** recompiles from scratch instead, and the cart
-   empties — worth doing once, so the room sees the difference is a choice.
+1. *The prices are moving.* The live Coinbase socket, subscribed by the program
+   itself — `wasm_socket_subscribe` names the endpoint and the products, and the
+   page is what implements it. If the room's network will not carry it, a
+   recorded slice takes over four seconds in and the status line says `replay`;
+   click that line to move between them by hand.
+2. *The program is subscribed to three of the twenty.* Scroll the product list:
+   the greyed ones say `not tracked`, and the program never sees them — they are
+   drawn from the page's own copy of the feed.
+3. *Press **Add** on BTC.* That is a `PATCH /cart` — a request row of a declared
+   record type, no body, nothing parsed — and the cart redraws from the reply to
+   a `GET /cart`: the cash, every line and every position in one row, pinned to
+   one commit snapshot. Every figure is the program's; the app divides by the
+   10^8 scale, converts base units to whole ones and formats. The Prices column
+   and the Order column sit side by side, so the tap and its consequence are one
+   glance apart; the values pane updates in the same beat.
+4. *Press **Checkout**.* A `PUT /checkout`: one guard over three keyed writes —
+   the debit, the credit and the drain — so the cash leaves, the holdings arrive
+   and the cart empties together or not at all. The account holds $500, and each
+   press of the stepper is a thousandth of a unit, so four presses of BTC commit
+   and five are declined with the two figures the guard compared. Doing both is
+   the whole atomicity beat, and the denial is the better half of it.
+5. *Bring up the operator graph, if the room wants it.* It is hidden by default
+   — three endpoints and a feed running beside each other, so its graph is
+   thousands of pixels wide and reads as a smear at slide scale. `☰ Panes`, top
+   right of the inspector, restores it. Not a diagram of the program: the
+   program, as the runtime holds it. Say "operator graph", not "dataflow" — the
+   edges are construction edges.
+6. *Edit the program in front of them.* The source pane is editable. The guard
+   in `PUT /checkout` is the shortest edit worth making — loosen or tighten
+   `cash >= due` — and press **Cmd-Enter**. The program recompiles in the page
+   and **the cart keeps what is in it**: that is the claim on this slide's own
+   punchline, made rather than asserted. **Cmd-Shift-Enter** recompiles from
+   scratch instead, and the cart empties — worth doing once, so the room sees
+   the difference is a choice.
+
+**If the route-shaped program will not compile**, reload the deck with
+`?cart=v0`. That runs the four-channel program the demo was built on: the same
+beats minus checkout and minus the holdings, and beat 2 becomes a *filter* the
+program applies to a stream it hears all of, which the values pane shows
+rejecting rows. The deck's README says what is kept where.
 
 **How the state survives, if asked:** the host keeps a journal of every row it
 has pushed, and a fresh program fed that journal arrives where the old one was.
@@ -610,10 +628,13 @@ Nothing in the runtime serializes a `Mut` cell. This is not yet the transactiona
 reload on the roadmap — that keeps the operators bound rather than re-deriving
 from inputs — and it is honest to say so.
 
-**If asked what the app computes itself:** the subtotal, three additions. Every
-other figure is the program's. There is a compiler performance issue behind that
-— a block reading all six slots costs ~2s per row against ~22ms for the three
-the program has — and it is written up rather than hidden.
+**If asked what the app computes itself:** the subtotal, a handful of additions.
+Every other figure is the program's. The four-channel program had a compiler
+performance issue behind that — a block reading all six slots cost ~2s per row
+against ~22ms for the three it had — and it is written up rather than hidden.
+The route-shaped program could add them up inside the view block; it does not,
+because the subtotal is the app's own affordance and the demo is better for
+having one figure the room can see the app compute.
 
 **Numbers, if asked:** 2.1 MB module, ~160 ms to compile the program in the
 browser, ~116 ms per price row against a 430 ms budget.

@@ -27,19 +27,50 @@ left panel is the program inspector — its source above the values flowing thro
 each pane gets the full width. The right panel, and the larger half of the slide, is the app: a
 light surface against the inspector's navy, so the slide reads as the tool beside the thing it runs.
 
-- **The operator graph is hidden by default.** `cart.cambra` is three parallel sinks, so its graph
-  is thousands of pixels wide and reads as a smear at slide scale. It is one gesture away rather
-  than gone: `☰ Panes` in the inspector's header lists every pane with a checkbox, and re-checking
-  the operator one (`post-conversion`) brings it back. `HIDDEN_PANES` in `CartDemo.vue` is what
-  starts it hidden — no pane is hidden from CSS, because a pane hidden that way is unreachable.
-- **The feed replays a recorded Coinbase slice** at the rate it was captured: 4,187 rows over 30
-  minutes across 20 products, looping. Click the status line at the foot of the order pad to switch
-  to the live Coinbase socket, and again to go back.
-- **The program tracks three of the twenty.** The rest are greyed `not tracked`; they still reach
-  the program, because the ingest filter rejecting them is the thing being shown.
+- **The operator graph is hidden by default.** The program is three endpoints and a feed running
+  beside each other, so its graph is thousands of pixels wide and reads as a smear at slide scale.
+  It is one gesture away rather than gone: `☰ Panes` in the inspector's header lists every pane with
+  a checkbox, and re-checking the operator one (`post-conversion`) brings it back. `HIDDEN_PANES` in
+  `CartDemo.vue` is what starts it hidden — no pane is hidden from CSS, because a pane hidden that
+  way is unreachable.
+- **The feed is the live Coinbase socket**, with the recorded slice behind it: 4,187 rows over 30
+  minutes across 20 products, looping, armed by a four-second deadline that the first live price
+  cancels. Click the status line at the foot of the order pad to switch between them by hand — an
+  explicit choice retires the automatic fallback, so a presenter who asks for live keeps live.
+- **The program is subscribed to three of the twenty.** The rest are greyed `not tracked` and are
+  drawn from the page's own copy of the feed; the program never sees them, because
+  `wasm_socket_subscribe` names three products and the page is what implements it.
 - **Every cart figure comes from the program.** The panel divides by the 10⁸ price scale and
-  formats. The one exception is the subtotal — three additions — for the reason `cart.cambra`'s
-  TODO gives.
+  formats, and converts base units to whole ones. The one exception is the subtotal — a handful of
+  additions — for the reason `cart-v0.cambra`'s TODO gives.
+
+### Two programs, while the rewrite lands
+
+The program is being rewritten from four flat channels to three `wasm_serve` routes and a socket:
+`PATCH /cart` sets a line, `PUT /checkout` spends the account's cash, `GET /cart` answers with the
+cash, every line and every position in one reply, and `wasm_socket_subscribe` carries the quotes.
+The route-shaped program is `public/wasm/cart.cambra` and is what the slide boots.
+
+It does not compile yet — it needs a `for` inside `with begin():`, entry iteration over a
+transactional map and a sink row carrying lists, all of which are being built in `cambra` — so the
+four-channel program it replaces is kept beside it and is one query parameter away:
+
+```
+/11?cart=v0      the four-channel program: cart-v0.cambra, channels-v0.json
+/11?cart=v1      the route-shaped one, which is the default
+```
+
+The parameter is read once, at load, so switching means a reload rather than a click; it selects a
+program, its declarations, its pins and the stepper's increment together. A route the declarations
+do not carry, or a program that does not compile, puts a fault on the order pad naming the escape
+hatch rather than leaving a control that quietly does nothing.
+
+`public/wasm/cart.cambra` and `channels.json` are a **provisional** copy of the v1 program from
+`cambra`'s `demo_code_syntax.md`, so the deck has something route-shaped to boot, to show in the
+inspector and to edit live. `scripts/sync-cambra.sh` replaces both the moment the compiler repo has
+an `asset_cart/v1.cambra`. The `-v0` pair is frozen here and never synced, since the compiler repo
+is about to stop shipping a program of that shape. Delete the `flat` wiring in `CartDemo.vue`, the
+`-v0` files and this section once the route-shaped program runs.
 
 Nothing is fetched from a server at run time except the module, the program and the slice, all of
 which are files in `public/`.
@@ -50,8 +81,8 @@ which are files in `public/`.
 |---|---|
 | `demo/worker.ts` | owns the WebAssembly module and the tick loop, off the slide's paint |
 | `demo/host.ts` | the page's side of the Worker, and the journal |
-| `demo/feed.ts` | replay and live Coinbase, both emitting scaled-integer prices |
-| `demo/transport.ts` | the one interface the panels talk to |
+| `demo/feed.ts` | live Coinbase and the recorded slice, both emitting scaled-integer prices |
+| `demo/transport.ts` | the one interface the panels talk to, and the route lookup behind it |
 | `components/CartDemo.vue` | wires them together; owns the host in module scope |
 | `components/AssetCart.vue` | the app panel: prices beside the order, on a light surface |
 | `components/ProgramInspector.vue` | the inspector, as a `srcdoc` frame with an injected snapshot, frame stream and skin |
@@ -73,9 +104,9 @@ renames a class silently drops the corresponding rule, so check the skin after a
 
 ### The artifacts
 
-The demo slide runs from files in `public/`, not from a server. Most of them are committed — the program
-(`wasm/cart.cambra`), its channel declarations, and the 83 KB price slice — so the deck builds and
-presents with no network.
+The demo slide runs from files in `public/`, not from a server. Most of them are committed — both
+programs (`wasm/cart.cambra`, `wasm/cart-v0.cambra`), their channel declarations, and the 83 KB
+price slice — so the deck builds and presents with no network.
 
 **Three generated blobs are not committed**, each being over `jj`'s 1 MiB snapshot limit. All three
 are reproducible from a `cambra` checkout, so nothing here needs to be handed between machines:
@@ -128,6 +159,12 @@ stack called the profile `wasm-fast`; a checkout carrying that name predates
 `artifact/cambra-demo.html` is the demo slide as one self-contained page: the module, the program, the
 inspector and the price slice are all base64 inside the document, so it runs with no origin serving
 anything. It is what gets sent to someone who is not in the room.
+
+It still builds the **four-channel** program — `scripts/build-artifact.mjs` reads `asset_cart/v0.cambra`
+out of the `cambra` checkout and `scripts/artifact-template.html` spells the six channel names in its
+own copy of the wiring, which is a copy and not a reuse of `demo/`. It follows the rewrite when
+someone moves it, not before, and it is a page rather than a slide, so nothing in the deck depends
+on that happening.
 
 ```bash
 node scripts/build-artifact.mjs                                    # -> artifact/cambra-demo.html

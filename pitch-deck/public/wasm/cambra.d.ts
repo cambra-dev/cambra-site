@@ -38,6 +38,16 @@ export class Program {
      */
     push(source: string, rows: any): void;
     /**
+     * Make one call against the route `method path`, as `rows`.
+     *
+     * The page is the listener a `wasm_serve` in the program binds, so this is
+     * what a `fetch` in the page turns into: the request crosses as rows of the
+     * route's declared record type rather than as a body, and the reply comes
+     * back in the next `tick`'s `outputs` under the route's own name
+     * (`"PATCH /cart"`). Nothing in the program parses or renders a body.
+     */
+    request(method: string, path: string, rows: any): void;
+    /**
      * The `/api/snapshot` payload, computed once at compile.
      *
      * What the inspector renders its source and IR panes from.
@@ -69,6 +79,7 @@ export interface InitOutput {
     readonly program_compile: (a: number, b: number, c: number, d: number, e: number, f: number) => void;
     readonly program_frame: (a: number, b: number, c: number) => void;
     readonly program_push: (a: number, b: number, c: number, d: number, e: number) => void;
+    readonly program_request: (a: number, b: number, c: number, d: number, e: number, f: number, g: number) => void;
     readonly program_snapshot: (a: number, b: number) => void;
     readonly program_tick: (a: number, b: number) => void;
     readonly __wbindgen_export: (a: number, b: number) => number;

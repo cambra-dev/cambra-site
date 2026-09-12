@@ -17,7 +17,11 @@ import init, { init_panic_hook, Program } from "../public/wasm/cambra.js";
 /** What the page sends the Worker. */
 type Request =
   | { kind: "compile"; wasmUrl: string; source: string; channels: unknown[] }
-  | { kind: "push"; source: string; rows: Record<string, unknown>[] }
+  // A row is a value of the channel's declared row type, which is usually a
+  // record and need not be one — `view_requests` in the four-channel program is
+  // a bare `Bool`. The module decodes against the declaration, so anything
+  // narrower here would be this file claiming to know the program's types.
+  | { kind: "push"; source: string; rows: unknown[] }
   | { kind: "setRate"; idleMs: number }
   | { kind: "stop" };
 
