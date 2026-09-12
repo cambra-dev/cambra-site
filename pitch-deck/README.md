@@ -4,14 +4,23 @@ Slidev. Presented from a laptop, not hosted.
 
 ```bash
 npm install
-scripts/sync-cambra.sh   # once: builds the blobs that are not committed
-npm run dev              # opens the deck; slide 6 is the live demo
+scripts/sync-cambra.sh   # builds the blobs that are not committed
+npm run dev              # opens the deck; the demo slide is /11
 ```
 
 `npm run dev` serves on `localhost:3030` by default and opens a browser. Press `o` for the overview,
-`p` for presenter mode; slide 6's speaker notes carry the demo's script.
+`p` for presenter mode; the demo slide's speaker notes carry its script.
 
-## Slide 6 — the live demo
+**Re-run `scripts/sync-cambra.sh` after every `cambra` change you want the demo to show.** The
+module and the inspector bundle are built from that checkout, not fetched, and nothing warns when
+they are behind it — a stale pair simply demonstrates an older compiler, correctly and silently.
+Neither blob is committed, so `git status` does not show one going stale either.
+
+## The demo slide
+
+Slidev's `/11` today. The number moves whenever a slide is added ahead of it, so everything else
+here names the slide rather than counting it — and a number that has been wrong in three files at
+once is the reason.
 
 One Cambra program, compiled to WebAssembly **in the page** and running while the slide is open. The
 left panel is the program inspector — its source above the values flowing through it, stacked so
@@ -64,7 +73,7 @@ renames a class silently drops the corresponding rule, so check the skin after a
 
 ### The artifacts
 
-Slide 6 runs from files in `public/`, not from a server. Most of them are committed — the program
+The demo slide runs from files in `public/`, not from a server. Most of them are committed — the program
 (`wasm/cart.cambra`), its channel declarations, and the 83 KB price slice — so the deck builds and
 presents with no network.
 
@@ -73,7 +82,7 @@ are reproducible from a `cambra` checkout, so nothing here needs to be handed be
 
 | | | |
 |---|---|---|
-| `public/wasm/cambra_bg.wasm` | 2.1 MB | the WebAssembly module slide 6 loads |
+| `public/wasm/cambra_bg.wasm` | 2.4 MB | the WebAssembly module the demo slide loads |
 | `public/inspector/index.html` | 1.8 MB | the inspector bundle, copied from `cambra`'s `web/dist/` |
 | `artifact/cambra-demo.html` | 6.9 MB | the standalone page, built last and only when it is wanted |
 
@@ -95,19 +104,28 @@ costs a pinned group and not an error in front of an audience.
 
 ### Which `cambra` revision
 
-The demo's compiler-side work is not landed. Both scripts build against the tip of the `demo/*`
-stack, and the bookmark names do **not** run in order — `demo/03-inspector-embed` is currently the
-tip, sitting above `demo/05-wasm-build`. Build from anywhere below it and
-`scripts/build-artifact.mjs` stops on ``profile `wasm-fast` is not defined``, because the tip commit
-is the one that adds that profile.
+The demo's compiler-side work is not landed. Both scripts build against the head of the `demo/*`
+stack, which this names:
 
 ```bash
-jj log -r 'heads(demo/05-wasm-build::)'    # the tip the deck expects
+jj log -r 'heads(demo/05-wasm-build:: & bookmarks())'   # the revision the deck expects
+jj bookmark list 'glob:demo/*'                          # the whole stack, for context
 ```
+
+`& bookmarks()` is load-bearing: an empty working-copy commit sitting above the stack is a head
+too, and without it the query names that instead of the tip of the work.
+
+Read the head off the query rather than off the bookmark names. The numbers in them are part of a
+slug, not a stack position, and the stack has been reordered more than once.
+
+`scripts/build-artifact.mjs` builds the `wasm-release` profile, which `demo/05-wasm-build` adds.
+Below that commit it stops on ``profile `wasm-release` is not defined``. An older revision of the
+stack called the profile `wasm-fast`; a checkout carrying that name predates
+`demo/05-wasm-build` and is too old for either script.
 
 ### The standalone artifact
 
-`artifact/cambra-demo.html` is slide 6 as one self-contained page: the module, the program, the
+`artifact/cambra-demo.html` is the demo slide as one self-contained page: the module, the program, the
 inspector and the price slice are all base64 inside the document, so it runs with no origin serving
 anything. It is what gets sent to someone who is not in the room.
 
@@ -130,4 +148,5 @@ the toggle would be a control that silently did nothing. The recorded slice is w
 npm run export       # PDF, via playwright-chromium
 ```
 
-Slide 6 waits on `[data-waitfor=".cart-demo"]`, so the export blocks until the demo has mounted.
+The demo slide waits on `[data-waitfor=".cart-demo"]`, so the export blocks until the demo has
+mounted.

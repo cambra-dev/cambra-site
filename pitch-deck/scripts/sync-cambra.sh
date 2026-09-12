@@ -1,5 +1,5 @@
 #!/usr/bin/env bash
-# Refresh the artifacts slide 05 runs from, out of a `cambra` checkout.
+# Refresh the artifacts the demo slide runs from, out of a `cambra` checkout.
 #
 # Four things come from the compiler's repo and none of them can be built here:
 #   public/wasm/cambra.js, cambra_bg.wasm   the WebAssembly module
@@ -7,10 +7,12 @@
 #   public/inspector/index.html             the inspector's single-file bundle
 #   public/data/*.ndjson.gz                 the recorded price slice (from the vault)
 #
-# They are committed rather than fetched at build time, because the deck is
-# presented from a laptop and must build with no network and no Rust toolchain.
-# Committed artifacts rot, which is what this script is for: run it when the
-# program, the inspector or the module changes, and commit what moves.
+# The small ones are committed, so the deck builds and presents with no network
+# and no Rust toolchain. `cambra_bg.wasm` and the inspector bundle are not: both
+# clear jj's 1 MiB snapshot limit, so `.gitignore` excludes them and a fresh
+# clone runs this script once before the demo will start. Either way they go
+# stale, which is what this script is for: run it when the program, the inspector
+# or the module changes, and commit whichever of the committed ones moved.
 #
 #   scripts/sync-cambra.sh [path-to-cambra] [path-to-vault]
 set -euo pipefail

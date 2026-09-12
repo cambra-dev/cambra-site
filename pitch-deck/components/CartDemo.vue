@@ -1,6 +1,6 @@
 <script setup lang="ts">
 /**
- * Slide 05: a live asset cart, inspected.
+ * The demo slide: a live asset cart, inspected.
  *
  * Owns the WebAssembly host, the price feed and the journal, and hands the
  * inspector a snapshot and a frame stream. The two panels below it are views —

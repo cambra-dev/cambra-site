@@ -13,7 +13,7 @@
 //
 //   node scripts/build-artifact.mjs [out.html] [path-to-cambra]
 //
-// Needs `wasm-bindgen`, and a cambra checkout carrying the `wasm-fast` profile
+// Needs `wasm-bindgen`, and a cambra checkout carrying the `wasm-release` profile
 // this builds against; see scripts/sync-cambra.sh for both.
 
 import { execFileSync } from "node:child_process";
@@ -38,10 +38,10 @@ if (!existsSync(join(cambra, "Cargo.toml"))) {
 /** The module, built for speed rather than size: an artifact has bytes to spare
  *  and a per-row time budget it does not. */
 function buildModule() {
-  console.log("building the module (wasm-fast)");
+  console.log("building the module (wasm-release)");
   execFileSync(
     "cargo",
-    ["build", "--profile", "wasm-fast", "--target", "wasm32-unknown-unknown", "--lib"],
+    ["build", "--profile", "wasm-release", "--target", "wasm32-unknown-unknown", "--lib"],
     { cwd: cambra, stdio: "inherit" },
   );
   const staging = mkdtempSync(join(tmpdir(), "cambra-artifact-"));
@@ -52,7 +52,7 @@ function buildModule() {
       "no-modules",
       "--out-dir",
       staging,
-      join(cambra, "target/wasm32-unknown-unknown/wasm-fast/cambra.wasm"),
+      join(cambra, "target/wasm32-unknown-unknown/wasm-release/cambra.wasm"),
     ],
     { stdio: "inherit" },
   );

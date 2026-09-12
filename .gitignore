@@ -33,7 +33,7 @@ CAMBRA BRAND
 
 # The generated blobs the pitch deck needs. All three are over jj's 1 MiB
 # snapshot limit and all three are reproducible from a `cambra` checkout:
-# pitch-deck/scripts/sync-cambra.sh builds the first two, which slide 05 runs
+# pitch-deck/scripts/sync-cambra.sh builds the first two, which the demo slide runs
 # from, and pitch-deck/scripts/build-artifact.mjs then builds the third, the
 # standalone page. The program, its channel declarations and the price slice are
 # small and are committed, so only these are a setup step.
