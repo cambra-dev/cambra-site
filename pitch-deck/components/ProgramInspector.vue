@@ -68,12 +68,102 @@ const props = defineProps<{
    * for what the deck passes and why each rule is there.
    */
   skin?: string;
+  /**
+   * The versions the slide can switch between, and which is running.
+   *
+   * Absent where there is only one program, in which case the control is not
+   * rendered rather than rendered inert. `switching` disables both while a
+   * swap is in flight: a second press mid-reload would compile against a
+   * program the first is part-way through replacing.
+   */
+  versions?: readonly { id: string; label: string; title: string }[];
+  version?: string;
+  switching?: boolean;
+  /**
+   * Whether the source pane marks the spans a selection resolves to.
+   *
+   * Off for a room: the marks answer "where did this operator come from",
+   * which is a question a reader asks and an audience has not been given yet —
+   * and they land on the one pane everyone is reading. The toggle is on the
+   * strip so it can be turned on mid-demo when someone does ask.
+   *
+   * Enforced from the skin rather than from the bundle, which has no flag for
+   * it: `CartDemo.vue`'s `INSPECTOR_SKIN` carries rules under
+   * `.no-provenance`, and this puts that class on the frame's root.
+   */
+  provenance?: boolean;
+}>();
+
+const emit = defineEmits<{
+  (e: "switch", id: string): void;
+  (e: "toggle-provenance"): void;
 }>();
 
 const frame = ref<HTMLIFrameElement | null>(null);
+
+/**
+ * Reflect `provenance` onto the frame's root element.
+ *
+ * A class rather than a stylesheet swap, so the rules ride the skin with every
+ * other thing the deck asserts about the bundle and the toggle is one attribute
+ * write. Called after each mount too, because a mount rewrites the document.
+ */
+function applyProvenance(): void {
+  frame.value?.contentDocument?.documentElement.classList.toggle(
+    "no-provenance",
+    props.provenance !== true,
+  );
+}
 const bundle = ref<string | null>(null);
 const fault = ref<string | null>(null);
+/** Why the last press of a strip control did nothing, if it did nothing. */
+const chordFault = ref<string | null>(null);
 let unsubscribe: (() => void) | null = null;
+
+/**
+ * Press one of the editor's rebuild chords from outside the frame.
+ *
+ * The strip's two controls are the chords, for a presenter who would rather
+ * point at a thing than reach for a modifier. They dispatch the chord into the
+ * editor rather than calling `rebuild` with text of their own, because the
+ * source that matters is the one in CodeMirror — the presenter's edits, not the
+ * file the slide booted — and CodeMirror renders only the lines in view, so
+ * there is no honest way to read the document out of the DOM. Going through the
+ * binding also means the click and the chord are the same act: the same
+ * `keepState`, the same rejection floated over the editor, the same everything.
+ *
+ * `Mod-` is Cmd on a Mac and Ctrl everywhere else, and the binding calls
+ * `preventDefault` — so a dispatch that comes back handled is the modifier this
+ * platform uses, and the other matches no binding at all. Trying one and then
+ * the other is therefore exactly one rebuild on either, with no sniffing of a
+ * platform the bundle already decided for itself.
+ *
+ * `.cm-content` is the second place the deck reaches into a bundle it does not
+ * build, after `CartDemo.vue`'s skin. A rename there costs the two controls and
+ * says so in the strip; the chords themselves are untouched, because they are
+ * the bundle's own.
+ */
+function press(keepState: boolean): void {
+  const content = frame.value?.contentDocument?.querySelector<HTMLElement>(".cm-content");
+  if (!content) {
+    chordFault.value = "no editor to rebuild from";
+    return;
+  }
+  const send = (modifier: "metaKey" | "ctrlKey"): boolean =>
+    !content.dispatchEvent(
+      new KeyboardEvent("keydown", {
+        key: "Enter",
+        code: "Enter",
+        keyCode: 13,
+        which: 13,
+        shiftKey: !keepState,
+        [modifier]: true,
+        bubbles: true,
+        cancelable: true,
+      }),
+    );
+  chordFault.value = send("metaKey") || send("ctrlKey") ? null : "the editor refused the chord";
+}
 
 /** Deliver a frame the way `connectLive`'s message handler expects. */
 type FrameHandler = (event: { data: unknown }) => void;
@@ -143,6 +233,7 @@ function mount(html: string, snapshot: string): void {
       style.textContent = props.skin;
       doc.head.appendChild(style);
     }
+    applyProvenance();
   };
 }
 
@@ -166,6 +257,10 @@ watch(
   { immediate: true },
 );
 
+// Separately from the mount above: the toggle flips while the frame stands, and
+// re-mounting it to change a class would throw away the editor's text.
+watch(() => props.provenance, applyProvenance);
+
 onBeforeUnmount(() => {
   unsubscribe?.();
   unsubscribe = null;
@@ -184,28 +279,77 @@ onBeforeUnmount(() => {
         title="Cambra program inspector"
       />
     </div>
-    <!-- The reuse tally, and the chords that produce it.
-         An operator surviving an edit is invisible by nature: the cart still
-         holds what it held, which looks exactly like nothing having happened.
-         `11 of 12 operators kept` is the evidence, so it is on the slide rather
-         than in a console — one line, in the inspector's own register, under
-         the frame it belongs to. Before the first reload it is the legend for
-         the two chords instead, which is what the strip is worth when there is
-         no tally to show. -->
-    <div v-if="rebuild" class="reload-line" :class="{ refused: rejected }">
-      <span class="reload-label">Reload</span>
-      <template v-if="rejected">
-        <span class="reload-detail"
-          >refused · generation {{ tally?.generation ?? 0 }} still running</span
+    <!-- The strip: what a presenter presses, and the evidence it produces.
+
+         Two rows, split by how often a hand reaches for them. The version
+         switch is the demo's main gesture and the reuse tally is what it is
+         for, so those share the top row and the eye has one place to look.
+         The rebuild controls and the provenance toggle are the second row:
+         used once each, in answer to a question from the floor.
+
+         An operator surviving an edit is invisible by nature — the cart still
+         holds what it held, which looks exactly like nothing having happened —
+         so `9 of 16 operators kept` is the evidence, and it belongs on the
+         slide rather than in a console. -->
+    <div v-if="rebuild" class="reload-strip" :class="{ refused: rejected }">
+      <div class="reload-row">
+        <div v-if="versions && versions.length" class="version-switch" role="group">
+          <button
+            v-for="entry in versions"
+            :key="entry.id"
+            type="button"
+            class="version-press"
+            :class="{ running: entry.id === version }"
+            :aria-pressed="entry.id === version"
+            :disabled="!snapshot || switching"
+            :title="entry.title"
+            @click="emit('switch', entry.id)"
+          >
+            {{ entry.label }}
+          </button>
+        </div>
+        <span v-if="chordFault" class="reload-detail">{{ chordFault }}</span>
+        <span v-else-if="rejected" class="reload-detail"
+          >refused · gen {{ tally?.generation ?? 0 }} still running</span
         >
-      </template>
-      <template v-else-if="tally">
-        <span class="reload-detail">generation {{ tally.generation }}</span>
-        <span class="reload-figure">{{ tally.kept }} of {{ tally.bound }} operators kept</span>
-      </template>
-      <template v-else>
-        <span class="reload-detail">⌘⏎ in place · ⌘⇧⏎ from scratch</span>
-      </template>
+        <template v-else-if="tally">
+          <span class="reload-detail">gen {{ tally.generation }}</span>
+          <span class="reload-figure">{{ tally.kept }} of {{ tally.bound }} operators kept</span>
+        </template>
+        <span v-else class="reload-detail">nothing reloaded yet</span>
+      </div>
+      <div class="reload-row reload-row-quiet">
+        <button
+          type="button"
+          class="reload-press"
+          :disabled="!snapshot"
+          title="Reload the edited source in place — the new version takes over the state (⌘⏎)"
+          @click="press(true)"
+        >
+          Reload
+        </button>
+        <span class="reload-sep" aria-hidden="true">·</span>
+        <button
+          type="button"
+          class="reload-press reload-quiet"
+          :disabled="!snapshot"
+          title="Compile the edited source as a new program — nothing kept, the cart emptied (⌘⇧⏎)"
+          @click="press(false)"
+        >
+          from scratch
+        </button>
+        <span class="reload-sep" aria-hidden="true">·</span>
+        <button
+          type="button"
+          class="reload-press reload-quiet provenance-press"
+          :class="{ on: provenance }"
+          :disabled="!snapshot"
+          title="Mark the source spans a selection resolves to"
+          @click="emit('toggle-provenance')"
+        >
+          provenance {{ provenance ? "on" : "off" }}
+        </button>
+      </div>
     </div>
   </div>
 </template>
@@ -272,25 +416,76 @@ onBeforeUnmount(() => {
    of the slide read as one design. Quiet by default; the tally is the one thing
    on it that takes an accent, because it is the only thing on it that is
    evidence. */
-.reload-line {
+.reload-strip {
   flex: none;
-  display: flex;
-  align-items: baseline;
-  gap: 0.5rem;
-  padding: 0.3rem 0.6rem;
+  padding: 0.28rem 0.6rem 0.32rem;
   border-top: 1px solid var(--line);
   font-family: var(--f-mono);
   font-size: 0.62rem;
   letter-spacing: 0.06em;
   color: var(--fg-3);
 }
-.reload-label {
+.reload-row {
+  display: flex;
+  align-items: baseline;
+  gap: 0.5rem;
+}
+/* The second row is answers-to-questions rather than the demo's spine, so it
+   reads as a footnote to the row above and does not compete with the tally. */
+.reload-row-quiet {
+  margin-top: 0.15rem;
+  opacity: 0.75;
+}
+/* The chords, with a click on them. Typed as the label they replaced — the
+   strip reads the same from the back of a room whether or not anyone presses
+   one — so the affordance is the cursor, the hover rule and the focus ring
+   rather than a button's chrome, which at this size would be a box around two
+   words and would pull the eye off the tally. */
+.reload-press {
+  appearance: none;
+  margin: 0;
+  padding: 0;
+  border: 0;
+  background: none;
+  color: inherit;
+  font: inherit;
   font-weight: 700;
   font-size: 0.58rem;
   letter-spacing: 0.16em;
   text-transform: uppercase;
+  cursor: pointer;
+  /* The column is narrow and the strip is one row. A control that wrapped would
+     take the tally beside it with it, so each stays on its own line and the
+     detail is what gives way. */
+  white-space: nowrap;
+  border-bottom: 1px solid transparent;
 }
+.reload-press:hover:not(:disabled),
+.reload-press:focus-visible {
+  color: var(--lagoon);
+  border-bottom-color: var(--lagoon);
+}
+.reload-press:disabled {
+  cursor: default;
+  opacity: 0.5;
+}
+/* The destructive half, and the one a presenter reaches for by accident: it
+   keeps nothing and empties the cart. Lighter than its neighbour so the eye
+   lands on `Reload` first, which is the one the demo repeats. */
+.reload-quiet {
+  font-weight: 400;
+  letter-spacing: 0.08em;
+  text-transform: none;
+}
+.reload-sep {
+  opacity: 0.45;
+}
+/* Pushed right, so the controls are a group on the left and the status is a
+   group on the right rather than one run of small caps the eye cannot divide.
+   It is the element that gives way when the column is narrow, because the tally
+   beside it is the evidence and `generation 1` is the label on it. */
 .reload-detail {
+  margin-left: auto;
   min-width: 0;
   overflow: hidden;
   text-overflow: ellipsis;
@@ -300,7 +495,7 @@ onBeforeUnmount(() => {
    badges already use, so the tally lands as part of the frame rather than as a
    deck annotation stuck under it. */
 .reload-figure {
-  margin-left: auto;
+  margin-left: 0.5rem;
   color: var(--lagoon);
   font-variant-numeric: tabular-nums;
   white-space: nowrap;
@@ -308,11 +503,55 @@ onBeforeUnmount(() => {
 /* A refusal has to be readable before it is coloured: the message is small, so
    the ink goes to full contrast and `--hot` does its work as a rule beside it —
    the same trade the app panel's fault line makes on sand. */
-.reload-line.refused {
+.reload-strip.refused {
   color: var(--fg-2);
 }
-.reload-line.refused .reload-detail {
+.reload-strip.refused .reload-detail {
   padding-left: 0.4rem;
   border-left: 3px solid var(--hot);
+}
+/* The version switch: which program is running, and the one gesture that
+   changes it. Typed larger than the rest of the strip because it is the
+   control a presenter finds without looking. */
+.version-switch {
+  display: flex;
+  gap: 0.25rem;
+}
+.version-press {
+  appearance: none;
+  margin: 0;
+  padding: 0.05rem 0.4rem;
+  border: 1px solid var(--line);
+  border-radius: 3px;
+  background: none;
+  color: inherit;
+  font: inherit;
+  font-size: 0.64rem;
+  font-weight: 700;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  white-space: nowrap;
+  cursor: pointer;
+}
+.version-press:hover:not(:disabled),
+.version-press:focus-visible {
+  border-color: var(--lagoon);
+  color: var(--lagoon);
+}
+/* The running one is filled rather than merely outlined: at slide scale a
+   border-colour difference is not a state anyone reads from the third row. */
+.version-press.running {
+  background: var(--lagoon);
+  border-color: var(--lagoon);
+  color: var(--code-bg);
+  cursor: default;
+}
+.version-press:disabled {
+  cursor: default;
+  opacity: 0.5;
+}
+/* On is the exception, so it is the state that carries the accent. */
+.provenance-press.on {
+  color: var(--lagoon);
 }
 </style>

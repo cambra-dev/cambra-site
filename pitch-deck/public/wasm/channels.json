@@ -5,7 +5,7 @@
     { "name": "PUT /checkout", "kind": "request", "type": "{account: Int}" },
     { "name": "PUT /checkout", "kind": "response", "type": "{ok: Bool, due: Int, cash: Int}" },
     { "name": "GET /cart", "kind": "request", "type": "{account: Int}" },
-    { "name": "GET /cart", "kind": "response", "type": "{cash: Int, lines: List({ticker: String, qty: Int, price: Int, total: Int}), positions: List({ticker: String, qty: Int})}" },
+    { "name": "GET /cart", "kind": "response", "type": "{cash: Int, ticker: String, qty: Int, price: Int, total: Int, held: Int}" },
     { "name": "ticker_updates", "kind": "source", "type": "{ticker: String, price: Int}" }
   ]
 }

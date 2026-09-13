@@ -124,23 +124,24 @@ export const DECIMALS: Record<string, number> = {
  * whatever arrives — so what the program prices is exactly what the host pushes
  * into it, and the page is the host.
  *
- * Three products rather than twenty because the live socket quotes some of them
- * many times a second and the values pane is meant to be readable from the back
- * of a room, and these three because they are the ones the program seeds
- * holdings for.
+ * Both programs the slide runs declare `wasm_socket_subscribe`, so both replace
+ * this with their own list: `CartDemo.vue` reads
+ * `WorkerTransport.subscriptions()` at boot and again after every accepted
+ * reload, and the products it finds there win. This constant is the floor, not
+ * the contract — which is the honest way round, since nothing in a declaration
+ * file carries a product list.
  *
- * A version that declares `wasm_socket_subscribe` replaces this with its own
- * list: `CartDemo.vue` reads `WorkerTransport.subscriptions()` at boot and
- * again after every accepted reload, and the products it finds there win. This
- * constant is the floor, not the contract — which is the honest way round,
- * since nothing in a declaration file carries a product list.
+ * It is v1's two rather than an arbitrary basket, so the brief moment before
+ * the first `subscriptions()` read shows what is about to be true rather than
+ * something else. v2 adds `ETH-USD`, and the panel grows a tracked row the
+ * instant the upgrade lands — which is the visible half of what the upgrade is
+ * for.
  *
  * The panel lists twenty products either way. Rows outside the tracked set are
- * drawn from the page's own copy of the feed and marked `not tracked`, which is
- * honest in a way the old wiring was not: the program never sees them at all
- * now, rather than seeing them and rejecting them.
+ * drawn from the page's own copy of the feed and marked `not tracked`: the
+ * program never sees them at all, rather than seeing them and rejecting them.
  */
-export const SUBSCRIBED = ["BTC-USD", "ETH-USD", "SOL-USD"] as const;
+export const SUBSCRIBED = ["BTC-USD", "LTC-USD"] as const;
 
 /**
  * The bare ticker in a product id: `BTC-USD` → `BTC`.

@@ -31,27 +31,33 @@ import {
 import {
   BASE_UNITS,
   type ReloadReport,
-  type Row,
   type SocketSubscription,
   type Value,
 } from "../demo/transport";
 
 /**
- * The panes the slide opens without: the six IR stages, and the operator graph.
+ * The panes the slide opens without: values, the six IR stages, and the graph.
  *
- * Source and values are the two a room can read, and stacked they each get the
- * inspector's full width (see `INSPECTOR_SKIN`). The graph is out by default
- * rather than gone: the program is three endpoints and a feed running beside
- * each other, so its graph is thousands of pixels wide and reads as a smear at
- * slide scale — it was three parallel sinks before and is no narrower for being
- * three routes — but it is the
- * best answer to "what did the compiler actually do", so it has to be one
- * gesture away. `☰ Panes` in the inspector's header lists every pane with a
- * checkbox, checked from this list, and re-checking one brings it straight
- * back. That is why nothing here is hidden with CSS: a pane hidden from the
- * skin would be unreachable.
+ * The slide opens on the **source alone**, which is the program as the room
+ * reads it and the thing every beat points back at. Everything else is one
+ * gesture away rather than gone: `☰ Panes` in the inspector's header lists
+ * every pane with a checkbox, checked from this list, and re-checking one
+ * brings it straight back. That is why nothing here is hidden with CSS — a pane
+ * hidden from the skin would be unreachable.
+ *
+ * Values is hidden but still **pinned**: `applyPins` runs before the bundle
+ * wires its reveal callback, so a pin does not force the pane open at boot the
+ * way a click on the source does. Opening it mid-demo therefore shows the two
+ * pinned groups already filling, rather than an empty pane and a hunt for
+ * something to inspect.
+ *
+ * The graph is the best answer to "what did the compiler actually do", and it
+ * is out for a different reason: the program is three endpoints and a feed
+ * running beside each other, so its graph is thousands of pixels wide and reads
+ * as a smear at slide scale.
  */
 const HIDDEN_PANES = [
+  "values",
   "pre-inference",
   "post-inference",
   "post-channelize",
@@ -62,36 +68,28 @@ const HIDDEN_PANES = [
 ] as const;
 
 /**
- * The two programs this slide can run, and everything that differs between them.
+ * The two shapes this slide can run, and everything that differs between them.
  *
- * The demo is mid-rewrite. `cart.cambra` is the route-shaped program — three
- * `wasm_serve` pairs and a `wasm_socket_subscribe` — and it is what the slide
- * boots. `cart-v0.cambra` is the four-channel program it replaces: one price
- * source, one cart source, a view request and three per-ticker line sinks.
- *
- * Both are kept because the new one cannot compile yet. It needs a `for` inside
- * `with begin():`, entry iteration over a transactional map and a sink row
- * carrying lists, and each of those is being built in the compiler's repo right
- * now. Until they land, a deck synced against a `cambra` checkout will fail to
- * compile the route-shaped program and say so on the slide — and the four-
- * channel program is one query parameter away:
+ * `cart.cambra` is the route-shaped program — three `wasm_serve` pairs and one
+ * declared price source — and it is what the slide boots. `cart-v0.cambra` is
+ * the four-channel program it replaced: one price source, one cart source, a
+ * view request and three per-ticker line sinks. Both run; the old one is kept
+ * reachable while anything still wants it, one query parameter away:
  *
  *     …/11              the route-shaped program, which is the default
- *     …/11?cart=v0      the four-channel program, as the deck has always run it
- *
- * The route-shaped program is the default *because* it does not compile yet.
- * This branch exists for the compiler work that will make it compile, and the
- * people doing that work should meet the failure on load rather than have to
- * know a query parameter to find it. The slide names the fault and the way back.
- *
- * That is the opposite of what a branch being presented from would want, so if
- * this is ever the branch someone demos, flip the comparison in `chooseShape`
- * — the four-channel program is whole and runs.
+ *     …/11?cart=v0      the four-channel program, as the deck used to run it
  *
  * Read once, at load, because switching wiring means a different program, a
  * different set of channels and a different host; the slide is not trying to
- * hot-swap them, only to make the old path reachable without an edit. Delete
- * `flat` and its wiring once the route-shaped program runs.
+ * hot-swap them, only to make the old path reachable without an edit.
+ *
+ * The upgrade is not a third entry here. `cart-v2.cambra` serves the same three
+ * routes at the same row types and is reached by reloading the running program
+ * onto it (`loadUpgrade`), which is the whole point of the beat — a shape that
+ * needed its own wiring would be a second program rather than a new version.
+ *
+ * Delete `flat` and its wiring, and the `-v0` files, when nothing needs the old
+ * shape.
  */
 type Shape = "routes" | "flat";
 
@@ -104,19 +102,26 @@ const SHAPES = {
      *
      * A position rather than a `NodeId`, because ids are minted per compile. A
      * position that no longer names an operator is skipped, so an edit to the
-     * program costs a pin rather than an error on the slide — which is also
-     * what saves these two, since the line numbers below are a *provisional*
-     * program's and the compiler repo's own will not match them.
+     * program costs a pin rather than an error on the slide.
      *
-     * These two are the story either way: the write at the foot of the socket
-     * loop is where a quote from the exchange lands in the program's state, and
-     * `view_replies` is the row the app is drawn from. A store declaration is a
-     * poor pin — it renders as a changelog with nothing in it until a commit
-     * lands.
+     * These two are the story: the reply record `GET /cart` builds is the row
+     * the app is drawn from, and the write at the foot of the price loop is
+     * where a quote from the exchange lands in the program's state. A store
+     * declaration is a poor pin — it renders as a changelog with nothing in it
+     * until a commit lands.
+     *
+     * The reply's pin is the record itself and not the `view_replies <<` line
+     * above it: a pin resolves to the tightest node at the position and then to
+     * the operators built from it, and the feed write is erased by `channelize`
+     * — it names no operator, so pinning it silently pins nothing.
+     *
+     * Source line numbers, so they move whenever the program does —
+     * `npm run check:slide` is what notices, by asserting that the values pane
+     * opens with groups in it rather than empty.
      */
     pins: [
-      { line: 134, col: 9 },
-      { line: 107, col: 9 },
+      { line: 71, col: 13 },
+      { line: 81, col: 9 },
     ],
     /**
      * What one press of the stepper adds, in whole units of the asset.
@@ -151,19 +156,32 @@ function chooseShape(): Shape {
 const shape: Shape = chooseShape();
 const SHAPE = SHAPES[shape];
 
-/** What to add to a fault so the room is not stuck on a program that will not build. */
+/**
+ * Whether the running wiring has two versions to switch between.
+ *
+ * The four-channel program at `?cart=v0` has no upgrade and never had one, so
+ * the strip's version control is absent there rather than present and inert.
+ */
+const versioned = shape === "routes";
+
+/** What to add to a fault so the room is not stuck on a program that will not run. */
 const FALLBACK_HINT =
   shape === "routes" ? " — reload with ?cart=v0 for the four-channel program" : "";
 
 /**
  * The account every request carries.
  *
- * The program seeds exactly one (`accts = ((1, 500 * one_dollar))`) and the
- * panel is a single user's order pad, so this is a constant rather than a
- * control. It is in the row types all the same — `{account: Int, …}` — because
- * the keys the program holds are `(account, ticker)` pairs, and a demo that
+ * The program seeds two accounts at `opening_balance` and the panel is a single
+ * user's order pad, so this is a constant rather than a control. It is in the
+ * row types all the same — `{account: Int, …}` — because the program keys its
+ * cart by account and its holdings by `(account, ticker)`, and a demo that
  * pretended the account away would be showing a different program from the one
  * on the screen beside it.
+ *
+ * Which account, and not just any: `scripts/sync-cambra.sh` seeds this one's
+ * holdings for every product the panel tracks, because `m[k]` faults on an
+ * absent key. Changing it here without changing the seeds there is a press that
+ * takes the module down.
  */
 const ACCOUNT = 1;
 
@@ -299,6 +317,20 @@ body { font-size: 16px; }
 .cm-editor .cm-activeLineGutter {
   background: rgba(108, 196, 200, 0.08) !important;
   color: var(--fg) !important;
+}
+
+/* ── provenance marks, and the strip's toggle for them ───────
+   \`.cm-sel-node\` is the span a click resolved to and \`.cm-link-node\` is the
+   same node as another pane traces it; both are backgrounds laid over syntax
+   ink in the one pane the whole room is reading. Suppressed unless asked for,
+   by a class \`ProgramInspector\` puts on the frame's root. Not \`display:none\`
+   and not a rule on the decoration's existence: the marks stay in the document
+   and stop being painted, so turning them on mid-answer costs an attribute
+   rather than a re-render. */
+.no-provenance .cm-sel-node,
+.no-provenance .cm-link-node {
+  background: none;
+  box-shadow: none;
 }
 
 /* ── values ──────────────────────────────────────────────────
@@ -471,23 +503,6 @@ function numberIn(value: Value | undefined): number {
 }
 
 /**
- * A reply field that should be a list of rows.
- *
- * Deliberately forgiving, because this is the newest and least settled part of
- * the contract: `GET /cart` replies with `{cash, lines: [...], positions: [...]}`
- * and the module's `row_to_json` encodes scalars and records but not lists yet.
- * Until it does, a reply may well arrive with these fields missing. A cart that
- * draws empty is a demo with nothing in it; a `rows.map` on `undefined` is a
- * blank slide and a stack trace.
- */
-function rowsIn(value: Value | undefined): Row[] {
-  if (!Array.isArray(value)) return [];
-  return value.filter(
-    (entry): entry is Row => typeof entry === "object" && entry !== null && !Array.isArray(entry),
-  );
-}
-
-/**
  * What the panel does to the program, in whichever shape the program declares.
  *
  * The panel above this is one panel: it lists prices, holds an order and has a
@@ -557,23 +572,26 @@ function routeWiring(host: WorkerTransport): Wiring {
         const row = rows[rows.length - 1];
         if (!row) return;
         cash.value = numberIn(row.cash);
-        // Rebuilt rather than merged: the reply is the cart, so a line that is
-        // no longer in it has to leave the panel. Merging would leave a
-        // checked-out line on the screen forever, priced and totalled, with
-        // nothing behind it.
+        const product = productFor(String(row.ticker));
+        // Rebuilt rather than merged, and the reply is one line because the
+        // cart holds one: a `PATCH /cart` for another asset replaces the line
+        // rather than adding to it. Merging would leave the asset the presenter
+        // stepped away from on the screen, priced and totalled, with nothing
+        // behind it — and a checked-out line there forever.
         for (const key of Object.keys(lines)) delete lines[key];
-        for (const line of rowsIn(row.lines)) {
-          const product = productFor(String(line.ticker));
-          lines[product] = {
-            qty: numberIn(line.qty) / BASE_UNITS,
-            price: numberIn(line.price),
-            total: numberIn(line.total),
-          };
-        }
+        lines[product] = {
+          qty: numberIn(row.qty) / BASE_UNITS,
+          price: numberIn(row.price),
+          total: numberIn(row.total),
+        };
+        // The one position the reply carries, which is the one at the line's
+        // own ticker: `GET /cart` reads `holdings[(account, line.ticker)]`, and
+        // answering with every position an account holds is an iteration over
+        // the cart's entries — the read the single-line shape traded away. So
+        // the panel shows the holding behind the line on the screen, and the
+        // others are in the program rather than on the slide.
         for (const key of Object.keys(positions)) delete positions[key];
-        for (const held of rowsIn(row.positions)) {
-          positions[productFor(String(held.ticker))] = numberIn(held.qty) / BASE_UNITS;
-        }
+        positions[product] = numberIn(row.held) / BASE_UNITS;
         paint();
       }),
       patch.onReply((rows) => {
@@ -791,9 +809,15 @@ async function boot(): Promise<void> {
   if (transport) return;
   const base = import.meta.env.BASE_URL;
   const [source, declarations] = await Promise.all([
-    fetch(`${base}wasm/${SHAPE.program}`).then((r) => r.text()),
+    versioned ? sourceFor("v1") : fetch(`${base}wasm/${SHAPE.program}`).then((r) => r.text()),
     fetch(`${base}wasm/${SHAPE.channels}`).then((r) => r.json()),
   ]);
+  // The upgrade, warmed while the module is still compiling the version above
+  // it. Not awaited: the slide is usable without it, and a switch that had to
+  // fetch first would put a network round trip inside the gesture. A failure
+  // here is silent by design — `switchTo` asks again and reports it there,
+  // where a presenter is actually waiting on the answer.
+  if (versioned) void sourceFor("v2").catch(() => {});
 
   transport = new WorkerTransport({
     wasmUrl: `${base}wasm/cambra_bg.wasm`,
@@ -948,6 +972,126 @@ async function reloadInPlace(host: WorkerTransport, source: string): Promise<unk
   return JSON.parse(report.snapshot);
 }
 
+/**
+ * The two versions the slide runs, and which one is running now.
+ *
+ * `v1` is what it boots: one divisor for every asset, BTC and LTC listed.
+ * `v2` is the upgrade — a divisor per asset, so `cart` and `holdings` change
+ * shape and are declared under new names, each seeded from what v1 held through
+ * `@LoadFrom` — and it lists ETH as well.
+ *
+ * Both are fetched once, at boot, so the switch is a keystroke's worth of work
+ * rather than a fetch in front of the room. They are files under `public/` and
+ * are what the inspector shows: the deck writes no program into a string.
+ */
+const VERSIONS = {
+  // v1's path is `SHAPES.routes.program` and is spelled there: the boot path
+  // reads it from `SHAPE` and the switch reads it from here, and two spellings
+  // of one filename is the kind of drift that costs a slide.
+  v1: { file: `wasm/${SHAPES.routes.program}`, label: "v1" },
+  v2: { file: "wasm/cart-v2.cambra", label: "v2" },
+} as const;
+
+type Version = keyof typeof VERSIONS;
+
+/** The strip's two buttons, with what each one does to the running program. */
+const VERSION_CONTROLS = [
+  {
+    id: "v1",
+    label: "v1",
+    title: "Start over on v1 — one divisor for every asset, BTC and LTC. A new program, so the cart empties.",
+  },
+  {
+    id: "v2",
+    label: "v2",
+    title: "Upgrade to v2 — a divisor per asset, ETH listed, the cart carried across by @LoadFrom (⇧U).",
+  },
+] as const;
+
+/**
+ * Whether the source pane marks the spans a selection resolves to.
+ *
+ * Off for a room, on for a reader — see `ProgramInspector`'s prop.
+ */
+const provenance = ref(false);
+
+const version = ref<Version>("v1");
+/** Whether a switch is in flight, so the controls cannot start a second. */
+const switching = ref(false);
+const sources: Partial<Record<Version, string>> = {};
+
+async function sourceFor(which: Version): Promise<string> {
+  const held = sources[which];
+  if (held !== undefined) return held;
+  const path = `${import.meta.env.BASE_URL}${VERSIONS[which].file}`;
+  const response = await fetch(path);
+  if (!response.ok) throw new Error(`${path}: ${response.status}`);
+  const text = await response.text();
+  sources[which] = text;
+  return text;
+}
+
+/**
+ * Put `which` in front of the room, and say why the two directions differ.
+ *
+ * **Forward is a reload and keeps the state**, which is the beat: v2 declares
+ * `cart_rescaled` and `holdings_rescaled` with `@LoadFrom` over v1's `cart` and
+ * `holdings`, so the swap says where every value goes and the cart the
+ * presenter filled survives it.
+ *
+ * **Back is a fresh compile**, because a reload the other way is refused — and
+ * refused for the reason that makes the beat worth showing: *"`cart_rescaled`
+ * is no longer declared … a value carries forward into the same variable at the
+ * same type, or into what a `@LoadFrom` reads it into, and only where the
+ * source says which variable it belongs to."* v1 says nothing about where the
+ * reshaped collections' values belong, so there is nowhere to put them. Going
+ * back is starting the demo over, and the emptied cart is the honest sign of it.
+ */
+function switchTo(which: Version): Promise<void> {
+  if (!transport || switching.value || which === version.value) return Promise.resolve();
+  switching.value = true;
+  return (async () => {
+    try {
+      const source = await sourceFor(which);
+      await rebuild(source, { keepState: which === "v2" });
+      version.value = which;
+    } catch (e) {
+      notice.value = `${VERSIONS[which].label} did not load — ${String(e)}`;
+      paint();
+    } finally {
+      switching.value = false;
+    }
+  })();
+}
+
+/**
+ * ⇧U anywhere on the slide, except where the presenter is typing: the upgrade.
+ *
+ * The same act as pressing `v2` on the strip, for a presenter who would rather
+ * not reach for the pointer. It only ever goes forward — the keystroke is the
+ * upgrade beat, and starting the demo over is a thing to do deliberately.
+ *
+ * The two rebuild chords live inside the inspector's frame, which owns its own
+ * keys; this one is the page's, because the gesture is not an edit. A keystroke
+ * while the panel's product search has focus is a search for "U", so a target
+ * that takes text keeps it.
+ *
+ * Shift rather than a bare letter: Slidev binds several single keys (`o`, `g`,
+ * `d`) and a stray press on this slide should do nothing rather than something.
+ */
+function onKey(event: KeyboardEvent): void {
+  if (event.key !== "U" || event.metaKey || event.ctrlKey || event.altKey) return;
+  const target = event.target;
+  if (
+    target instanceof HTMLElement &&
+    (target.isContentEditable || /^(INPUT|TEXTAREA)$/.test(target.tagName))
+  ) {
+    return;
+  }
+  event.preventDefault();
+  void switchTo("v2");
+}
+
 /** ⌘⇧⏎: a new program, from nothing. */
 async function compileFresh(host: WorkerTransport, source: string): Promise<unknown> {
   let text: string;
@@ -961,6 +1105,8 @@ async function compileFresh(host: WorkerTransport, source: string): Promise<unkn
   latestSnapshot = text;
   // No tally: a fresh program kept nothing, and a stale `11 of 12` under it
   // would be the one figure on this slide that was not evidence of anything.
+  // A from-scratch compile of an edited program is still that program, so the
+  // version the strip names is left where `switchTo` put it.
   tally.value = null;
   rejected.value = false;
   for (const key of Object.keys(lines)) delete lines[key];
@@ -994,7 +1140,14 @@ onSlideEnter(() => {
   void boot();
 });
 
+// On the window rather than an element, because the gesture belongs to the
+// slide and not to either panel, and paired with the `removeEventListener`
+// below so the mounts Slidev makes for the overview and for presenter mode
+// each take their listener away with them.
+if (typeof window !== "undefined") window.addEventListener("keydown", onKey);
+
 onBeforeUnmount(() => {
+  if (typeof window !== "undefined") window.removeEventListener("keydown", onKey);
   for (const off of unsubscribes) off();
   unsubscribes.length = 0;
 });
@@ -1012,6 +1165,12 @@ onBeforeUnmount(() => {
       :tally="tally"
       :rejected="rejected"
       :skin="INSPECTOR_SKIN"
+      :versions="versioned ? VERSION_CONTROLS : undefined"
+      :version="version"
+      :switching="switching"
+      :provenance="provenance"
+      @switch="switchTo($event as Version)"
+      @toggle-provenance="provenance = !provenance"
     />
     <AssetCart
       :prices="prices"

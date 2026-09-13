@@ -618,14 +618,56 @@ it:
    **Cmd-Shift-Enter** compiles a new program from scratch instead: no tally,
    and the cart empties. Worth doing once, so the room sees the difference is a
    choice.
-7. *Make a typo, if the room is the kind that would ask.* A version that does
+7. *Ship the upgrade — press **v2** on the strip* (or **Shift-U**). The same
+   machinery as beat 6, carrying a change nobody would make by hand on stage.
+   Two things happen at once and both are worth naming:
+   - **The product list grows.** v1 subscribes to BTC and LTC; v2 subscribes to
+     those and ETH, and the panel's tracked rows are read back off the compiled
+     program, so ETH stops being greyed the moment the swap lands. Nobody edited
+     the page.
+   - **The cart survives it.** Put a line in before you press — LTC is the one
+     to use, since its divisor does not change — and point at it afterwards
+     along with the strip's tally. It is a *shape* change: ETH's base unit is
+     the gwei and BTC's is the satoshi, so a single `one_coin` cannot price both
+     and v2 carries a `scale` on every line. `cart` and `holdings` therefore
+     cannot be inherited under their own names — the new version declares them
+     afresh and seeds each from what the retired one held, through `@LoadFrom`.
+     The migration is a comprehension over the old collection and ran once, at
+     the swap.
+
+   Then buy some ETH, which v1 could not have priced at all.
+8. *Go back, if you want to run it again — press **v1**.* Worth doing once
+   deliberately, because it fails in the interesting direction: a reload back is
+   **refused**, and the message says why — *"`cart_rescaled` is no longer
+   declared … a value carries forward into the same variable at the same type,
+   or into what a `@LoadFrom` reads it into, and only where the source says
+   which variable it belongs to."* Nothing in v1 says where the reshaped
+   collections' values belong, so there is nowhere to put them. The button
+   compiles a new program instead, and the empty cart is the honest sign of it.
+   The system will not guess a migration for you.
+9. *Make a typo, if the room is the kind that would ask.* A version that does
    not compile changes nothing: the diagnostic floats over the source it points
    into, the strip says which generation is still running, and the prices go on
    moving behind it. This is the safest thing on the slide to do deliberately.
 
-**If the route-shaped program will not compile**, reload the deck with
-`?cart=v0`. Both chords work there too — it is the program to rehearse the edit
-beat on. That runs the four-channel program the demo was built on: the same
+**The slide opens on the source alone.** `☰ Panes`, top right of the inspector,
+brings back values, the six IR stages and the operator graph. Values is already
+pinned to two places in the program — the reply the app is drawn from, and the
+write where a quote lands in the program's state — so opening it shows figures
+rather than an empty pane.
+
+**Those pins do not survive a version switch**, and it is not a fault. Pins name
+operators, the upgrade rebuilt the ones they named, and nothing re-resolves them
+against the new version's source. The source pane does follow the swap. Take the
+values beat before the upgrade, or re-pin from the source pane after it.
+
+**`provenance off`** on the strip turns on the marks the source pane paints over
+the spans a selection resolves to. Off by default because they answer a reader's
+question rather than a room's.
+
+**If the program will not boot at all**, reload the deck with `?cart=v0`. That
+runs the four-channel program the demo was built on. Both chords work there too —
+it is the program to rehearse the edit beat on. That runs the four-channel program the demo was built on: the same
 beats minus checkout and minus the holdings, and beat 2 becomes a *filter* the
 program applies to a stream it hears all of, which the values pane shows
 rejecting rows. The deck's README says what is kept where.

@@ -5,6 +5,8 @@ Slidev. Presented from a laptop, not hosted.
 ```bash
 npm install
 scripts/sync-cambra.sh   # builds the blobs that are not committed
+npm run check:wasm       # both programs compile, and one reloads onto the other
+npm run check:slide      # the slide boots, serves every product and upgrades
 npm run dev              # opens the deck; the demo slide is /11
 ```
 
@@ -16,6 +18,12 @@ module and the inspector bundle are built from that checkout, not fetched, and n
 they are behind it — a stale pair simply demonstrates an older compiler, correctly and silently.
 Neither blob is committed, so `git status` does not show one going stale either.
 
+**Then run the two checks.** `npm run check:wasm` compiles both programs in the module the sync
+just built, reloads one onto the other and checks that the state crossed; `npm run check:slide`
+starts Slidev, drives the demo slide in a browser and checks what the presenter will see. Between
+them they cover the two ways a sync breaks the demo without saying so: a program the module now
+refuses, and a reply shape the panel no longer decodes.
+
 ## The demo slide
 
 Slidev's `/11` today. The number moves whenever a slide is added ahead of it, so everything else
@@ -23,23 +31,36 @@ here names the slide rather than counting it — and a number that has been wron
 once is the reason.
 
 One Cambra program, compiled to WebAssembly **in the page** and running while the slide is open. The
-left panel is the program inspector — its source above the values flowing through it, stacked so
-each pane gets the full width. The right panel, and the larger half of the slide, is the app: a
-light surface against the inspector's navy, so the slide reads as the tool beside the thing it runs.
+left panel is the program inspector — the program's source, and under it a strip of controls. The
+right panel, and the larger half of the slide, is the app: a light surface against the inspector's
+navy, so the slide reads as the tool beside the thing it runs.
 
-- **The operator graph is hidden by default.** The program is three endpoints and a feed running
-  beside each other, so its graph is thousands of pixels wide and reads as a smear at slide scale.
-  It is one gesture away rather than gone: `☰ Panes` in the inspector's header lists every pane with
-  a checkbox, and re-checking the operator one (`post-conversion`) brings it back. `HIDDEN_PANES` in
-  `CartDemo.vue` is what starts it hidden — no pane is hidden from CSS, because a pane hidden that
-  way is unreachable.
+- **The slide opens on the source alone.** Values, the six IR stages and the operator graph are all
+  hidden — `HIDDEN_PANES` in `CartDemo.vue` — and each is one gesture away rather than gone: `☰
+  Panes` in the inspector's header lists every pane with a checkbox. No pane is hidden from CSS,
+  because a pane hidden that way is unreachable.
+  - **Values is hidden but still pinned.** The bundle wires its reveal callback after it applies
+    pins, so a pin does not force the pane open at boot the way a click on the source does. Opening
+    it mid-demo therefore shows the two pinned groups already filling rather than an empty pane.
+  - **The operator graph** is the best answer to "what did the compiler actually do", and it is out
+    for a different reason: the program is three endpoints and a feed running beside each other, so
+    its graph is thousands of pixels wide and reads as a smear at slide scale.
+- **Provenance marks are off, and on a toggle.** `provenance off` on the strip turns on the marks
+  the source pane paints over the spans a selection resolves to. They answer "where did this
+  operator come from", which is a reader's question rather than an audience's, and they land on the
+  one pane the whole room is reading. The rules live in `INSPECTOR_SKIN`; `ProgramInspector` puts a
+  `no-provenance` class on the frame's root.
 - **The feed is the live Coinbase socket**, with the recorded slice behind it: 4,187 rows over 30
   minutes across 20 products, looping, armed by a four-second deadline that the first live price
   cancels. Click the status line at the foot of the order pad to switch between them by hand — an
   explicit choice retires the automatic fallback, so a presenter who asks for live keeps live.
-- **The program is subscribed to three of the twenty.** The rest are greyed `not tracked` and are
-  drawn from the page's own copy of the feed; the program never sees them, because
-  `wasm_socket_subscribe` names three products and the page is what implements it.
+- **The tracked products are the program's own.** Both versions declare `wasm_socket_subscribe` with
+  the products they serve, and the panel reads that list back off the compiled program — at boot and
+  again after every accepted reload — rather than being kept in step with it by hand. So v1 tracks
+  BTC and LTC, v2 tracks those and ETH, and the panel grows a row the instant the upgrade lands.
+  The other rows are greyed `not tracked` and are drawn from the page's own copy of the feed; the
+  program never sees them. `SUBSCRIBED` in `demo/feed.ts` is only the floor, for the moment before
+  the first `subscriptions()` read.
 - **Every cart figure comes from the program.** The panel divides by the 10⁸ price scale and
   formats, and converts base units to whole ones. The one exception is the subtotal — a handful of
   additions — for the reason `cart-v0.cambra`'s TODO gives.
@@ -51,42 +72,91 @@ light surface against the inspector's navy, so the slide reads as the tool besid
   new program, nothing kept, the cart emptied. A version that will not compile changes neither: the
   inspector floats the rendered diagnostic over the source it points into, and the program that was
   running goes on running, at the generation the strip names.
+- **`v1` and `v2` on the strip switch versions, and ⇧U is the upgrade.** Both programs are fetched
+  at boot, so a switch is a press rather than a fetch. The two directions are not symmetric, and the
+  asymmetry is the point:
+  - **`v2` reloads and keeps the state.** v2 declares `cart_rescaled` and `holdings_rescaled` with
+    `@LoadFrom` over v1's `cart` and `holdings`, so the swap says where every value goes: the cart
+    the presenter filled survives it, and the strip's tally is the evidence.
+  - **`v1` compiles a new program**, because the reload back is refused — *"`cart_rescaled` is no
+    longer declared … a value carries forward into the same variable at the same type, or into what
+    a `@LoadFrom` reads it into, and only where the source says which variable it belongs to."* v1
+    says nothing about where the reshaped collections' values belong, so there is nowhere to put
+    them. Going back is starting the demo over, and the emptied cart is the honest sign of it.
 
-### Two programs, while the rewrite lands
+  Both go through `Program.reload`/`Program.compile` directly rather than through the editor,
+  because the inspector's editor takes text only on a remount and a remount would throw away the
+  panes the presenter has open.
 
-The program is being rewritten from four flat channels to three `wasm_serve` routes and a socket:
-`PATCH /cart` sets a line, `PUT /checkout` spends the account's cash, `GET /cart` answers with the
-cash, every line and every position in one reply, and `wasm_socket_subscribe` carries the quotes.
-The route-shaped program is `public/wasm/cart.cambra` and is what the slide boots.
+### The two programs
 
-It does not compile yet — it needs a `for` inside `with begin():`, entry iteration over a
-transactional map and a sink row carrying lists, all of which are being built in `cambra` — so the
-four-channel program it replaces is kept beside it and is one query parameter away:
+The slide runs two programs over one set of channels, all three files the deck's own:
+
+| | |
+|---|---|
+| `public/wasm/cart.cambra` | v1 — one divisor for every asset, BTC and LTC listed |
+| `public/wasm/cart-v2.cambra` | v2 — a divisor per asset, and ETH listed as well |
+| `public/wasm/channels.json` | the three routes and the price source, which both serve |
+
+They are written against the compiler rather than copied out of its test gallery, so
+`scripts/sync-cambra.sh` leaves them alone and `npm run check:wasm` is what says whether the module
+it just built still takes them. There are no comments in either file: the source pane is what a room
+reads, and a header written for a maintainer is thirty lines of prose in front of the program.
+
+One channel file, because the upgrade serves the same routes at the same row types — which is what
+makes it a reload rather than a second program. `PATCH /cart` sets the account's line, `PUT
+/checkout` spends its cash, and `GET /cart` answers with the cash, the line and the position behind
+it in one reply, pinned to one commit snapshot. `wasm_socket_subscribe` binds the price source and
+names the products, which is where the panel's tracked rows come from.
+
+**What changes between them.** ETH's base unit is the gwei and BTC's is the satoshi, so one shared
+`one_coin` cannot price both — which is why v1 lists neither ETH nor anything else whose base unit
+differs. v2 carries a `scale` on every line instead, so `cart` and `holdings` change shape, are
+declared under new names, and are seeded from what v1 held through `@LoadFrom`. Nothing v1 held
+changes value across the swap: BTC and LTC are 10⁸ in both versions. What the upgrade buys is an
+asset v1 could not have priced.
+
+**The cart holds one line per account.** A second `PATCH /cart` replaces the line rather than adding
+to it, so the panel shows one row and one holding at a time: `GET /cart` reads
+`holdings[(account, line.ticker)]`, and answering with every position an account holds is an
+iteration over the cart's entries, which is the read this shape traded away for keyed lookups.
+
+**Every collection is seeded for every product either version lists**, including the ETH holdings v1
+does not trade. Each route reads its collections at a key and `m[k]` faults on an absent key, so a
+product the program holds no entry for is a panic the moment a presenter presses it — and a panic
+poisons the module for the rest of the slide. v1 seeding ETH at zero is what lets v2 serve it the
+instant the swap lands.
+
+**`Balance` is refined** — `{Microcents where _ >= 0}` — and the checkout's debit is `cash ^- due`,
+the subtraction that records its difference, so the write is typed
+`{Microcents | __elem == cash ^- due}` and the `cash >= due` guard is what discharges `__elem >= 0`.
+Weaken the guard and the program does not compile; `npm run check:wasm` makes that claim, because a
+program that kept the declaration and lost the check would pass every other one.
+
+That refinement runs **in the browser**, which it could not until recently: refinement subtyping
+discharges its queries to a solver, and the solver used to be `z3` spawned over a pipe. wasm32 opens
+no pipe, so the module panicked at compile on any refinement it could not settle structurally. The
+compiler now links a pure-Rust solver in (`cambra`'s `ci.sh wasm` is the gate that keeps it
+reachable), and the module is about 1.4 MB larger for it.
+
+#### The four-channel program, at `?cart=v0`
+
+`cart-v0.cambra` and `channels-v0.json` are the shape the routes replaced: one price source, one
+cart source, a view request and a sink per ticker. They are frozen here and never synced, because
+the compiler repo no longer ships a program of that shape.
 
 ```
 /11?cart=v0      the four-channel program: cart-v0.cambra, channels-v0.json
-/11?cart=v1      the route-shaped one, which is the default
+/11              the route-shaped pair, which is the default
 ```
 
-The parameter is read once, at load, so switching means a reload rather than a click; it selects a
-program, its declarations, its pins and the stepper's increment together. A route the declarations
-do not carry, or a program that does not compile, puts a fault on the order pad naming the escape
-hatch rather than leaving a control that quietly does nothing.
+The parameter is read once, at load, so switching means a page reload rather than a click; it
+selects a program, its declarations, its pins and the stepper's increment together. A route the
+declarations do not carry puts a fault on the order pad naming the escape hatch, rather than leaving
+a control that quietly does nothing. Delete the `flat` wiring in `CartDemo.vue`, the `-v0` files and
+this subsection when nothing needs the old shape.
 
-`public/wasm/cart.cambra` and `channels.json` are a **provisional** copy of the v1 program from
-`cambra`'s `demo_code_syntax.md`, so the deck has something route-shaped to boot, to show in the
-inspector and to edit live. `scripts/sync-cambra.sh` replaces both the moment the compiler repo has
-an `asset_cart/v1_single_line.cambra` — the version of the route-shaped app that compiles, holding
-one cart line per account rather than a basket, which is what turns every read of the cart into a
-keyed lookup. Two things about that version are worth knowing before it lands here: its prices
-arrive on a plain declared source (`price_updates`, as the four-channel program's did) because
-`wasm_socket_subscribe` is not built yet — the page resolves the price channel by elimination, so
-the wiring does not care which — and its `GET /cart` reply carries one line rather than a list of
-them, which the decode in `CartDemo.vue` will have to follow. The `-v0` pair is frozen here and never synced, since the compiler repo
-is about to stop shipping a program of that shape. Delete the `flat` wiring in `CartDemo.vue`, the
-`-v0` files and this section once the route-shaped program runs.
-
-Nothing is fetched from a server at run time except the module, the program and the slice, all of
+Nothing is fetched from a server at run time except the module, the programs and the slice, all of
 which are files in `public/`.
 
 ### Where the pieces live
@@ -100,6 +170,10 @@ which are files in `public/`.
 | `components/CartDemo.vue` | wires them together; owns the host in module scope |
 | `components/AssetCart.vue` | the app panel: prices beside the order, on a light surface |
 | `components/ProgramInspector.vue` | the inspector, as a `srcdoc` frame with an injected snapshot, frame stream and skin |
+| `public/wasm/cart.cambra`, `cart-v2.cambra` | the two programs, and the deck's own |
+| `scripts/sync-cambra.sh` | rebuilds the module and the inspector bundle out of a `cambra` checkout |
+| `scripts/check-wasm-cart.mjs` | drives both programs through the module: compile, reload, migrate |
+| `scripts/check-slide.mjs` | drives the slide in a browser: boot, both versions, the strip, checkout |
 
 ### Restyling the inspector without rebuilding it
 
@@ -118,9 +192,9 @@ renames a class silently drops the corresponding rule, so check the skin after a
 
 ### The artifacts
 
-The demo slide runs from files in `public/`, not from a server. Most of them are committed — both
-programs (`wasm/cart.cambra`, `wasm/cart-v0.cambra`), their channel declarations, and the 83 KB
-price slice — so the deck builds and presents with no network.
+The demo slide runs from files in `public/`, not from a server. Most of them are committed — all
+three programs (`wasm/cart.cambra`, `wasm/cart-v2.cambra`, `wasm/cart-v0.cambra`), their channel
+declarations, and the 83 KB price slice — so the deck builds and presents with no network.
 
 **Three generated blobs are not committed**, each being over `jj`'s 1 MiB snapshot limit. All three
 are reproducible from a `cambra` checkout, so nothing here needs to be handed between machines:
@@ -144,24 +218,33 @@ committed (`cambra` is a library), so the version to match is the one a first `c
 `cambra/scripts/build-wasm.sh` reads it out and names it if the CLI is missing.
 
 The pins in `CartDemo.vue` are source line numbers in `cart.cambra`; check them if the program's
-lines moved. A pin that no longer names an operator is skipped rather than reported, so a stale one
-costs a pinned group and not an error in front of an audience.
+lines moved, which a copied program's do whenever its prose does. A position that no longer names an
+operator is skipped rather than reported, so a stale pin costs a pinned group and not an error in
+front of an audience — and a pin has to name a position the compiler built an operator *from*: the
+reply pin is the record itself rather than the `view_replies <<` above it, because `channelize`
+erases the feed write.
+
+Pins are applied when the inspector mounts and are not re-resolved by a reload, so the values pane
+empties after ⇧U: the upgrade rebuilds the operators those pins named, and the new version's lines
+are not the old version's. The source and IR panes do follow the swap.
 
 ### Which `cambra` revision
 
-The demo's compiler-side work is not landed. Both scripts build against the head of the `demo/*`
-stack, which this names:
+The demo's compiler-side work is not landed. Both scripts build against
+`skylar/asset-cart-loadfrom-upgrade`, which is the bookmark that carries the `@LoadFrom` upgrade
+path and the pure-Rust refinement solver the browser build needs:
 
 ```bash
-jj log -r 'heads(demo/05-wasm-build:: & bookmarks())'   # the revision the deck expects
-jj bookmark list 'glob:demo/*'                          # the whole stack, for context
+jj log -r skylar/asset-cart-loadfrom-upgrade     # the revision the deck expects
+jj bookmark list 'glob:demo/*'                   # the stack below it, for context
 ```
 
-`& bookmarks()` is load-bearing: an empty working-copy commit sitting above the stack is a head
-too, and without it the query names that instead of the tip of the work.
+Read the revision off the bookmark rather than off a stack position. The numbers in the `demo/*`
+names are part of a slug, and that stack has been reordered more than once.
 
-Read the head off the query rather than off the bookmark names. The numbers in them are part of a
-slug, not a stack position, and the stack has been reordered more than once.
+A checkout without the solver swap builds a module that panics at compile on the refined `Balance`,
+which reaches the slide as a fault line on the order pad. `npm run check:wasm` catches it in one
+line rather than in front of a room.
 
 `scripts/build-artifact.mjs` builds the `wasm-release` profile, which `demo/05-wasm-build` adds.
 Below that commit it stops on ``profile `wasm-release` is not defined``. An older revision of the
