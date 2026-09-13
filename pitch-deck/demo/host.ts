@@ -1,85 +1,71 @@
 /**
- * The page's side of the Worker: a `CambraTransport` over `postMessage`, and
- * the journal that makes a replay possible.
+ * The page's side of the Worker: a `CambraTransport` over `postMessage`.
+ *
+ * ## The journal, and why it is gone
+ *
+ * This file used to export a `Journal`: every row the host had ever pushed, in
+ * order, so that a recompiled program fed the whole history re-derived the state
+ * the old one held. A host source mints its keys from arrival order and nothing
+ * in the runtime serializes a `Mut` cell, so that replay was the only way to
+ * make ⌘⏎ keep the cart — and it came with a careful argument about why
+ * replaying a `PUT /checkout` did not double-charge (it was a re-derivation from
+ * nothing, not an append onto live state).
+ *
+ * `Program.reload` makes the whole mechanism unnecessary, and it was never as
+ * strong as the slide's claim. A replay produces a *second program* that happens
+ * to agree: every operator is a new object, every `NodeId` is freshly minted,
+ * and anything the program was holding that a source did not put there is gone.
+ * A reload keeps the operators themselves — `kept` of `bound` counts them — so
+ * the state does not travel, it simply is not disturbed. "Code, data and
+ * in-flight work move in one transaction" is true of the second and only
+ * approximately true of the first.
+ *
+ * The other chord does not want it either. ⌘⇧⏎ means *from scratch*, and a
+ * fresh program fed the journal would be neither fresh nor the old program —
+ * it would be exactly the thing ⌘⏎ now does properly, with none of the
+ * identity. So the journal has no remaining caller, and keeping it would mean
+ * growing an array by one entry per price row for the length of a talk on behalf
+ * of nothing. It is deleted rather than left unused; this note is what it leaves
+ * behind, and `jj` has the code if the argument ever needs re-reading.
  */
 
 import { ChannelMap } from "./transport";
-import type { CambraTransport, ChannelDecl, Row, RouteHandle, SinkRows, Value } from "./transport";
+import type {
+  CambraTransport,
+  ChannelDecl,
+  ReloadReport,
+  Row,
+  RouteHandle,
+  SinkRows,
+  SocketSubscription,
+  Value,
+} from "./transport";
 import type { Response } from "./worker";
-
-/** One thing the host pushed, in the order it pushed it. */
-export interface JournalEntry {
-  source: string;
-  rows: readonly Value[];
-}
-
-/**
- * Every row the host has pushed, in order.
- *
- * The host is the only thing that has ever fed the program, and a host source
- * mints its keys from arrival order — so a fresh program fed this journal
- * reaches the state the old one held. That is the whole mechanism for carrying
- * state across a recompile: nothing in the runtime serializes a `Mut` cell.
- *
- * The route rewrite makes that mechanism carry a `PUT /checkout` — a row that
- * spends money — and the question is whether replaying one double-charges. It
- * does not, and the reason is worth stating, because the intuition from every
- * system that replays a message queue says otherwise. A replay here is not an
- * append onto live state: the recompiled program starts from its declarations
- * with empty `Mut` cells, and the journal is the *whole* history, pushed in the
- * order it was pushed the first time. A deterministic program re-derives the
- * same state, so the replayed checkout re-runs against the same balance, makes
- * the same `cash >= due` decision and lands on the same figure. An `at-least
- * once` delivery onto surviving state would double-charge; a re-derivation
- * from nothing cannot.
- *
- * The one case where the replay *should* differ is the case the chord exists
- * for: an edited program. A checkout that committed under the old source may be
- * denied under the new one — a different price, a different guard — and that is
- * the correct answer for the program now running, not a fault in the replay.
- *
- * What must stay out of the journal is a read. `GET /cart` changes nothing, so
- * replaying it only re-emits replies the panel then overwrites; `CartDemo.vue`
- * asks for one view after a replay instead, which keeps the journal to the rows
- * that are actually history. Journaling the reads would not be wrong, only
- * wasteful — and since a view is requested on every tracked price tick, it is
- * most of the volume.
- */
-export class Journal {
-  private readonly entries: JournalEntry[] = [];
-
-  append(source: string, rows: readonly Value[]): void {
-    this.entries.push({ source, rows });
-  }
-
-  /** What has been pushed, oldest first. */
-  all(): readonly JournalEntry[] {
-    return this.entries;
-  }
-
-  get length(): number {
-    return this.entries.length;
-  }
-
-  /** Push every entry into `into`, in order. */
-  replay(into: CambraTransport): void {
-    for (const entry of this.entries) into.push(entry.source, entry.rows);
-  }
-
-  /** Forget everything pushed so far, for a run that starts from nothing. */
-  clear(): void {
-    this.entries.length = 0;
-  }
-}
 
 /** A transport over a Worker holding the WebAssembly module. */
 export class WorkerTransport implements CambraTransport {
   private readonly worker: Worker;
   private readonly sinkHandlers = new Map<string, Set<(rows: Row[]) => void>>();
   private readonly frameHandlers = new Set<(frame: string) => void>();
-  private snapshotText: Promise<string>;
+  private snapshotText!: Promise<string>;
   private resolveSnapshot!: (text: string) => void;
   private rejectSnapshot!: (reason: Error) => void;
+  private subscriptionList!: Promise<SocketSubscription[]>;
+  private resolveSubscriptions!: (feeds: SocketSubscription[]) => void;
+  private rejectSubscriptions!: (reason: Error) => void;
+  /**
+   * One settler per reload in flight, oldest first.
+   *
+   * A queue rather than a single slot, because the Worker answers every
+   * `reload` with exactly one `reloaded` or `rejected` in the order it took
+   * them, and a chord pressed twice in a second would otherwise leave the first
+   * promise pending forever — which reaches the author as an editor that
+   * swallowed the keystroke rather than as anything diagnosable.
+   */
+  private readonly pendingReloads: {
+    resolve: (report: ReloadReport) => void;
+    reject: (reason: Error) => void;
+  }[] = [];
   /** The declarations, indexed by route — see `ChannelMap`. */
   readonly channels: ChannelMap;
 
@@ -93,10 +79,7 @@ export class WorkerTransport implements CambraTransport {
     },
   ) {
     this.channels = new ChannelMap(options.channels);
-    this.snapshotText = new Promise<string>((resolve, reject) => {
-      this.resolveSnapshot = resolve;
-      this.rejectSnapshot = reject;
-    });
+    this.arm();
     this.worker = new Worker(options.moduleUrl, { type: "module" });
     this.worker.onmessage = (event: MessageEvent<Response>) => this.receive(event.data);
     this.worker.postMessage({
@@ -107,14 +90,61 @@ export class WorkerTransport implements CambraTransport {
     });
   }
 
+  /**
+   * Arm the promises a compile settles: the snapshot and the subscription list.
+   *
+   * Both, together, because they describe one program and one `ready` message
+   * carries both. Re-armed by `recompile`, which is the other thing that
+   * produces a `ready`.
+   *
+   * The idle `catch` on the subscription list is not a swallowed failure. A
+   * compile that fails settles both as rejections and the boot path reports it
+   * from the snapshot, which it awaits first and returns on; the list is then a
+   * rejection nobody is waiting for, and an unhandled rejection in the console
+   * is noise on top of a fault the page has already named.
+   */
+  private arm(): void {
+    this.snapshotText = new Promise<string>((resolve, reject) => {
+      this.resolveSnapshot = resolve;
+      this.rejectSnapshot = reject;
+    });
+    this.subscriptionList = new Promise<SocketSubscription[]>((resolve, reject) => {
+      this.resolveSubscriptions = resolve;
+      this.rejectSubscriptions = reject;
+    });
+    void this.subscriptionList.catch(() => {});
+  }
+
   private receive(message: Response): void {
     if (message.kind === "ready") {
       this.resolveSnapshot(message.snapshot);
+      this.resolveSubscriptions(JSON.parse(message.subscriptions) as SocketSubscription[]);
       return;
     }
     if (message.kind === "error") {
       this.rejectSnapshot(new Error(message.message));
+      this.rejectSubscriptions(new Error(message.message));
       this.options.onError?.(message.message);
+      return;
+    }
+    if (message.kind === "reloaded") {
+      const tally = JSON.parse(message.tally) as {
+        generation: number;
+        kept: number;
+        bound: number;
+      };
+      this.pendingReloads.shift()?.resolve({
+        ...tally,
+        snapshot: message.snapshot,
+        subscriptions: JSON.parse(message.subscriptions) as SocketSubscription[],
+      });
+      return;
+    }
+    if (message.kind === "rejected") {
+      // A rejection and not `onError`: the program the page is driving is
+      // unchanged and still answering. Only the author's editor hears about
+      // this, which is where the diagnostic points.
+      this.pendingReloads.shift()?.reject(new Error(message.message));
       return;
     }
     if (message.kind === "sink") {
@@ -171,23 +201,65 @@ export class WorkerTransport implements CambraTransport {
   }
 
   /**
-   * Compile `source` in place of the running program, and answer its snapshot.
+   * What the running program subscribes to, settled by the same `ready` the
+   * snapshot is.
    *
-   * The same Worker and the same module: `init` is cached, so this is one
-   * `Program.compile` and the tick loop picks the new program up on its next
-   * pass. Nothing carries over — a `Mut` cell is not serializable and the new
-   * program's operators are new objects — so state is the caller's problem, and
-   * `Journal.replay` is how the caller solves it.
+   * Empty where the program declares no `wasm_socket_subscribe`, which is what
+   * the version running today reports: its prices arrive on a plain declared
+   * source that the page fills from a socket of its own. `demo/feed.ts` says
+   * what the page does with each case.
+   */
+  subscriptions(): Promise<SocketSubscription[]> {
+    return this.subscriptionList;
+  }
+
+  /**
+   * Swap an edited version in over the running one, keeping its state.
+   *
+   * This is the keep-state chord, and it is a different act from `recompile`:
+   * the program is not replaced, a *version* of it is. Operators whose
+   * computation is unchanged keep running and every mutable variable resumes
+   * from the value it held, so there is nothing for the caller to carry across
+   * — which is why this file no longer has a journal, and why the report says
+   * `kept` of `bound` rather than just succeeding.
+   *
+   * No channels are sent. A version compiles against the declarations the
+   * program already has; handing it a fresh set would make it a different
+   * program wearing the same name, and `route` handles resolved before the
+   * reload would quietly be pointing at the old one's channels.
+   *
+   * A version the compiler will not take settles this as a rejection carrying
+   * the rendered diagnostic — a line, a column and a caret into the source the
+   * caller sent — and changes nothing: the old program answers on, at the
+   * generation it last reported, with everything it was holding. That is the
+   * behaviour the demo slide depends on, because the source pane is edited live
+   * in front of a room and a typo there must cost a toast, not the program.
+   */
+  reload(source: string): Promise<ReloadReport> {
+    const report = new Promise<ReloadReport>((resolve, reject) => {
+      this.pendingReloads.push({ resolve, reject });
+    });
+    this.worker.postMessage({ kind: "reload", source });
+    return report;
+  }
+
+  /**
+   * Compile `source` as a new program in place of the running one, and answer
+   * its snapshot.
+   *
+   * The from-scratch chord. The same Worker and the same module — `init` is
+   * cached, so this is one `Program.compile` and the tick loop picks the new
+   * program up on its next pass — but a new program: nothing carries over, no
+   * operator is reused, generation counts from zero again, and every `Mut` cell
+   * starts at its declaration's value. That is the point of the chord, and the
+   * reason `reload` exists beside it rather than instead of it.
    *
    * A program that does not compile settles the promise as a rejection; the
    * previous program keeps running, because the Worker only replaces `program`
    * once `Program.compile` has returned.
    */
   recompile(source: string): Promise<string> {
-    this.snapshotText = new Promise<string>((resolve, reject) => {
-      this.resolveSnapshot = resolve;
-      this.rejectSnapshot = reject;
-    });
+    this.arm();
     this.worker.postMessage({
       kind: "compile",
       wasmUrl: this.options.wasmUrl,

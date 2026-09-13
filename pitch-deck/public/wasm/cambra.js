@@ -120,6 +120,67 @@ export class Program {
         }
     }
     /**
+     * Replace the running program with the version `source` describes, and
+     * report what it kept as `{"generation": n, "kept": k, "bound": b}`.
+     *
+     * The page swaps its edited source in without losing what the program is
+     * holding: every operator whose computation is unchanged keeps running, and
+     * every mutable variable resumes from the value it held. `kept` of `bound`
+     * counts the operators taken from the replaced version rather than built,
+     * which is the evidence for the rest. Re-deriving the state instead, by
+     * pushing a journal of rows into a second program, would keep none of them.
+     *
+     * `generation` is the version now running, counting from `0`. The same
+     * number rides `snapshot()`'s `meta.generation` and every `frame()`, which
+     * is how a reader holding panes from one version recognizes a frame naming
+     * nodes it has never seen: a rebuilt operator is minted a fresh `NodeId`,
+     * and re-reading the payload is what resolves it.
+     *
+     * A JSON string, as `snapshot()`, `frame()` and `subscriptions()` return,
+     * because a page hands all four to the one consumer that parses them. An
+     * object would buy destructuring at the price of the `json_compatible` care
+     * [`tick`](Self::tick) documents, for a payload read once per edit rather
+     * than once per pass. The rendered diff and the loops a version adds above
+     * the start of what they read stay off it: those two are the control port's
+     * reply to an author at a terminal, and a page re-reads `snapshot()` after
+     * an accepted reload, whose source and IR panes are the new version.
+     *
+     * Throws the rendered diagnostics for a version that does not compile, or
+     * that cannot take over the state the running program is holding. Such a
+     * throw leaves the running program answering, at the generation this last
+     * reported: the version is compiled and checked before anything is torn
+     * down. A typo is a caught exception and a stale page, not a program that
+     * stops.
+     * @param {string} source
+     * @returns {string}
+     */
+    reload(source) {
+        let deferred3_0;
+        let deferred3_1;
+        try {
+            const retptr = wasm.__wbindgen_add_to_stack_pointer(-16);
+            const ptr0 = passStringToWasm0(source, wasm.__wbindgen_export, wasm.__wbindgen_export2);
+            const len0 = WASM_VECTOR_LEN;
+            wasm.program_reload(retptr, this.__wbg_ptr, ptr0, len0);
+            var r0 = getDataViewMemory0().getInt32(retptr + 4 * 0, true);
+            var r1 = getDataViewMemory0().getInt32(retptr + 4 * 1, true);
+            var r2 = getDataViewMemory0().getInt32(retptr + 4 * 2, true);
+            var r3 = getDataViewMemory0().getInt32(retptr + 4 * 3, true);
+            var ptr2 = r0;
+            var len2 = r1;
+            if (r3) {
+                ptr2 = 0; len2 = 0;
+                throw takeObject(r2);
+            }
+            deferred3_0 = ptr2;
+            deferred3_1 = len2;
+            return getStringFromWasm0(ptr2, len2);
+        } finally {
+            wasm.__wbindgen_add_to_stack_pointer(16);
+            wasm.__wbindgen_export4(deferred3_0, deferred3_1, 1);
+        }
+    }
+    /**
      * Make one call against the route `method path`, as `rows`.
      *
      * The page is the listener a `wasm_serve` in the program binds, so this is
@@ -149,9 +210,12 @@ export class Program {
         }
     }
     /**
-     * The `/api/snapshot` payload, computed once at compile.
+     * The `/api/snapshot` payload for the running version.
      *
-     * What the inspector renders its source and IR panes from.
+     * What the inspector renders its source and IR panes from. Computed at
+     * compile and re-rendered by an accepted [`reload`](Self::reload), which is
+     * when a page re-reads it: the version it describes is the one
+     * `meta.generation` names.
      * @returns {string}
      */
     snapshot() {
@@ -168,6 +232,48 @@ export class Program {
         } finally {
             wasm.__wbindgen_add_to_stack_pointer(16);
             wasm.__wbindgen_export4(deferred1_0, deferred1_1, 1);
+        }
+    }
+    /**
+     * What the program subscribes to, as
+     * `[{source, endpoint, feed, products}]`.
+     *
+     * The page owns the WebSocket. A `wasm_socket_subscribe` in the program
+     * binds a declared source and says what fills it; this is how the page
+     * learns what to connect to, so the endpoint and the products live in the
+     * program rather than in two places that have to agree. What comes back
+     * off the socket is decoded by the page and pushed into `source` through
+     * [`push`](Self::push), like any other source — there is no socket in the
+     * module, and on `wasm32` there could not be one.
+     *
+     * Read after `compile` and after an accepted [`reload`](Self::reload),
+     * which replaces the list rather than adding to it: a feed that leaves it
+     * is a socket the page should close, and one that arrives or changes its
+     * products is one it should open.
+     * @returns {string}
+     */
+    subscriptions() {
+        let deferred2_0;
+        let deferred2_1;
+        try {
+            const retptr = wasm.__wbindgen_add_to_stack_pointer(-16);
+            wasm.program_subscriptions(retptr, this.__wbg_ptr);
+            var r0 = getDataViewMemory0().getInt32(retptr + 4 * 0, true);
+            var r1 = getDataViewMemory0().getInt32(retptr + 4 * 1, true);
+            var r2 = getDataViewMemory0().getInt32(retptr + 4 * 2, true);
+            var r3 = getDataViewMemory0().getInt32(retptr + 4 * 3, true);
+            var ptr1 = r0;
+            var len1 = r1;
+            if (r3) {
+                ptr1 = 0; len1 = 0;
+                throw takeObject(r2);
+            }
+            deferred2_0 = ptr1;
+            deferred2_1 = len1;
+            return getStringFromWasm0(ptr1, len1);
+        } finally {
+            wasm.__wbindgen_add_to_stack_pointer(16);
+            wasm.__wbindgen_export4(deferred2_0, deferred2_1, 1);
         }
     }
     /**

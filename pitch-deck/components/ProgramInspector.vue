@@ -31,6 +31,35 @@ const props = defineProps<{
    */
   rebuild?: (source: string, options: { keepState: boolean }) => Promise<unknown>;
   /**
+   * The snapshot for the version running *now*, parsed.
+   *
+   * Not the same thing as `snapshot`, which seeds the frame once and remounts
+   * it when it changes — and a remount mid-demo would throw away the editor's
+   * text and the pane layout. This is what the bundle calls when a live frame
+   * names a generation later than the one it is rendering: an accepted reload
+   * mints fresh `NodeId`s for every operator it rebuilt, so the panes have to
+   * be re-seeded from the new version's payload or they are naming nodes that
+   * no longer exist. Without it the bundle falls back to `fetch("/api/snapshot")`,
+   * which on this page is a server that does not exist and a console error in
+   * place of a redraw.
+   */
+  currentSnapshot?: () => unknown;
+  /**
+   * What the last reload kept, for the strip under the frame. Null until one
+   * is accepted, and again after a from-scratch compile, which keeps nothing by
+   * construction.
+   */
+  tally?: { generation: number; kept: number; bound: number } | null;
+  /**
+   * Whether the last reload was refused.
+   *
+   * The diagnostic itself is the bundle's to show — it catches the rejection
+   * and floats it over the editor, against the source the author is looking at.
+   * This is the quieter half: what the strip says about which version is
+   * running, which is still the one before the edit.
+   */
+  rejected?: boolean;
+  /**
    * CSS appended to the frame's head once the bundle has been written.
    *
    * The seam between the deck and a bundle it does not build: the frame is
@@ -84,6 +113,10 @@ function mount(html: string, snapshot: string): void {
         ? (text: string, options: { keepState: boolean }) =>
             props.rebuild!(text, options)
         : undefined,
+      // Read through `props` at call time, as `rebuild` is, and for the same
+      // reason: the frame is written once and this has to answer for whichever
+      // version is running when a frame arrives.
+      currentSnapshot: props.currentSnapshot ? () => props.currentSnapshot!() : undefined,
       // The frame source the inspector's `connectLive` accepts: the three
       // events and the one method it uses, no socket behind them.
       openLive: () => ({
@@ -141,14 +174,39 @@ onBeforeUnmount(() => {
 
 <template>
   <div class="inspector">
-    <div v-if="fault" class="inspector-fault">{{ fault }}</div>
-    <div v-else-if="!snapshot" class="inspector-wait">compiling…</div>
-    <iframe
-      v-show="snapshot && !fault"
-      ref="frame"
-      class="inspector-frame"
-      title="Cambra program inspector"
-    />
+    <div class="inspector-stage">
+      <div v-if="fault" class="inspector-fault">{{ fault }}</div>
+      <div v-else-if="!snapshot" class="inspector-wait">compiling…</div>
+      <iframe
+        v-show="snapshot && !fault"
+        ref="frame"
+        class="inspector-frame"
+        title="Cambra program inspector"
+      />
+    </div>
+    <!-- The reuse tally, and the chords that produce it.
+         An operator surviving an edit is invisible by nature: the cart still
+         holds what it held, which looks exactly like nothing having happened.
+         `11 of 12 operators kept` is the evidence, so it is on the slide rather
+         than in a console — one line, in the inspector's own register, under
+         the frame it belongs to. Before the first reload it is the legend for
+         the two chords instead, which is what the strip is worth when there is
+         no tally to show. -->
+    <div v-if="rebuild" class="reload-line" :class="{ refused: rejected }">
+      <span class="reload-label">Reload</span>
+      <template v-if="rejected">
+        <span class="reload-detail"
+          >refused · generation {{ tally?.generation ?? 0 }} still running</span
+        >
+      </template>
+      <template v-else-if="tally">
+        <span class="reload-detail">generation {{ tally.generation }}</span>
+        <span class="reload-figure">{{ tally.kept }} of {{ tally.bound }} operators kept</span>
+      </template>
+      <template v-else>
+        <span class="reload-detail">⌘⏎ in place · ⌘⇧⏎ from scratch</span>
+      </template>
+    </div>
   </div>
 </template>
 
@@ -167,12 +225,23 @@ onBeforeUnmount(() => {
      together. It also lands the type back near 1:1 on screen (0.5 x 1.96), which
      is where text is sharpest. */
   --frame-scale: 0.5;
-  position: relative;
   height: 100%;
   border: 1px solid var(--line);
   border-radius: 0.5rem;
   overflow: hidden;
   background: var(--code-bg);
+  display: flex;
+  flex-direction: column;
+}
+/* The frame's own box. The scaled iframe is positioned against this rather than
+   against `.inspector`, so the strip below takes its height out of the frame
+   instead of being overlaid on the values pane's last row — an overlay there
+   covers content that is moving, which is the one part of the pane the room is
+   watching. */
+.inspector-stage {
+  position: relative;
+  flex: 1 1 auto;
+  min-height: 0;
   display: flex;
 }
 .inspector-frame {
@@ -196,5 +265,54 @@ onBeforeUnmount(() => {
 }
 .inspector-fault {
   color: var(--hot);
+}
+
+/* The strip. Mono, uppercase label, tabular figures — the same register as the
+   app panel's `Prices` / `Order` labels and its status line, so the two halves
+   of the slide read as one design. Quiet by default; the tally is the one thing
+   on it that takes an accent, because it is the only thing on it that is
+   evidence. */
+.reload-line {
+  flex: none;
+  display: flex;
+  align-items: baseline;
+  gap: 0.5rem;
+  padding: 0.3rem 0.6rem;
+  border-top: 1px solid var(--line);
+  font-family: var(--f-mono);
+  font-size: 0.62rem;
+  letter-spacing: 0.06em;
+  color: var(--fg-3);
+}
+.reload-label {
+  font-weight: 700;
+  font-size: 0.58rem;
+  letter-spacing: 0.16em;
+  text-transform: uppercase;
+}
+.reload-detail {
+  min-width: 0;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+/* `--lagoon` is 8.6:1 on `--code-bg`, and it is the accent the inspector's own
+   badges already use, so the tally lands as part of the frame rather than as a
+   deck annotation stuck under it. */
+.reload-figure {
+  margin-left: auto;
+  color: var(--lagoon);
+  font-variant-numeric: tabular-nums;
+  white-space: nowrap;
+}
+/* A refusal has to be readable before it is coloured: the message is small, so
+   the ink goes to full contrast and `--hot` does its work as a rule beside it —
+   the same trade the app panel's fault line makes on sand. */
+.reload-line.refused {
+  color: var(--fg-2);
+}
+.reload-line.refused .reload-detail {
+  padding-left: 0.4rem;
+  border-left: 3px solid var(--hot);
 }
 </style>

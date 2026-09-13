@@ -610,23 +610,40 @@ it:
    edges are construction edges.
 6. *Edit the program in front of them.* The source pane is editable. The guard
    in `PUT /checkout` is the shortest edit worth making — loosen or tighten
-   `cash >= due` — and press **Cmd-Enter**. The program recompiles in the page
-   and **the cart keeps what is in it**: that is the claim on this slide's own
-   punchline, made rather than asserted. **Cmd-Shift-Enter** recompiles from
-   scratch instead, and the cart empties — worth doing once, so the room sees
-   the difference is a choice.
+   `cash >= due` — and press **Cmd-Enter**. The new version takes over in the
+   page and **the cart keeps what is in it**: that is the claim on this slide's
+   own punchline, made rather than asserted. Point at the strip under the
+   inspector while you say it — `12 of 14 operators kept` is the evidence, and
+   it is there because an operator surviving an edit is invisible by nature.
+   **Cmd-Shift-Enter** compiles a new program from scratch instead: no tally,
+   and the cart empties. Worth doing once, so the room sees the difference is a
+   choice.
+7. *Make a typo, if the room is the kind that would ask.* A version that does
+   not compile changes nothing: the diagnostic floats over the source it points
+   into, the strip says which generation is still running, and the prices go on
+   moving behind it. This is the safest thing on the slide to do deliberately.
 
 **If the route-shaped program will not compile**, reload the deck with
-`?cart=v0`. That runs the four-channel program the demo was built on: the same
+`?cart=v0`. Both chords work there too — it is the program to rehearse the edit
+beat on. That runs the four-channel program the demo was built on: the same
 beats minus checkout and minus the holdings, and beat 2 becomes a *filter* the
 program applies to a stream it hears all of, which the values pane shows
 rejecting rows. The deck's README says what is kept where.
 
-**How the state survives, if asked:** the host keeps a journal of every row it
-has pushed, and a fresh program fed that journal arrives where the old one was.
-Nothing in the runtime serializes a `Mut` cell. This is not yet the transactional
-reload on the roadmap — that keeps the operators bound rather than re-deriving
-from inputs — and it is honest to say so.
+**How the state survives, if asked:** it is not moved, it is not disturbed.
+`Program.reload` compiles and type-checks the new version, then swaps it in over
+the running one: every operator whose computation is unchanged keeps running as
+the same operator, and every mutable variable resumes from the value it was
+holding. The tally counts exactly that — `kept` of `bound` operators taken from
+the version being replaced. Nothing in the runtime serializes a `Mut` cell and
+nothing needs to.
+
+The deck used to do this by replaying a journal of every row the host had ever
+pushed into a freshly compiled program, which re-derived the same state. Say so
+if someone asks what changed: a replay produces a *second* program that agrees
+with the first — new operators, new node ids, only what a source put there — and
+a reload keeps the first. The slide's line is "code, data and in-flight work
+move in one transaction", and only one of those two is that.
 
 **If asked what the app computes itself:** the subtotal, a handful of additions.
 Every other figure is the program's. The four-channel program had a compiler

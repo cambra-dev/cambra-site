@@ -2,9 +2,9 @@
 /**
  * The demo slide: a live asset cart, inspected.
  *
- * Owns the WebAssembly host, the price feed and the journal, and hands the
- * inspector a snapshot and a frame stream. The two panels below it are views —
- * neither knows there is a Worker.
+ * Owns the WebAssembly host and the price feed, and hands the inspector a
+ * snapshot, a frame stream and the two rebuild chords. The two panels below it
+ * are views — neither knows there is a Worker.
  *
  * The host lives in module scope, not in this component. Slidev renders every
  * slide with `v-show` and mounts them all again for the overview and for
@@ -16,7 +16,7 @@ import { onBeforeUnmount, reactive, ref } from "vue";
 
 import AssetCart from "./AssetCart.vue";
 import ProgramInspector from "./ProgramInspector.vue";
-import { Journal, WorkerTransport } from "../demo/host";
+import { WorkerTransport } from "../demo/host";
 import {
   LiveFeed,
   ReplayFeed,
@@ -28,7 +28,13 @@ import {
   type FeedStatus,
   type Tick,
 } from "../demo/feed";
-import { BASE_UNITS, type Row, type Value } from "../demo/transport";
+import {
+  BASE_UNITS,
+  type ReloadReport,
+  type Row,
+  type SocketSubscription,
+  type Value,
+} from "../demo/transport";
 
 /**
  * The panes the slide opens without: the six IR stages, and the operator graph.
@@ -342,16 +348,67 @@ const checkoutServed = ref(false);
 const notice = ref<string | null>(null);
 const snapshot = ref<string | null>(null);
 const ready = ref(false);
+/**
+ * What the last accepted reload kept, for the strip under the inspector.
+ *
+ * Null before the first one, and again after a from-scratch compile, which
+ * keeps nothing by construction and would be lying if it showed a tally.
+ */
+const tally = ref<{ generation: number; kept: number; bound: number } | null>(null);
+/**
+ * Whether the version last sent was refused.
+ *
+ * Deliberately not `fault`. `fault` means the host is not running and the panel
+ * paints it over the status line; a refused version means the host is running
+ * exactly as it was, and the only thing wrong is the text in an editor. The
+ * rendered diagnostic goes back to the inspector, which floats it over the
+ * source it points into; this ref is what the strip needs to say which version
+ * the room is actually looking at the output of.
+ */
+const rejected = ref(false);
 const fault = ref<string | null>(null);
 const status = ref<FeedStatus>({ mode: "live", detail: "connecting" });
 const mode = ref<FeedMode>("live");
 
+/**
+ * Where prices go, and which ones go there.
+ *
+ * The program's answer where it has one. A version that declares
+ * `wasm_socket_subscribe` names its own endpoint, feed and products, and the
+ * page reads that list back off the compiled program rather than being kept in
+ * step with it by hand — at boot, and again after every accepted reload, since
+ * a reload replaces the list rather than adding to it.
+ *
+ * Seeded from `SUBSCRIBED` because the version that runs today declares no such
+ * thing: the primitive is not built, its prices arrive on a plain declared
+ * source, and the list comes back empty. `feed.ts` says why that constant is
+ * the page's own choice and not a copy of anything.
+ *
+ * Reactive, because `products` is what the panel greys its untracked rows from
+ * and a plain binding would leave those rows stale until some other ref
+ * happened to repaint the panel.
+ */
+const feed = reactive<{ source: string; products: string[] }>({
+  source: "",
+  products: [...SUBSCRIBED],
+});
+
 /** Module scope: one host for the life of the deck, however often this mounts. */
 let transport: WorkerTransport | null = null;
-let journal: Journal | null = null;
 let replay: ReplayFeed | null = null;
 let live: LiveFeed | null = null;
 let wiring: Wiring | null = null;
+/**
+ * The snapshot of the version running now, as the module last answered it.
+ *
+ * Held beside `snapshot` and not in it. `snapshot` is what seeds the inspector
+ * frame, and writing to it remounts the frame from scratch — which after an
+ * edit would throw away the author's text and every pane they had opened. The
+ * inspector re-renders itself from what `rebuild` resolves to, and asks for
+ * this one when a live frame names a generation later than the panes it is
+ * showing.
+ */
+let latestSnapshot: string | null = null;
 const unsubscribes: (() => void)[] = [];
 
 /** Ticks the panel has not painted yet, coalesced into one frame. */
@@ -388,9 +445,15 @@ function onTick(tick: Tick): void {
   paint();
 }
 
-/** Push, journaling first, so a replay reproduces exactly this run. */
+/**
+ * Push rows into a named host source.
+ *
+ * It used to journal first, so that a recompile could re-derive the program's
+ * state by replaying every row the host had ever sent. `Program.reload` keeps
+ * the state in place instead and the journal is gone; `demo/host.ts` carries
+ * the argument for why that is a stronger thing and not merely a cheaper one.
+ */
 function push(source: string, rows: readonly Value[]): void {
-  journal?.append(source, rows);
   transport?.push(source, rows);
 }
 
@@ -470,15 +533,22 @@ interface Wiring {
  * they stood together — which is the claim the slide makes out loud.
  */
 function routeWiring(host: WorkerTransport): Wiring {
-  const quotes = host.channels.socket();
+  // Resolved eagerly, and here rather than at each push: `ChannelMap.socket`
+  // throws when the declarations carry no ingress channel outside a route, and
+  // `boot` turns that throw into the panel's wiring fault, which is a thing the
+  // slide should show before a single row moves. A subscription read off the
+  // compiled program may point the feed at another declared source later;
+  // until one does, this is where prices go.
+  feed.source = host.channels.socket();
   const patch = host.route("PATCH", "/cart");
   const checkoutRoute = host.route("PUT", "/checkout");
   const view = host.route("GET", "/cart");
 
-  // A read, so it is sent rather than pushed: `push` journals, and a journal of
-  // reads is a recompile re-asking a question whose answer it is about to
-  // overwrite. `Journal` has the long version. `rebuild` asks for one view of
-  // its own afterwards, which is the whole of what this costs.
+  // Through the handle rather than by name, as every other write on this path
+  // is: the route resolved its two channels once and `send` is what puts a row
+  // on the request side of the pair. `rebuild` asks for one view of its own
+  // after an edit, which is how the panel repaints from the version now
+  // running rather than from the one that answered last.
   const refresh = (): void => view.send([{ account: ACCOUNT }]);
 
   return {
@@ -544,15 +614,15 @@ function routeWiring(host: WorkerTransport): Wiring {
       // implementation of `wasm_socket_subscribe`, and a host that delivered
       // seventeen products the declaration never asked for would be lying about
       // what the program is reading — which is the one thing this slide claims.
-      if (!(SUBSCRIBED as readonly string[]).includes(tick.product)) return;
-      push(quotes, [{ ticker: tick.ticker, price: tick.price }]);
+      if (!feed.products.includes(tick.product)) return;
+      push(feed.source, [{ ticker: tick.ticker, price: tick.price }]);
       // A price moved, so every line's total did. The cart is the program's to
       // compute, so the panel asks rather than multiplying.
       refresh();
     },
     setQuantity: (product, qty) => {
       notice.value = null;
-      push(patch.requests, [
+      patch.send([
         {
           account: ACCOUNT,
           ticker: bareTicker(product),
@@ -568,7 +638,7 @@ function routeWiring(host: WorkerTransport): Wiring {
     refresh,
     checkout: () => {
       notice.value = null;
-      push(checkoutRoute.requests, [{ account: ACCOUNT }]);
+      checkoutRoute.send([{ account: ACCOUNT }]);
     },
   };
 }
@@ -725,7 +795,6 @@ async function boot(): Promise<void> {
     fetch(`${base}wasm/${SHAPE.channels}`).then((r) => r.json()),
   ]);
 
-  journal = new Journal();
   transport = new WorkerTransport({
     wasmUrl: `${base}wasm/cambra_bg.wasm`,
     moduleUrl: new URL("../demo/worker.ts", import.meta.url),
@@ -750,13 +819,52 @@ async function boot(): Promise<void> {
   }
 
   try {
-    snapshot.value = await transport.snapshot();
+    const text = await transport.snapshot();
+    latestSnapshot = text;
+    snapshot.value = text;
     ready.value = true;
   } catch (e) {
     fault.value = `compile: ${String(e)}${FALLBACK_HINT}`;
     return;
   }
+  // Before the feed opens, so the first price already goes where the program
+  // wants it. Settled by the same `ready` the snapshot was, so this does not
+  // wait for anything.
+  applySubscriptions(await transport.subscriptions());
   startLive();
+}
+
+/**
+ * Point the page's feed at what the version now running subscribes to.
+ *
+ * The list is the program's statement of what to connect to — endpoint, feed
+ * and products — read back off the compiled program rather than configured
+ * here to match it. It is also the *whole* list for the version running: a
+ * reload replaces it rather than merging into it, which is why this takes the
+ * list and not a delta.
+ *
+ * An empty list is the case today and is not a failure. `wasm_socket_subscribe`
+ * is not built, so the version that compiles reads its prices from a plain
+ * declared source, and the page keeps the basket in `SUBSCRIBED` and the
+ * channel `ChannelMap.socket` resolved. Clearing the tracked set here instead
+ * would leave the room looking at twenty greyed rows and a cart that no longer
+ * priced anything, on a program that is working.
+ *
+ * What a non-empty list does *not* do is reopen the socket. `LiveFeed` holds
+ * one connection to Coinbase carrying all twenty products the panel lists,
+ * because the panel is a price list whether or not the program is reading it;
+ * so a changed product list is a change to which of those cross into the
+ * program, not a resubscribe on the wire, and a feed that leaves the list
+ * closes nothing that the panel is not still using. An `endpoint` naming
+ * something other than Coinbase would be past what this page implements, and
+ * the honest place to notice that is where the socket is opened rather than
+ * here, mid-demo.
+ */
+function applySubscriptions(subscriptions: readonly SocketSubscription[]): void {
+  const quotes = subscriptions[0];
+  if (!quotes) return;
+  feed.source = quotes.source;
+  feed.products = [...quotes.products];
 }
 
 function subscribeFrames(cb: (frame: string) => void): () => void {
@@ -765,37 +873,103 @@ function subscribeFrames(cb: (frame: string) => void): () => void {
 }
 
 /**
- * Recompile the edited program, with or without the state the old one held.
+ * The version now running, for the inspector to re-seed its panes from.
  *
- * The difference is one line, and it is the whole distinction the two chords
- * make. `keepState` replays the journal — every row the host has ever pushed,
- * in order — so the new program arrives at the state the old one was in, and
- * the cart still holds what the presenter put in it. Without it the journal is
- * dropped and the program starts from nothing.
+ * An accepted reload mints a fresh `NodeId` for every operator it had to
+ * rebuild, so a pane holding ids from the version before it is naming nodes
+ * that no longer exist. Frames carry the generation they were produced at, and
+ * the inspector calls this when it sees one later than what it is rendering.
+ */
+function currentSnapshot(): unknown {
+  if (!latestSnapshot) throw new Error("the program has not compiled yet");
+  return JSON.parse(latestSnapshot);
+}
+
+/**
+ * Put the edited source in front of the room, keeping the program or not.
  *
- * Replay is not free: the journal grows for as long as the slide is open, so a
- * reload late in a demo re-pushes everything that came before it. That is fast
- * — no wall-clock delay, the feed's own pacing is not reproduced — but it is
- * linear in the run so far, which is why `clear()` exists for the other chord.
+ * Two chords, and now two genuinely different acts rather than one act with a
+ * replay bolted onto it.
  *
- * The panel's own figures are cleared either way: they are a mirror of what the
- * sinks last produced, and the new program has produced nothing yet. A replay
- * refills them within a frame; a fresh run leaves them at zero, which is
- * honest.
+ * **⌘⏎ keeps the state because the program keeps it.** `Program.reload`
+ * compiles the new version against the channels the program already has, checks
+ * that it can take over what the running one is holding, and then swaps it in:
+ * every operator whose computation is unchanged goes on running, and every
+ * mutable variable resumes from the value it held. Nothing is carried across by
+ * this page, because nothing has to be. The tally it answers with — `kept` of
+ * `bound` operators — is the evidence, and it goes on the slide.
+ *
+ * What this replaced was a journal replay: every row the host had ever pushed,
+ * re-pushed into a freshly compiled program so that it re-derived the same
+ * state. That worked, and it was a weaker claim than the slide's. A replay
+ * produces a second program that agrees with the first; a reload keeps the
+ * first. `demo/host.ts` carries the long version, and the fate of the journal.
+ *
+ * **⌘⇧⏎ starts over**, which is `Program.compile` and a new program: no
+ * operator reused, generation back to zero, every cell at its declaration's
+ * value. The panel's own figures are cleared with it — they are a mirror of
+ * what the program last said, and the new one has not said anything.
+ *
+ * **A version that will not compile changes nothing.** The reload throws a
+ * rendered diagnostic against the source that was sent, the program that was
+ * running goes on running at the generation it last reported, and this
+ * rethrows so the inspector floats the diagnostic over the editor. It
+ * deliberately does not touch `fault`, which is the panel's "the host is not
+ * running" line: the host is running, and a typo made on stage must cost a
+ * toast and nothing else.
  */
 async function rebuild(source: string, options: { keepState: boolean }): Promise<unknown> {
-  if (!transport || !journal) throw new Error("the host is not running");
-  const text = await transport.recompile(source);
+  if (!transport) throw new Error("the host is not running");
+  return options.keepState ? reloadInPlace(transport, source) : compileFresh(transport, source);
+}
+
+/** ⌘⏎: a new version of the running program, over the state it is holding. */
+async function reloadInPlace(host: WorkerTransport, source: string): Promise<unknown> {
+  let report: ReloadReport;
+  try {
+    report = await host.reload(source);
+  } catch (e) {
+    // The strip says which version the room is looking at the output of; the
+    // inspector says what was wrong with the one that was refused.
+    rejected.value = true;
+    paint();
+    throw e;
+  }
+  rejected.value = false;
+  tally.value = { generation: report.generation, kept: report.kept, bound: report.bound };
+  latestSnapshot = report.snapshot;
+  applySubscriptions(report.subscriptions);
+  // Nothing is cleared, which is the whole point: the cart the presenter filled
+  // is still in the program, so the panel's mirror of it is still right. One
+  // read afterwards all the same, because the *new* version may price or guard
+  // it differently and the figures on screen should be that version's.
+  wiring?.refresh();
+  paint();
+  return JSON.parse(report.snapshot);
+}
+
+/** ⌘⇧⏎: a new program, from nothing. */
+async function compileFresh(host: WorkerTransport, source: string): Promise<unknown> {
+  let text: string;
+  try {
+    text = await host.recompile(source);
+  } catch (e) {
+    rejected.value = true;
+    paint();
+    throw e;
+  }
+  latestSnapshot = text;
+  // No tally: a fresh program kept nothing, and a stale `11 of 12` under it
+  // would be the one figure on this slide that was not evidence of anything.
+  tally.value = null;
+  rejected.value = false;
   for (const key of Object.keys(lines)) delete lines[key];
   for (const key of Object.keys(positions)) delete positions[key];
   cash.value = null;
   notice.value = null;
-  if (options.keepState) journal.replay(transport);
-  else journal.clear();
-  // One read, afterwards, either way. The journal carries writes only — a `GET`
-  // is not history, and journaling one would have the replay re-ask a question
-  // whose answer the next row overwrites — so nothing in the replay repaints the
-  // cart, and a fresh run has an empty cart and a seeded balance worth showing.
+  applySubscriptions(await host.subscriptions());
+  // One read, so the empty cart and the seeded balance the new program starts
+  // with are on the screen rather than a blank panel.
   wiring?.refresh();
   paint();
   return JSON.parse(text);
@@ -834,6 +1008,9 @@ onBeforeUnmount(() => {
       :pins="SHAPE.pins"
       :frames="subscribeFrames"
       :rebuild="rebuild"
+      :current-snapshot="currentSnapshot"
+      :tally="tally"
+      :rejected="rejected"
       :skin="INSPECTOR_SKIN"
     />
     <AssetCart
@@ -842,7 +1019,7 @@ onBeforeUnmount(() => {
       :positions="positions"
       :cash="cash"
       :notice="notice"
-      :tracked="SUBSCRIBED"
+      :tracked="feed.products"
       :step="SHAPE.step"
       :can-checkout="checkoutServed"
       :status="status"

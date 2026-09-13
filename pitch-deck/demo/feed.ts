@@ -6,27 +6,31 @@
  * deck's default and the slice is what it falls back to; `CartDemo.vue` owns
  * that choice and the deadline behind it.
  *
- * The program declares this feed rather than the page inventing it:
+ * Where the subscription comes from, and where it does not:
  *
  *     ticker_updates = wasm_socket_subscribe(
  *         "wss://ws-feed.exchange.coinbase.com", "ticker_batch",
  *         ["BTC-USD", "ETH-USD", "SOL-USD"])
  *
- * `LiveFeed` is the page's implementation of that primitive — the same
- * endpoint, the same upstream channel, one typed row per quote — and
- * `ReplayFeed` is the offline stand-in that fills the same host source. Neither
- * pushes anything itself: a feed's job is to produce ticks, and which channel
- * they cross is the wiring's business, which is what lets one feed serve a
- * program that calls the source `price_updates` and one that calls it
- * `ticker_updates`.
+ * A program that says that is declaring its own feed, and the page can read it
+ * back off the compiled program — `Program.subscriptions()`, carried up through
+ * `WorkerTransport.subscriptions()` as `[{source, endpoint, feed, products}]` —
+ * rather than being configured by hand to match. `LiveFeed` is the page's
+ * implementation of that primitive: the same endpoint, the same upstream
+ * channel, one typed row per quote.
  *
- * The arguments above are compile-time constants in the program and constants
- * here, in two places, which is a duplication worth naming. It is not one the
- * deck can remove: a channel declaration is `{name, kind, type}` and has no
- * field for an endpoint or a product list, `channels.json` is generated in the
- * compiler's repo, and the arguments themselves live in the program's source
- * text where the only way to reach them would be for the page to parse Cambra.
- * `SUBSCRIBED` below is that copy, in one place, next to the note.
+ * The version that actually compiles does not say it. `wasm_socket_subscribe`
+ * is not built yet, so the program reads its prices from a plain declared
+ * source (`price_updates`, as the four-channel program did) and its
+ * subscription list comes back empty. When it does, the page falls back to
+ * `SUBSCRIBED` below — its own basket, chosen here rather than read off the
+ * program, and said so rather than dressed up as the program's. Which channel
+ * the ticks cross is the wiring's business either way (`ChannelMap.socket`
+ * resolves it by elimination), which is what lets one feed serve a program that
+ * calls the source `price_updates` and one that calls it `ticker_updates`.
+ *
+ * `ReplayFeed` is the offline stand-in, filling the same source from a recorded
+ * slice. Neither pushes anything itself: a feed's job is to produce ticks.
  */
 
 import { SCALE } from "./transport";
@@ -111,19 +115,28 @@ export const DECIMALS: Record<string, number> = {
 };
 
 /**
- * The products the program's socket subscribes to.
+ * The basket the page feeds a program that does not name one of its own.
  *
- * The third argument to the `wasm_socket_subscribe` at the foot of the program,
- * copied — see this module's note for why it cannot be read from anywhere. It
- * is the whole of what "tracked" means now: the four-channel program filtered
- * its one price source down to three tickers in the program, and the panel
- * could tell which were tracked by asking which had a sink. The route-shaped
- * program has no such filter — `prices[u.ticker] := u.price` takes whatever
- * arrives — so what the program prices is exactly what the host subscribed it
- * to, and the page is the host.
+ * It is the whole of what "tracked" means now: the four-channel program
+ * filtered its one price source down to three tickers in the program, and the
+ * panel could tell which were tracked by asking which had a sink. The
+ * route-shaped program has no such filter — `prices[u.ticker] := u.price` takes
+ * whatever arrives — so what the program prices is exactly what the host pushes
+ * into it, and the page is the host.
  *
- * The panel lists twenty products either way. Rows outside this list are drawn
- * from the page's own copy of the feed and marked `not tracked`, which is
+ * Three products rather than twenty because the live socket quotes some of them
+ * many times a second and the values pane is meant to be readable from the back
+ * of a room, and these three because they are the ones the program seeds
+ * holdings for.
+ *
+ * A version that declares `wasm_socket_subscribe` replaces this with its own
+ * list: `CartDemo.vue` reads `WorkerTransport.subscriptions()` at boot and
+ * again after every accepted reload, and the products it finds there win. This
+ * constant is the floor, not the contract — which is the honest way round,
+ * since nothing in a declaration file carries a product list.
+ *
+ * The panel lists twenty products either way. Rows outside the tracked set are
+ * drawn from the page's own copy of the feed and marked `not tracked`, which is
  * honest in a way the old wiring was not: the program never sees them at all
  * now, rather than seeing them and rejecting them.
  */

@@ -9,13 +9,13 @@
  *
  * The program used to declare four flat channels and the page spelled all six
  * names. It now declares routes — `wasm_serve("PATCH", "/cart")` binds a
- * request source and a reply sink as a pair — and a socket, and the names on
- * either side of those pairs are *local bindings in the program*, produced by a
- * top-level tuple destructure. Nothing outside the program sees them; what both
- * sides agree on is the method and the path. So the page asks for a route and
- * the channel names are resolved out of the declarations it was handed, rather
- * than written here. See `ChannelMap` for what that resolution tolerates and
- * why.
+ * request source and a reply sink as a pair — plus one source for prices, and
+ * the names on either side of those pairs are *local bindings in the program*,
+ * produced by a top-level tuple destructure. Nothing outside the program sees
+ * them; what both sides agree on is the method and the path. So the page asks
+ * for a route and the channel names are resolved out of the declarations it was
+ * handed, rather than written here. See `ChannelMap` for what that resolution
+ * tolerates and why.
  */
 
 /** A scalar a row field can hold, matching the channel's declared type. */
@@ -131,13 +131,19 @@ function isReplySide(kind: string): boolean {
  * would have gone on being a guess that silently pushed into nothing the moment
  * the program renamed a binding.
  *
- * The **socket** is found by elimination: the ingress channel that is not part
- * of a route. Matching on the name would mean choosing between `price_updates`
- * and `ticker_updates` — the four-channel name and the one the route-shaped
- * draft uses — and being wrong about it costs the whole feed, silently, because
- * a push to a name no source answers to is the one error the deck cannot see
- * coming. There is exactly one non-route source in the program, so "the one
- * that is left" is both true and stable under a rename.
+ * The **price source** is found by elimination: the ingress channel that is not
+ * part of a route. Matching on the name would mean choosing between
+ * `price_updates` and `ticker_updates` — the four-channel name and the one the
+ * route-shaped draft uses — and being wrong about it costs the whole feed,
+ * silently, because a push to a name no source answers to is the one error the
+ * deck cannot see coming. There is exactly one non-route source in the program,
+ * so "the one that is left" is both true and stable under a rename.
+ *
+ * That has already paid for itself once. The draft filled its price source with
+ * `wasm_socket_subscribe`, and the version that actually compiles declares a
+ * plain `price_updates` source instead, because that primitive is not built yet
+ * — a rename *and* a change of construct. Elimination resolves both to the same
+ * channel without an edit here, which is the whole argument for it.
  *
  * `kind` is read a little loosely: `request`/`response` is what the module's
  * `ChannelKind` spells for a route, and `source`/`sink` under a route name is
@@ -174,12 +180,16 @@ export class ChannelMap {
   }
 
   /**
-   * The source a `wasm_socket_subscribe` feed fills.
+   * The source the price feed fills: the one ingress channel outside a route.
    *
-   * The name only. What that socket subscribes to is in the program's own
-   * source text as compile-time constants, and the declaration file has no
-   * field for it — `demo/feed.ts` carries the page's copy of those arguments
-   * and says why.
+   * The name only, and it is the name of a *declared* channel either way — a
+   * `wasm_socket_subscribe` binds one of these, and the version that runs today
+   * reads one directly. What a socket-declaring version subscribes *to* is not
+   * in the declaration file at all; `Program.subscriptions()` is where the page
+   * reads that, and `demo/feed.ts` says what it does when the list is empty.
+   *
+   * Still called `socket` because that is the job the channel does on this
+   * page: it is where the exchange's quotes land.
    */
   socket(): string {
     const sockets = this.declarations.filter(
@@ -201,6 +211,56 @@ export class ChannelMap {
   }
 }
 
+/**
+ * One feed the running version subscribes to, as `Program.subscriptions()`
+ * reports it.
+ *
+ * The page owns the WebSocket — there is none in the module, and on `wasm32`
+ * there could not be — so this is the program telling the host what to connect
+ * to rather than the host being configured to match the program. A version that
+ * declares no `wasm_socket_subscribe` reports an empty list, which is what the
+ * version running today does: the primitive is not built, and its prices arrive
+ * on a plain declared source the page fills from its own socket.
+ */
+export interface SocketSubscription {
+  /** The declared source the decoded rows are pushed into. */
+  source: string;
+  /** The socket to connect to. */
+  endpoint: string;
+  /** The feed to ask that socket for, in its own vocabulary (`ticker_batch`). */
+  feed: string;
+  /** The products the subscription names, in the endpoint's spelling (`BTC-USD`). */
+  products: string[];
+}
+
+/**
+ * What an accepted reload reported, and the two payloads it invalidated.
+ *
+ * `kept` of `bound` is the reuse tally: how many of the new version's operators
+ * were taken over from the one it replaced rather than built fresh. It is the
+ * evidence for the claim the slide makes — that the edit moved code, data and
+ * in-flight work in one transaction — and the reason it is carried all the way
+ * up to the panel rather than logged: an audience cannot see an operator
+ * survive, and `11 of 12 operators kept` is the smallest honest picture of it.
+ *
+ * `snapshot` and `subscriptions` are re-read because the reload replaced both,
+ * not because the caller asked. The snapshot is the new version's source and IR
+ * — its `meta.generation` is the `generation` beside it — and the subscription
+ * list is the new version's *whole* list rather than a diff against the old.
+ */
+export interface ReloadReport {
+  /** The version now running, counting from 0. Unchanged by a rejected reload. */
+  generation: number;
+  /** Operators taken over from the replaced version. */
+  kept: number;
+  /** Operators the new version binds in total. */
+  bound: number;
+  /** The `/api/snapshot` payload for the version now running. */
+  snapshot: string;
+  /** What that version subscribes to; empty where it declares no socket. */
+  subscriptions: SocketSubscription[];
+}
+
 export interface CambraTransport {
   /** Append typed rows to a host source. */
   push(source: string, rows: readonly Value[]): void;
@@ -220,8 +280,9 @@ export interface CambraTransport {
    * arrival order. Two things break that: a program that does not reply on a
    * denied path desynchronises the queue permanently (and whether an in-block
    * feed fires beside a false guard is an open question on the program side,
-   * not a settled one), and a journal replay delivers a burst of replies with no
-   * requests behind them at all. Under a subscription both cost a stale figure
+   * not a settled one), and the page asks for a view on every price tick, from
+   * three call sites, so the reply stream was never a queue of answers to
+   * presses in the first place. Under a subscription both cost a stale figure
    * for one frame; under a promise queue both mis-attribute every reply that
    * follows, for the rest of the talk.
    *

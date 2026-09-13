@@ -43,6 +43,14 @@ light surface against the inspector's navy, so the slide reads as the tool besid
 - **Every cart figure comes from the program.** The panel divides by the 10⁸ price scale and
   formats, and converts base units to whole ones. The one exception is the subtotal — a handful of
   additions — for the reason `cart-v0.cambra`'s TODO gives.
+- **The source pane is editable, and ⌘⏎ keeps the state.** That chord is `Program.reload`: the
+  edited version compiles against the channels the program already has, takes over every operator
+  whose computation is unchanged, and resumes every mutable variable from the value it held. The
+  strip under the inspector says how many — `12 of 14 operators kept` — because an operator
+  surviving an edit looks exactly like nothing having happened. ⌘⇧⏎ is `Program.compile` instead: a
+  new program, nothing kept, the cart emptied. A version that will not compile changes neither: the
+  inspector floats the rendered diagnostic over the source it points into, and the program that was
+  running goes on running, at the generation the strip names.
 
 ### Two programs, while the rewrite lands
 
@@ -68,7 +76,13 @@ hatch rather than leaving a control that quietly does nothing.
 `public/wasm/cart.cambra` and `channels.json` are a **provisional** copy of the v1 program from
 `cambra`'s `demo_code_syntax.md`, so the deck has something route-shaped to boot, to show in the
 inspector and to edit live. `scripts/sync-cambra.sh` replaces both the moment the compiler repo has
-an `asset_cart/v1.cambra`. The `-v0` pair is frozen here and never synced, since the compiler repo
+an `asset_cart/v1_single_line.cambra` — the version of the route-shaped app that compiles, holding
+one cart line per account rather than a basket, which is what turns every read of the cart into a
+keyed lookup. Two things about that version are worth knowing before it lands here: its prices
+arrive on a plain declared source (`price_updates`, as the four-channel program's did) because
+`wasm_socket_subscribe` is not built yet — the page resolves the price channel by elimination, so
+the wiring does not care which — and its `GET /cart` reply carries one line rather than a list of
+them, which the decode in `CartDemo.vue` will have to follow. The `-v0` pair is frozen here and never synced, since the compiler repo
 is about to stop shipping a program of that shape. Delete the `flat` wiring in `CartDemo.vue`, the
 `-v0` files and this section once the route-shaped program runs.
 
@@ -80,7 +94,7 @@ which are files in `public/`.
 | | |
 |---|---|
 | `demo/worker.ts` | owns the WebAssembly module and the tick loop, off the slide's paint |
-| `demo/host.ts` | the page's side of the Worker, and the journal |
+| `demo/host.ts` | the page's side of the Worker: compile, reload, push, sinks, frames |
 | `demo/feed.ts` | live Coinbase and the recorded slice, both emitting scaled-integer prices |
 | `demo/transport.ts` | the one interface the panels talk to, and the route lookup behind it |
 | `components/CartDemo.vue` | wires them together; owns the host in module scope |
