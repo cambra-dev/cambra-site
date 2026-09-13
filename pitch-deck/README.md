@@ -50,6 +50,11 @@ navy, so the slide reads as the tool beside the thing it runs.
   operator come from", which is a reader's question rather than an audience's, and they land on the
   one pane the whole room is reading. The rules live in `INSPECTOR_SKIN`; `ProgramInspector` puts a
   `no-provenance` class on the frame's root.
+
+  The toggle reads `provenance n/a` and is disabled whenever the pane holds something the compiler
+  has not seen — a staged version, or the reader's own typing. The marks name the operators the
+  *compiled* program was built from, so over uncompiled source they point at lines confidently and
+  wrongly.
 - **The feed is the live Coinbase socket**, with the recorded slice behind it: 4,187 rows over 30
   minutes across 20 products, looping, armed by a four-second deadline that the first live price
   cancels. Click the status line at the foot of the order pad to switch between them by hand — an
@@ -64,6 +69,10 @@ navy, so the slide reads as the tool beside the thing it runs.
 - **Every cart figure comes from the program.** The panel divides by the 10⁸ price scale and
   formats, and converts base units to whole ones. The one exception is the subtotal — a handful of
   additions — for the reason `cart-v0.cambra`'s TODO gives.
+- **A version the compiler refuses is underlined where it went wrong.** The report is thrown with
+  the same `Diagnostic`s a snapshot carries, so the pane marks the spans they name and a hover gives
+  the message. The program that was running goes on running, and the strip says at which generation.
+  A rejection with no span to point at still falls back to a banner.
 - **The source pane is editable, and ⌘⏎ keeps the state.** That chord is `Program.reload`: the
   edited version compiles against the channels the program already has, takes over every operator
   whose computation is unchanged, and resumes every mutable variable from the value it held. The
@@ -72,9 +81,13 @@ navy, so the slide reads as the tool beside the thing it runs.
   new program, nothing kept, the cart emptied. A version that will not compile changes neither: the
   inspector floats the rendered diagnostic over the source it points into, and the program that was
   running goes on running, at the generation the strip names.
-- **`v1` and `v2` on the strip switch versions, and ⇧U is the upgrade.** Both programs are fetched
-  at boot, so a switch is a press rather than a fetch. The two directions are not symmetric, and the
-  asymmetry is the point:
+- **`v1` and `v2` on the strip change what the pane shows. They compile nothing.** Both programs are
+  fetched at boot, so a press is instant, and the press puts that version's source in the editor and
+  stops there: the room reads the program before it runs, and the strip says `v2 shown · not
+  compiled` until someone asks for it. ⇧U is the same act as pressing `v2`.
+
+  **`Reload` is what compiles**, always — the editor's text, whether that is a staged version or
+  something typed by hand. The two directions are not symmetric, and the asymmetry is the point:
   - **`v2` reloads and keeps the state.** v2 declares `cart_rescaled` and `holdings_rescaled` with
     `@LoadFrom` over v1's `cart` and `holdings`, so the swap says where every value goes: the cart
     the presenter filled survives it, and the strip's tally is the evidence.
@@ -84,9 +97,12 @@ navy, so the slide reads as the tool beside the thing it runs.
     says nothing about where the reshaped collections' values belong, so there is nowhere to put
     them. Going back is starting the demo over, and the emptied cart is the honest sign of it.
 
-  Both go through `Program.reload`/`Program.compile` directly rather than through the editor,
-  because the inspector's editor takes text only on a remount and a remount would throw away the
-  panes the presenter has open.
+  The strip's `Reload` and `from scratch` press the editor's own chords, by dispatching them into
+  the frame: the source that matters is the one in CodeMirror, and CodeMirror renders only the lines
+  in view, so there is no honest way to read the document out of the DOM. Putting a version *into*
+  the editor is the mirror of that — `onEditor` in the inspector's injected-host contract, which
+  hands the page a `setSource`. Without it the only way text reaches the pane is a compile, which is
+  exactly the swap these controls exist not to make.
 
 ### The two programs
 
@@ -173,7 +189,7 @@ which are files in `public/`.
 | `public/wasm/cart.cambra`, `cart-v2.cambra` | the two programs, and the deck's own |
 | `scripts/sync-cambra.sh` | rebuilds the module and the inspector bundle out of a `cambra` checkout |
 | `scripts/check-wasm-cart.mjs` | drives both programs through the module: compile, reload, migrate |
-| `scripts/check-slide.mjs` | drives the slide in a browser: boot, both versions, the strip, checkout |
+| `scripts/check-slide.mjs` | drives the slide in a browser: boot, both versions, the strip, a refusal, checkout |
 
 ### Restyling the inspector without rebuilding it
 

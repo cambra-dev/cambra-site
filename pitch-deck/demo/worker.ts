@@ -51,8 +51,16 @@ export type Response =
   | { kind: "error"; message: string }
   /** An accepted reload: the reuse tally, and the payloads a page re-reads. */
   | { kind: "reloaded"; tally: string; snapshot: string; subscriptions: string }
-  /** A refused version: the rendered diagnostic against the source sent. */
-  | { kind: "rejected"; message: string }
+  /**
+   * A refused version: the rendered report, and the spans it names.
+   *
+   * `postMessage` structure-clones, and an `Error` crosses as an `Error` with
+   * its own properties dropped — so the diagnostics the module attached to the
+   * throw are read off here and sent as a field of their own. Without that the
+   * page has a wall of text and no idea which line it is about, which is the
+   * difference between a squiggle under the error and a banner over the source.
+   */
+  | { kind: "rejected"; message: string; diagnostics?: unknown }
   | { kind: "sink"; sink: string; rows: Record<string, unknown>[] }
   | { kind: "frame"; frame: string };
 
@@ -131,7 +139,11 @@ self.onmessage = async (event: MessageEvent<Request>) => {
       try {
         tally = program.reload(request.source);
       } catch (e) {
-        post({ kind: "rejected", message: String(e) });
+        post({
+          kind: "rejected",
+          message: String(e),
+          diagnostics: (e as { diagnostics?: unknown } | null)?.diagnostics,
+        });
         return;
       }
       // Both re-read, and after the swap rather than before: `snapshot` is the

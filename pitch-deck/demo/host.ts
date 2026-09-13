@@ -144,7 +144,14 @@ export class WorkerTransport implements CambraTransport {
       // A rejection and not `onError`: the program the page is driving is
       // unchanged and still answering. Only the author's editor hears about
       // this, which is where the diagnostic points.
-      this.pendingReloads.shift()?.reject(new Error(message.message));
+      // Re-attached to the `Error`, in the shape the module threw it in: the
+      // inspector reads `diagnostics` off whatever `rebuild` rejects with, and
+      // marks the spans in the pane holding the rejected text.
+      const rejection = new Error(message.message);
+      if (message.diagnostics !== undefined) {
+        (rejection as Error & { diagnostics?: unknown }).diagnostics = message.diagnostics;
+      }
+      this.pendingReloads.shift()?.reject(rejection);
       return;
     }
     if (message.kind === "sink") {

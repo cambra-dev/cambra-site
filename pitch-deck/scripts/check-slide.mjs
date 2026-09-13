@@ -108,18 +108,69 @@ try {
    * the last reload, a cart the last checkout drained — so waiting on either
    * passes instantly and the check reads the state before the switch.
    */
-  const switchTo = async (label) => {
-    await page.locator(".version-press", { hasText: label }).click();
+  /** Press a control, and say what state it was in when the press would not land. */
+  const pressControl = async (locator, what) => {
+    try {
+      await locator.click({ timeout: 15_000 });
+      return true;
+    } catch {
+      const disabled = await locator.isDisabled().catch(() => "unknown");
+      const visible = await locator.isVisible().catch(() => "unknown");
+      problems.push(
+        `${what} would not take a click (disabled: ${disabled}, visible: ${visible})` +
+          ` — the strip read: ${await trimmed(".reload-strip")}`,
+      );
+      return false;
+    }
+  };
+  /** Press Reload on something that will not compile, and wait for the refusal. */
+  const compileRejected = async () => {
+    if (!(await pressControl(page.locator(".reload-press").first(), "Reload"))) return false;
     try {
       await page.waitForFunction(
-        ([want]) =>
-          document.querySelector(".version-press.running")?.textContent?.trim() === want,
-        [label],
-        { timeout: 30_000 },
+        () => document.querySelector(".reload-strip")?.textContent?.includes("refused") === true,
+        undefined,
+        { timeout: 40_000 },
       );
       return true;
     } catch {
-      problems.push(`pressing ${label} did not make it the running version`);
+      problems.push("a version that cannot compile was not refused");
+      return false;
+    }
+  };
+  const show = async (label) => {
+    if (!(await pressControl(page.locator(".version-press", { hasText: label }), label))) {
+      return false;
+    }
+    try {
+      await page.waitForFunction(
+        ([want]) => document.querySelector(".version-press.staged")?.textContent?.trim() === want,
+        [label],
+        { timeout: 20_000 },
+      );
+      return true;
+    } catch {
+      problems.push(`pressing ${label} did not stage it in the source pane`);
+      return false;
+    }
+  };
+  /** Compile what the pane holds, and wait for the strip to stop saying it has not. */
+  const compile = async (label, fresh = false) => {
+    const control = page.locator(fresh ? ".reload-fresh" : ".reload-press").first();
+    if (!(await pressControl(control, fresh ? "from scratch" : "Reload"))) return false;
+    try {
+      await page.waitForFunction(
+        ([want]) => {
+          const staged = document.querySelector(".reload-strip .staged-note");
+          const running = document.querySelector(".version-press.running");
+          return !staged && running?.textContent?.trim() === want;
+        },
+        [label],
+        { timeout: 40_000 },
+      );
+      return true;
+    } catch {
+      problems.push(`compiling did not make ${label} the running version`);
       return false;
     }
   };
@@ -228,6 +279,33 @@ try {
     "clicking Reload should keep the cart — that is what it means",
   );
 
+  console.log("\n== typing marks the pane as not compiled");
+  await page.frameLocator("iframe").first().locator(".cm-content").click();
+  await page.keyboard.type("  ");
+  try {
+    await page.waitForSelector(".reload-strip .staged-note", { timeout: 10_000 });
+    console.log(`  ${await trimmed(".reload-strip")}`);
+  } catch {
+    problems.push("typing in the editor did not mark the pane as uncompiled");
+  }
+  want(
+    await page.locator(".provenance-press").isDisabled(),
+    "provenance should be unavailable over an edited program",
+  );
+  // Put it back, so the beats below run against the program as shipped. Not
+  // `show`: v1 is what is running, so restoring its text leaves the pane and the
+  // program agreeing and nothing is staged — which is the state to wait for.
+  await page.locator(".version-press", { hasText: "v1" }).click();
+  try {
+    await page.waitForFunction(
+      () => document.querySelector(".reload-strip .staged-note") === null,
+      undefined,
+      { timeout: 20_000 },
+    );
+  } catch {
+    problems.push("restoring v1's text left the pane marked as uncompiled");
+  }
+
   console.log("\n== the provenance toggle");
   const marksSuppressed = () =>
     page
@@ -261,11 +339,38 @@ try {
   const qtyBefore = (await text(".order-qty")).trim();
   const cashBefore = (await text(".cash-figure")).trim();
 
-  if (await switchTo("v2")) {
-    console.log(`  ${await trimmed(".reload-strip")}`);
+  // Pressing a version changes what the pane shows and compiles nothing: the
+  // presenter reads the new program to the room before running it.
+  const trackedBefore = (await tracked()).join();
+  const runningBefore = await trimmed(".version-press.running");
+  if (await show("v2")) {
+    console.log(`  staged: ${await trimmed(".reload-strip")}`);
+    // The two facts that would have moved if it had compiled. The tally is not
+    // one of them: the strip replaces it with the staged note, so its absence
+    // here says nothing either way.
+    want(
+      (await tracked()).join() === trackedBefore,
+      "pressing v2 changed what the panel tracks, so it compiled — it must not",
+    );
+    want(
+      (await trimmed(".version-press.running")) === runningBefore,
+      `pressing v2 changed the running version to ${await trimmed(".version-press.running")}` +
+        " — it must only change what the pane shows",
+    );
+    want(
+      await page.locator(".provenance-press").isDisabled(),
+      "provenance should be unavailable while the pane shows source nothing compiled",
+    );
+  }
+  if (await compile("v2")) {
+    console.log(`  compiled: ${await trimmed(".reload-strip")}`);
     want(
       (await page.locator(".reload-figure").count()) === 1,
       "the upgrade is a reload, so it should leave a reuse tally on the strip",
+    );
+    want(
+      !(await page.locator(".provenance-press").isDisabled()),
+      "provenance should come back once the pane and the program agree",
     );
   }
   const qtyAfter = (await text(".order-qty")).trim();
@@ -319,11 +424,38 @@ try {
   want(/bought/.test(notice), `the checkout should commit, panel said: ${notice}`);
   await shot("upgraded");
 
+  console.log("\n== a version the compiler refuses is marked in the pane");
+  // Not a banner over the source: the report names a line, and the line is on
+  // the screen. The program that was running goes on running behind it.
+  const editor = page.frameLocator("iframe").first();
+  await editor.locator(".cm-content").click();
+  await page.keyboard.press("Control+A");
+  await page.keyboard.type("x = undefined_name + 1\n");
+  if (await compileRejected()) {
+    const marks = await editor.locator(".cm-lintRange").count();
+    console.log(`  ${marks} mark(s), strip: ${await trimmed(".reload-strip")}`);
+    want(marks > 0, "a refused version should be underlined in the pane, not bannered over it");
+    want(
+      (await editor.locator(".rebuild-fault").count()) === 0,
+      "a refused version with spans should not also raise the fallback banner",
+    );
+    want(
+      (await trimmed(".reload-strip")).includes("refused"),
+      "the strip should say which version is still running after a refusal",
+    );
+    want(
+      (await page.locator(".app-dot.live").count()) === 1,
+      "a refused version must leave the running program running",
+    );
+  }
+
   console.log("\n== v1 — starting over");
   // Refused as a reload, because v1 says nothing about where `cart_rescaled`'s
   // values belong; the button compiles a new program instead, and the emptied
   // cart is the honest sign of it.
-  if (await switchTo("v1")) {
+  // v1 over a running v2 is refused as a reload, so the way back is a fresh
+  // compile — `from scratch` rather than `Reload`.
+  if ((await show("v1")) && (await compile("v1", true))) {
     want(
       (await page.locator(".order-row").count()) === 0,
       "a new program starts with an empty cart",

@@ -618,9 +618,12 @@ it:
    **Cmd-Shift-Enter** compiles a new program from scratch instead: no tally,
    and the cart empties. Worth doing once, so the room sees the difference is a
    choice.
-7. *Ship the upgrade — press **v2** on the strip* (or **Shift-U**). The same
-   machinery as beat 6, carrying a change nobody would make by hand on stage.
-   Two things happen at once and both are worth naming:
+7. *Ship the upgrade — press **v2** on the strip* (or **Shift-U**), **then
+   Reload.** Two presses, deliberately: `v2` puts the new program in the pane
+   and compiles nothing, so you can read it to the room — the strip says `v2
+   shown · not compiled` while you do — and `Reload` is what swaps it in. The
+   same machinery as beat 6, carrying a change nobody would make by hand on
+   stage. Two things then happen at once and both are worth naming:
    - **The product list grows.** v1 subscribes to BTC and LTC; v2 subscribes to
      those and ETH, and the panel's tracked rows are read back off the compiled
      program, so ETH stops being greyed the moment the swap lands. Nobody edited
@@ -636,19 +639,23 @@ it:
      the swap.
 
    Then buy some ETH, which v1 could not have priced at all.
-8. *Go back, if you want to run it again — press **v1**.* Worth doing once
-   deliberately, because it fails in the interesting direction: a reload back is
-   **refused**, and the message says why — *"`cart_rescaled` is no longer
+8. *Go back, if you want to run it again — press **v1**, then **from
+   scratch**.* Worth doing once deliberately, because it fails in the
+   interesting direction. `Reload` is **refused**, and says why — *"`cart_rescaled` is no longer
    declared … a value carries forward into the same variable at the same type,
    or into what a `@LoadFrom` reads it into, and only where the source says
    which variable it belongs to."* Nothing in v1 says where the reshaped
-   collections' values belong, so there is nowhere to put them. The button
+   collections' values belong, so there is nowhere to put them. `from scratch`
    compiles a new program instead, and the empty cart is the honest sign of it.
    The system will not guess a migration for you.
-9. *Make a typo, if the room is the kind that would ask.* A version that does
-   not compile changes nothing: the diagnostic floats over the source it points
-   into, the strip says which generation is still running, and the prices go on
-   moving behind it. This is the safest thing on the slide to do deliberately.
+9. *Break it on purpose, if the room is the kind that would ask.* Comment out
+   the `if cash >= due:` guard and press **Reload**. The version is refused and
+   nothing else moves: the offending span is **underlined in the pane**, hover
+   it for the message, the strip says which generation is still running, and the
+   prices go on moving behind it. This is the safest thing on the slide to do
+   deliberately — and it is the refined `Balance` doing the refusing, which is
+   worth saying out loud: the guard is what proves the debit cannot go negative,
+   and without it the write is simply not typeable.
 
 **The slide opens on the source alone.** `☰ Panes`, top right of the inspector,
 brings back values, the six IR stages and the operator graph. Values is already
@@ -663,7 +670,10 @@ values beat before the upgrade, or re-pin from the source pane after it.
 
 **`provenance off`** on the strip turns on the marks the source pane paints over
 the spans a selection resolves to. Off by default because they answer a reader's
-question rather than a room's.
+question rather than a room's, and unavailable (`provenance n/a`) whenever the
+pane holds something nobody has compiled — a staged version, or your own typing.
+The marks name operators, and over uncompiled source they would point at lines
+confidently and wrongly.
 
 **If the program will not boot at all**, reload the deck with `?cart=v0`. That
 runs the four-channel program the demo was built on. Both chords work there too —

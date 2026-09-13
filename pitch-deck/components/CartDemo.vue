@@ -815,7 +815,7 @@ async function boot(): Promise<void> {
   // The upgrade, warmed while the module is still compiling the version above
   // it. Not awaited: the slide is usable without it, and a switch that had to
   // fetch first would put a network round trip inside the gesture. A failure
-  // here is silent by design — `switchTo` asks again and reports it there,
+  // here is silent by design — `showVersion` asks again and reports it there,
   // where a presenter is actually waiting on the answer.
   if (versioned) void sourceFor("v2").catch(() => {});
 
@@ -846,6 +846,7 @@ async function boot(): Promise<void> {
     const text = await transport.snapshot();
     latestSnapshot = text;
     snapshot.value = text;
+    settleVersions(text);
     ready.value = true;
   } catch (e) {
     fault.value = `compile: ${String(e)}${FALLBACK_HINT}`;
@@ -962,6 +963,7 @@ async function reloadInPlace(host: WorkerTransport, source: string): Promise<unk
   rejected.value = false;
   tally.value = { generation: report.generation, kept: report.kept, bound: report.bound };
   latestSnapshot = report.snapshot;
+  settleVersions(report.snapshot);
   applySubscriptions(report.subscriptions);
   // Nothing is cleared, which is the whole point: the cart the presenter filled
   // is still in the program, so the panel's mirror of it is still right. One
@@ -999,12 +1001,16 @@ const VERSION_CONTROLS = [
   {
     id: "v1",
     label: "v1",
-    title: "Start over on v1 — one divisor for every asset, BTC and LTC. A new program, so the cart empties.",
+    title:
+      "Show v1 — one divisor for every asset, BTC and LTC. Nothing compiles until you press Reload,"
+      + " and v1 over a running v2 needs `from scratch`: the reload back is refused.",
   },
   {
     id: "v2",
     label: "v2",
-    title: "Upgrade to v2 — a divisor per asset, ETH listed, the cart carried across by @LoadFrom (⇧U).",
+    title:
+      "Show v2 — a divisor per asset, ETH listed (⇧U). Nothing compiles until you press Reload,"
+      + " which carries the cart across through @LoadFrom.",
   },
 ] as const;
 
@@ -1015,10 +1021,36 @@ const VERSION_CONTROLS = [
  */
 const provenance = ref(false);
 
-const version = ref<Version>("v1");
-/** Whether a switch is in flight, so the controls cannot start a second. */
+/**
+ * The version whose source the editor is showing, and the one that is compiled.
+ *
+ * They are two facts, not one, because the version control **does not compile**.
+ * Pressing `v2` puts v2's source in the pane and stops: what the room is reading
+ * has changed and what is running has not, which is the state `dirty` names and
+ * the strip says out loud. Compiling is `Reload`, always, and the beat is two
+ * deliberate presses rather than one press with a swap hidden inside it.
+ *
+ * `running` is read back off the compiled snapshot rather than remembered from
+ * whatever was last sent: the presenter can edit either version and compile
+ * that, and a remembered label would go on naming a program nobody is running.
+ * `null` means the compiled source is neither version as shipped.
+ */
+const shown = ref<Version | null>("v1");
+const running = ref<Version | null>("v1");
+/** Whether a version's source is being fetched, so the controls cannot race. */
 const switching = ref(false);
+/**
+ * Whether the editor holds something other than what is compiled.
+ *
+ * Set by a version press and by the reader's own typing, cleared by a compile
+ * that succeeded. It is what suppresses the provenance marks: they map a
+ * selection onto the operators the compiled program was built from, and over
+ * source that has not been compiled they point at lines that mean nothing.
+ */
+const dirty = ref(false);
 const sources: Partial<Record<Version, string>> = {};
+/** The bundle's handle on its editor, once it has handed one over. */
+let editor: { setSource(text: string): void; source(): string | null } | null = null;
 
 async function sourceFor(which: Version): Promise<string> {
   const held = sources[which];
@@ -1031,30 +1063,43 @@ async function sourceFor(which: Version): Promise<string> {
   return text;
 }
 
+/** Which shipped version `text` is, or `null` where it is neither. */
+function versionOf(text: string): Version | null {
+  for (const which of Object.keys(VERSIONS) as Version[]) {
+    if (sources[which] === text) return which;
+  }
+  return null;
+}
+
 /**
- * Put `which` in front of the room, and say why the two directions differ.
+ * Put `which` in the source pane. Nothing is compiled.
  *
- * **Forward is a reload and keeps the state**, which is the beat: v2 declares
- * `cart_rescaled` and `holdings_rescaled` with `@LoadFrom` over v1's `cart` and
- * `holdings`, so the swap says where every value goes and the cart the
- * presenter filled survives it.
+ * The whole of the version control: the room reads the program it is about to
+ * run before it runs, and the presenter chooses when. `Reload` is what applies
+ * it, and the two directions differ there rather than here —
  *
- * **Back is a fresh compile**, because a reload the other way is refused — and
- * refused for the reason that makes the beat worth showing: *"`cart_rescaled`
- * is no longer declared … a value carries forward into the same variable at the
- * same type, or into what a `@LoadFrom` reads it into, and only where the
- * source says which variable it belongs to."* v1 says nothing about where the
- * reshaped collections' values belong, so there is nowhere to put them. Going
- * back is starting the demo over, and the emptied cart is the honest sign of it.
+ * **Forward keeps the state.** v2 declares `cart_rescaled` and
+ * `holdings_rescaled` with `@LoadFrom` over v1's `cart` and `holdings`, so the
+ * swap says where every value goes and the cart the presenter filled survives.
+ *
+ * **Back cannot.** A reload from v2 to v1 is refused — *"`cart_rescaled` is no
+ * longer declared … a value carries forward into the same variable at the same
+ * type, or into what a `@LoadFrom` reads it into, and only where the source says
+ * which variable it belongs to."* v1 says nothing about where the reshaped
+ * collections' values belong, so there is nowhere to put them, and `from
+ * scratch` is the way back.
  */
-function switchTo(which: Version): Promise<void> {
-  if (!transport || switching.value || which === version.value) return Promise.resolve();
+function showVersion(which: Version): Promise<void> {
+  if (switching.value) return Promise.resolve();
   switching.value = true;
   return (async () => {
     try {
       const source = await sourceFor(which);
-      await rebuild(source, { keepState: which === "v2" });
-      version.value = which;
+      if (!editor) throw new Error("the inspector has not handed over its editor");
+      editor.setSource(source);
+      shown.value = which;
+      dirty.value = which !== running.value;
+      paint();
     } catch (e) {
       notice.value = `${VERSIONS[which].label} did not load — ${String(e)}`;
       paint();
@@ -1064,12 +1109,63 @@ function switchTo(which: Version): Promise<void> {
   })();
 }
 
+/** The reader typed: what the pane holds is now nobody's shipped program. */
+function onEdited(): void {
+  if (shown.value !== null || !dirty.value) {
+    shown.value = null;
+    dirty.value = true;
+    paint();
+  }
+}
+
 /**
- * ⇧U anywhere on the slide, except where the presenter is typing: the upgrade.
+ * Take the bundle's editor handle, and put the booted version's source in it.
+ *
+ * The pane already shows that source — it came from the snapshot — so the write
+ * is a no-op on the text and is worth making anyway: it is what proves the
+ * handle works before a presenter depends on it in front of a room.
+ */
+function onEditorReady(handle: {
+  setSource(text: string): void;
+  source(): string | null;
+}): void {
+  editor = handle;
+}
+
+/**
+ * Settle both version facts from a snapshot a compile just produced.
+ *
+ * The snapshot carries the source it was built from, so this asks the compiled
+ * program which version it is rather than trusting what was last sent. An edit
+ * to either version compiles to neither, and the strip then names no version —
+ * which is the truth, and is why `running` is nullable.
+ */
+function settleVersions(snapshotText: string): void {
+  let compiled: string | null = null;
+  try {
+    compiled = (JSON.parse(snapshotText) as { source?: { text?: string } }).source?.text ?? null;
+  } catch {
+    // A payload this cannot read is one the panes could not render either, and
+    // the inspector reports that. Leaving the labels alone is better than
+    // clearing them on a parse.
+    return;
+  }
+  running.value = compiled === null ? null : versionOf(compiled);
+  // Against the editor's text rather than assumed clean. A compile takes a
+  // second or two, and a reader who starts typing inside that window would
+  // otherwise have the answer land and mark their edit compiled.
+  const inPane = editor?.source() ?? compiled;
+  dirty.value = inPane !== compiled;
+  shown.value = dirty.value ? versionOf(inPane ?? "") : running.value;
+}
+
+/**
+ * ⇧U anywhere on the slide, except where the presenter is typing: show v2.
  *
  * The same act as pressing `v2` on the strip, for a presenter who would rather
- * not reach for the pointer. It only ever goes forward — the keystroke is the
- * upgrade beat, and starting the demo over is a thing to do deliberately.
+ * not reach for the pointer — and, like the button, it compiles nothing. It only
+ * ever goes forward: the keystroke is the upgrade beat, and starting the demo
+ * over is a thing to do deliberately.
  *
  * The two rebuild chords live inside the inspector's frame, which owns its own
  * keys; this one is the page's, because the gesture is not an edit. A keystroke
@@ -1089,7 +1185,7 @@ function onKey(event: KeyboardEvent): void {
     return;
   }
   event.preventDefault();
-  void switchTo("v2");
+  void showVersion("v2");
 }
 
 /** ⌘⇧⏎: a new program, from nothing. */
@@ -1103,10 +1199,11 @@ async function compileFresh(host: WorkerTransport, source: string): Promise<unkn
     throw e;
   }
   latestSnapshot = text;
+  settleVersions(text);
   // No tally: a fresh program kept nothing, and a stale `11 of 12` under it
   // would be the one figure on this slide that was not evidence of anything.
-  // A from-scratch compile of an edited program is still that program, so the
-  // version the strip names is left where `switchTo` put it.
+  // Which version the strip names is settled from the compiled source below,
+  // not from whatever was last shown.
   tally.value = null;
   rejected.value = false;
   for (const key of Object.keys(lines)) delete lines[key];
@@ -1166,11 +1263,15 @@ onBeforeUnmount(() => {
       :rejected="rejected"
       :skin="INSPECTOR_SKIN"
       :versions="versioned ? VERSION_CONTROLS : undefined"
-      :version="version"
+      :version="running"
+      :shown="shown"
+      :dirty="dirty"
       :switching="switching"
       :provenance="provenance"
-      @switch="switchTo($event as Version)"
+      @switch="showVersion($event as Version)"
       @toggle-provenance="provenance = !provenance"
+      @editor="onEditorReady"
+      @edited="onEdited"
     />
     <AssetCart
       :prices="prices"

@@ -77,7 +77,10 @@ const props = defineProps<{
    * program the first is part-way through replacing.
    */
   versions?: readonly { id: string; label: string; title: string }[];
-  version?: string;
+  /** The version that is compiled and running, or absent for an edited program. */
+  version?: string | null;
+  /** The version the editor is showing, which is the other one while staged. */
+  shown?: string | null;
   switching?: boolean;
   /**
    * Whether the source pane marks the spans a selection resolves to.
@@ -92,11 +95,26 @@ const props = defineProps<{
    * `.no-provenance`, and this puts that class on the frame's root.
    */
   provenance?: boolean;
+  /**
+   * Whether the editor holds something other than what is compiled.
+   *
+   * Suppresses the provenance marks whatever `provenance` says, and disables
+   * the toggle. The marks map a selection onto the operators the *compiled*
+   * program was built from; over source that has not been compiled they point
+   * at lines that mean nothing, confidently.
+   */
+  dirty?: boolean;
 }>();
 
 const emit = defineEmits<{
   (e: "switch", id: string): void;
   (e: "toggle-provenance"): void;
+  /** The bundle handed over its editor; the page keeps it for the life of the frame. */
+  (e: "editor", editor: { setSource(text: string): void; source(): string | null }): void;
+  /** The reader typed in the editor, so what it holds is nobody's compiled program. */
+  (e: "edited"): void;
+  /** Compile what the editor holds. `keepState` is ⌘⏎ rather than ⌘⇧⏎. */
+  (e: "apply", keepState: boolean): void;
 }>();
 
 const frame = ref<HTMLIFrameElement | null>(null);
@@ -111,7 +129,7 @@ const frame = ref<HTMLIFrameElement | null>(null);
 function applyProvenance(): void {
   frame.value?.contentDocument?.documentElement.classList.toggle(
     "no-provenance",
-    props.provenance !== true,
+    props.provenance !== true || props.dirty === true,
   );
 }
 const bundle = ref<string | null>(null);
@@ -149,6 +167,7 @@ function press(keepState: boolean): void {
     chordFault.value = "no editor to rebuild from";
     return;
   }
+  chordFault.value = null;
   const send = (modifier: "metaKey" | "ctrlKey"): boolean =>
     !content.dispatchEvent(
       new KeyboardEvent("keydown", {
@@ -207,6 +226,11 @@ function mount(html: string, snapshot: string): void {
       // reason: the frame is written once and this has to answer for whichever
       // version is running when a frame arrives.
       currentSnapshot: props.currentSnapshot ? () => props.currentSnapshot!() : undefined,
+      // The other half of `rebuild`: with it the page can put a program in the
+      // pane without compiling it, which is what lets a version control change
+      // what the room is reading without swapping what is running.
+      onEditor: (editor: { setSource(text: string): void; source(): string | null }) =>
+        emit("editor", editor),
       // The frame source the inspector's `connectLive` accepts: the three
       // events and the one method it uses, no socket behind them.
       openLive: () => ({
@@ -234,6 +258,29 @@ function mount(html: string, snapshot: string): void {
       doc.head.appendChild(style);
     }
     applyProvenance();
+
+    // Delegated on the document, not bound to `.cm-content`: a rebuild
+    // re-renders every pane, so the element this would otherwise be attached to
+    // is replaced on the first compile. Capture, because CodeMirror handles the
+    // event on the content element and this only needs to see that it happened.
+    //
+    // `input` rather than `keydown`: an arrow key is not an edit, and the page
+    // uses this to say the editor holds something nobody compiled. A
+    // programmatic `setSource` dispatch does not fire it, which is what keeps
+    // loading a version out of the reader's own typing.
+    //
+    // The target is tested by asking it for `closest` rather than with
+    // `instanceof Element`: the node belongs to the frame's realm and the
+    // page's `Element` is a different constructor, so `instanceof` is false for
+    // every node in here and the listener would silently never match.
+    doc.addEventListener(
+      "input",
+      (event) => {
+        const target = event.target as { closest?: (selector: string) => unknown } | null;
+        if (target?.closest?.(".cm-content")) emit("edited");
+      },
+      true,
+    );
   };
 }
 
@@ -299,7 +346,7 @@ onBeforeUnmount(() => {
             :key="entry.id"
             type="button"
             class="version-press"
-            :class="{ running: entry.id === version }"
+            :class="{ running: entry.id === version, staged: entry.id === shown && dirty }"
             :aria-pressed="entry.id === version"
             :disabled="!snapshot || switching"
             :title="entry.title"
@@ -311,6 +358,12 @@ onBeforeUnmount(() => {
         <span v-if="chordFault" class="reload-detail">{{ chordFault }}</span>
         <span v-else-if="rejected" class="reload-detail"
           >refused · gen {{ tally?.generation ?? 0 }} still running</span
+        >
+        <!-- Ahead of the tally, because it is the more urgent fact: the tally
+             describes the program that is running, and this says the room is
+             not looking at it. -->
+        <span v-else-if="dirty" class="reload-detail staged-note"
+          >{{ shown ? `${shown} shown` : "edited" }} · not compiled</span
         >
         <template v-else-if="tally">
           <span class="reload-detail">gen {{ tally.generation }}</span>
@@ -331,7 +384,7 @@ onBeforeUnmount(() => {
         <span class="reload-sep" aria-hidden="true">·</span>
         <button
           type="button"
-          class="reload-press reload-quiet"
+          class="reload-press reload-quiet reload-fresh"
           :disabled="!snapshot"
           title="Compile the edited source as a new program — nothing kept, the cart emptied (⌘⇧⏎)"
           @click="press(false)"
@@ -342,12 +395,16 @@ onBeforeUnmount(() => {
         <button
           type="button"
           class="reload-press reload-quiet provenance-press"
-          :class="{ on: provenance }"
-          :disabled="!snapshot"
-          title="Mark the source spans a selection resolves to"
+          :class="{ on: provenance && !dirty }"
+          :disabled="!snapshot || dirty"
+          :title="
+            dirty
+              ? 'Provenance needs a compiled program: the marks name operators, and the pane is showing source nothing has compiled'
+              : 'Mark the source spans a selection resolves to'
+          "
           @click="emit('toggle-provenance')"
         >
-          provenance {{ provenance ? "on" : "off" }}
+          provenance {{ dirty ? "n/a" : provenance ? "on" : "off" }}
         </button>
       </div>
     </div>
@@ -544,7 +601,17 @@ onBeforeUnmount(() => {
   background: var(--lagoon);
   border-color: var(--lagoon);
   color: var(--code-bg);
-  cursor: default;
+}
+/* Shown in the pane but not compiled. Outlined rather than filled, because the
+   filled one is the program actually answering the order pad and the two must
+   not read alike from the third row. */
+.version-press.staged {
+  border-color: var(--lagoon);
+  color: var(--lagoon);
+  border-style: dashed;
+}
+.staged-note {
+  color: var(--lagoon);
 }
 .version-press:disabled {
   cursor: default;
