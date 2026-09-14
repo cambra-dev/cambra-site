@@ -137,14 +137,34 @@ So this architecture makes it **impossible** for the compiler to check propertie
     <h2>Shift left. Automate more.</h2>
   </div>
   <div class="grow">
-    <div class="sdlc-canvas"><SdlcDiagram :stage="3" fixed /></div>
+    <div class="sdlc-canvas"><SdlcDiagram :stage="Math.min($clicks + 1, 3)" :print-stage="3" /></div>
     <div class="pillars compact">
-      <div><b>Today</b> — types and unit tests early. All the important stuff late, with a human in the loop.</div>
+      <div class="beat-today"><b>Today</b> — types and unit tests early. All the important stuff late, with a human in the loop.
+        <!-- Reserves the height of page two's tag row. The pair shares a
+             layout, and without this the diagram refits between them. -->
+        <div class="bm-tags" aria-hidden="true" style="margin-left:9em;visibility:hidden">
+            <span>Static Assertions</span>
+            <span>Program Branching</span>
+            <span>Transactional Hot Reload</span>
+        </div>
+      </div>
     </div>
     <div class="closer center">Today a <span class="hot">human</span> closes the loop.</div>
   </div>
   <div class="page-no">{{ $slidev.nav.currentPage }} / {{ $slidev.nav.total }}</div>
 </div>
+
+<!--
+0. The real impact of this shift manifests when agents are building your application. Consider the software development lifecycle.
+
+1. The programmer writes some code, and compiles it. The compiler tells them if they did something that doesn't make sense. They write and run tests, which tells when the test cases have bugs.
+
+2. But feedback on the most important properties — reliability, integrity, security, performance — is very limited until we deploy to a production-like environment: staging, load tests, audit logging, etc.
+This feedback is slow and expensive. It often needs a human in the loop to ensure the tests are realistic and don't endanger production.
+
+3. So today, the properties that matter most are checked last, by a person. That
+is the loop we have to close.
+-->
 
 ---
 
@@ -156,7 +176,7 @@ So this architecture makes it **impossible** for the compiler to check propertie
   <div class="grow">
     <div class="sdlc-canvas"><SdlcDiagram :stage="4" fixed /></div>
     <div class="pillars compact">
-      <div><b>Cambra</b> — end-to-end properties checked before deployment, no human required. 
+      <div class="beat-cambra"><b>Cambra</b> — end-to-end properties checked before deployment, no human required. 
         <div class="bm-tags" style="margin-left:9em">
             <span>Static Assertions</span>
             <span>Program Branching</span>
@@ -170,17 +190,9 @@ So this architecture makes it **impossible** for the compiler to check propertie
 </div>
 
 <!--
-0. The real impact of this shift manifests when agents are building your application. Consider the software development lifecycle.
+0. Same lifecycle, with Cambra's feedback in place of the slow loop. Cambra automates these feedback signals with groundbreaking features: static assertions, program branching, and transactional hot reload. That gets the human out of the loop, letting AI iterate unimpeded.
 
-1. The programmer writes some code, and compiles it. The compiler tells them if they did something that doesn't make sense. They write and run tests, which tells when the test cases have bugs.
-
-2. But feedback on the most important properties — reliability, integrity, security, performance — is very limited until we deploy to a production-like environment: staging, load tests, audit logging, etc.
-This feedback is slow and expensive. It often needs a human in the loop to ensure the tests are realistic and don't endanger production.
-
-3. Cambra automates these feedback signals with groundbreaking features: static assertions, program branching, and transactional hot reload. That gets the human out of the loop, letting AI iterate unimpeded.
-
-4. These features aren't something you can bolt on to an existing application platform. It's something you have to design in. Cambra is the only system built for it.
-
+1. These features aren't something you can bolt on to an existing application platform. It's something you have to design in. Cambra is the only system built for it.
 -->
 
 ---
@@ -216,7 +228,7 @@ This feedback is slow and expensive. It often needs a human in the loop to ensur
               <span class="xlate-lang"><i class="i-simple-icons-zig"></i>Zig</span>
               <span class="xlate-arrow">&rarr;</span>
               <span class="xlate-lang"><i class="i-simple-icons-rust"></i>Rust</span>
-            </div>
+          </div>
           </div>
         </div>
       </div>
@@ -234,6 +246,16 @@ This feedback is slow and expensive. It often needs a human in the loop to ensur
   </div>
   <div class="page-no">{{ $slidev.nav.currentPage }} / {{ $slidev.nav.total }}</div>
 </div>
+
+<!--
+0. 3 trends make this the perfect moment for this kind of innovation.
+
+1. First, the potential of AI has not yet been realized. A recent Microsoft study showed that adopting coding agents only increased productivity by 24%.
+
+2. Second, historically, there were huge barriers to adopting new programming languages. Agents have completely demolished that barrier. A powerful example is the rewrite of Bun. They ported 500k lines of Zig to Rust, and it took less than 2 weeks. That would have been unthinkable a year ago. Now, they did it for the sake of agent productivity: Rust's compiler gives better feedback than Zig. My takeaway is that better languages make agents better, and agents let you adopt better languages easily.
+
+3. Research has traditionally taken a long time to reach the market. AI has made it possible to synthesize this research into a product faster than ever before, from discovery, to understanding, to implementation. There's going to be a tidal wave of research going mainstream. We're just riding that wave.
+-->
 
 ---
 

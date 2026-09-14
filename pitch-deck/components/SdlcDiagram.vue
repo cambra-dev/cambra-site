@@ -16,6 +16,10 @@ const props = defineProps({
   // short deck splits this diagram across two slides at fixed stages, and the
   // print override below would otherwise collapse both to the finished state.
   fixed: { type: Boolean, default: false },
+  // The stage an export should show, for a click-driven diagram that stops
+  // short of the last one. Without it such a slide exports at stage 1, because
+  // print applies no clicks.
+  printStage: { type: Number, default: null },
 })
 
 // Slidev reveals every v-click element when exporting, but these diagrams take
@@ -25,7 +29,7 @@ const props = defineProps({
 const { isPrintMode } = useNav()
 const MAX_STAGE = 4
 const activeStage = computed(() =>
-  isPrintMode.value && !props.fixed ? MAX_STAGE : props.stage,
+  isPrintMode.value && !props.fixed ? (props.printStage ?? MAX_STAGE) : props.stage,
 )
 
 const COOL = '#6CC4C8'

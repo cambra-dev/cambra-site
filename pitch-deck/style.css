@@ -688,6 +688,18 @@ span.warm {
 .pillars > div:nth-child(3) {
   border-left-color: var(--coral);
 }
+/* The Insight pair carries one beat per page, so both would take the
+   first-child colour. The colour is which loop the page is about — cool for
+   today's human loop, warm for Cambra's — so the pages name it instead of
+   relying on position. */
+.pillars > div.beat-today {
+  /* The same grey as the production-feedback arrow the beat describes, so the
+     sentence and the line it is about are one thing. */
+  border-left-color: var(--fg-3);
+}
+.pillars > div.beat-cambra {
+  border-left-color: var(--warm);
+}
 .pillars b {
   color: var(--fg);
   font-weight: 700;
@@ -1063,6 +1075,28 @@ span.warm {
    five times the width of "PLG", so it starts further left and its arrows are
    correspondingly shorter; lining the two labels up would have pushed it off
    the slide. */
+/* A click step that contributes nothing but the step. `expand-at` reads
+   `$clicks`, which Slidev derives from the v-clicks present on the page, so a
+   page whose content is static still needs one per beat. In the flow an empty
+   div takes its parent's flex gap and shifts everything above it, which is how
+   the two Why Now pages ended up 41px apart. */
+/* The Why Now pair shares a layout, but not its content: page one carries the
+   figures and page two the quotes, and the quotes are taller. Pin the column so
+   the two pages do not resize and shift between them. Hiding a copy of the card
+   on page one does not work — `.qfull.expanded` sets `visibility: visible`, so
+   it reappears through an inherited `hidden`. */
+.trends .trend {
+  /* Above what either page needs, so both take the minimum and neither page's
+     own content decides the height. */
+  min-height: 21.5rem;
+}
+
+.click-anchor {
+  position: absolute;
+  width: 0;
+  height: 0;
+}
+
 .bm-g2m {
   position: relative;
   flex: 0 0 auto;

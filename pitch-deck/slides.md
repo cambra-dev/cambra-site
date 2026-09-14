@@ -135,34 +135,19 @@ So this architecture makes it **impossible** for the compiler to check propertie
     <h2>Shift left. Automate more.</h2>
   </div>
   <div class="grow">
-    <div class="sdlc-canvas"><SdlcDiagram :stage="3" fixed /></div>
+    <div class="sdlc-canvas"><SdlcDiagram :stage="Math.min($clicks + 1, 3)" :print-stage="3" /></div>
     <div class="pillars compact">
-      <div v-click="1"><b>Today</b> — types and unit tests early. All the important stuff late, with a human in the loop.</div>
-    </div>
-    <div class="closer center" v-click="2">Today a <span class="hot">human</span> closes the loop.</div>
-  </div>
-  <div class="page-no">{{ $slidev.nav.currentPage }} / {{ $slidev.nav.total }}</div>
-</div>
-
----
-
-<div class="frame">
-  <div class="head">
-    <div class="eyebrow">{{ $slidev.nav.currentPage }} · The Insight</div>
-    <h2>Shift left. Automate more.</h2>
-  </div>
-  <div class="grow">
-    <div class="sdlc-canvas"><SdlcDiagram :stage="4" fixed /></div>
-    <div class="pillars compact">
-      <div v-click="1"><b>Cambra</b> — end-to-end properties checked before deployment, no human required. 
-        <div class="bm-tags" style="margin-left:9em">
+      <div v-click="2" class="beat-today"><b>Today</b> — types and unit tests early. All the important stuff late, with a human in the loop.
+        <!-- Reserves the height of page two's tag row. The pair shares a
+             layout, and without this the diagram refits between them. -->
+        <div class="bm-tags" aria-hidden="true" style="margin-left:9em;visibility:hidden">
             <span>Static Assertions</span>
             <span>Program Branching</span>
             <span>Transactional Hot Reload</span>
         </div>
       </div>
     </div>
-    <div class="closer center" v-click="2">You can't bolt this on. <span class="warm">Cambra designs it in.</span></div>
+    <div class="closer center" v-click="3">Today a <span class="hot">human</span> closes the loop.</div>
   </div>
   <div class="page-no">{{ $slidev.nav.currentPage }} / {{ $slidev.nav.total }}</div>
 </div>
@@ -175,10 +160,37 @@ So this architecture makes it **impossible** for the compiler to check propertie
 2. But feedback on the most important properties — reliability, integrity, security, performance — is very limited until we deploy to a production-like environment: staging, load tests, audit logging, etc.
 This feedback is slow and expensive. It often needs a human in the loop to ensure the tests are realistic and don't endanger production.
 
-3. Cambra automates these feedback signals with groundbreaking features: static assertions, program branching, and transactional hot reload. That gets the human out of the loop, letting AI iterate unimpeded.
+3. So today, the properties that matter most are checked last, by a person. That
+is the loop we have to close.
+-->
 
-4. These features aren't something you can bolt on to an existing application platform. It's something you have to design in. Cambra is the only system built for it.
+---
 
+<div class="frame">
+  <div class="head">
+    <div class="eyebrow">{{ $slidev.nav.currentPage }} · The Insight</div>
+    <h2>Shift left. Automate more.</h2>
+  </div>
+  <div class="grow">
+    <div class="sdlc-canvas"><SdlcDiagram :stage="4" fixed /></div>
+    <div class="pillars compact">
+      <div class="beat-cambra"><b>Cambra</b> — end-to-end properties checked before deployment, no human required. 
+        <div class="bm-tags" style="margin-left:9em">
+            <span>Static Assertions</span>
+            <span>Program Branching</span>
+            <span>Transactional Hot Reload</span>
+        </div>
+      </div>
+    </div>
+    <div class="closer center" v-click="1">You can't bolt this on. <span class="warm">Cambra designs it in.</span></div>
+  </div>
+  <div class="page-no">{{ $slidev.nav.currentPage }} / {{ $slidev.nav.total }}</div>
+</div>
+
+<!--
+0. Same lifecycle, with Cambra's feedback in place of the slow loop. Cambra automates these feedback signals with groundbreaking features: static assertions, program branching, and transactional hot reload. That gets the human out of the loop, letting AI iterate unimpeded.
+
+1. These features aren't something you can bolt on to an existing application platform. It's something you have to design in. Cambra is the only system built for it.
 -->
 
 ---
@@ -198,14 +210,6 @@ This feedback is slow and expensive. It often needs a human in the loop to ensur
           <div class="col-body">
             <div align=center class="cool" style="padding: .6em">only <span style="font-size: 28pt; font-weight: bold;">24% </span> gains</div>
             <div class="stat-src"><i class="i-simple-icons-microsoft"></i> Microsoft</div>
-            <QuoteCard
-              class="mt-auto"
-              initials="PP"
-              quote="&quot;…it was very, very brittle…&quot;"
-              full-quote="&quot;There was this point at which the code [AI] had written had gotten to a complexity tipping point, and then suddenly everything past that felt like it was very, very brittle…&quot;"
-              name="Polita Paulus"
-              title="Sr. Principal Eng., Snowflake → Golden"
-            />
           </div>
         </div>
       </div>
@@ -222,15 +226,7 @@ This feedback is slow and expensive. It often needs a human in the loop to ensur
               <span class="xlate-lang"><i class="i-simple-icons-zig"></i>Zig</span>
               <span class="xlate-arrow">&rarr;</span>
               <span class="xlate-lang"><i class="i-simple-icons-rust"></i>Rust</span>
-            </div>
-            <QuoteCard
-              class="mt-auto"
-              initials="DS"
-              quote="&quot;…the barrier to entry has substantially reduced.&quot;"
-              full-quote="&quot;I don't know Go. I still write Go code, and […] it just doesn't matter what language it is. So the barrier to entry has substantially reduced.&quot;"
-              name="David Schultz"
-              title="Distinguished Eng., Snowflake → Anthropic"
-            />
+          </div>
           </div>
         </div>
       </div>
@@ -248,6 +244,16 @@ This feedback is slow and expensive. It often needs a human in the loop to ensur
   </div>
   <div class="page-no">{{ $slidev.nav.currentPage }} / {{ $slidev.nav.total }}</div>
 </div>
+
+<!--
+0. 3 trends make this the perfect moment for this kind of innovation.
+
+1. First, the potential of AI has not yet been realized. A recent Microsoft study showed that adopting coding agents only increased productivity by 24%.
+
+2. Second, historically, there were huge barriers to adopting new programming languages. Agents have completely demolished that barrier. A powerful example is the rewrite of Bun. They ported 500k lines of Zig to Rust, and it took less than 2 weeks. That would have been unthinkable a year ago. Now, they did it for the sake of agent productivity: Rust's compiler gives better feedback than Zig. My takeaway is that better languages make agents better, and agents let you adopt better languages easily.
+
+3. Research has traditionally taken a long time to reach the market. AI has made it possible to synthesize this research into a product faster than ever before, from discovery, to understanding, to implementation. There's going to be a tidal wave of research going mainstream. We're just riding that wave.
+-->
 
 ---
 
@@ -269,7 +275,7 @@ This feedback is slow and expensive. It often needs a human in the loop to ensur
             <QuoteCard
               class="mt-auto"
               reveal-on-expand
-              expand-at="1"
+              expand-at="0"
               initials="PP"
               quote="&quot;…it was very, very brittle…&quot;"
               full-quote="&quot;There was this point at which the code [AI] had written had gotten to a complexity tipping point, and then suddenly everything past that felt like it was very, very brittle…&quot;"
@@ -296,7 +302,7 @@ This feedback is slow and expensive. It often needs a human in the loop to ensur
             <QuoteCard
               class="mt-auto"
               reveal-on-expand
-              expand-at="2"
+              expand-at="1"
               initials="DS"
               quote="&quot;…the barrier to entry has substantially reduced.&quot;"
               full-quote="&quot;I don't know Go. I still write Go code, and […] it just doesn't matter what language it is. So the barrier to entry has substantially reduced.&quot;"
@@ -318,26 +324,17 @@ This feedback is slow and expensive. It often needs a human in the loop to ensur
       </div>
     </div>
     <!-- Click anchors. `expand-at` reads `$clicks`, which Slidev derives from
-         the v-clicks on the page; with the trends static there were none, so
-         the quotes could never reach their own beat. -->
-    <div v-click="1"></div>
-    <div v-click="2"></div>
+         the v-clicks on the page; with the trends static there are none, so the
+         quotes could never reach their own beat. -->
+    <div class="click-anchor" v-click="1"></div>
   </div>
   <div class="page-no">{{ $slidev.nav.currentPage }} / {{ $slidev.nav.total }}</div>
 </div>
 
 <!--
-0. 3 trends make this the perfect moment for this kind of innovation.
+0. Those are the numbers; here is what the people living it say. I recently had a conversation with a former colleague. She joined an analytics startup as its founding engineer. She found that their codebase reached a tipping point in complexity past which it was brittle and everything slowed down.
 
-1. First, the potential of AI has not yet been realized. A recent Microsoft study showed that adopting coding agents only increased productivity by 24%.
-
-2. I recently had a conversation with a former colleague. She joined an analytics startup as its founding engineer. She found that their codebase reached a tipping point in complexity past which it was brittle and everything slowed down.
-
-3. Second, historically, there were huge barriers to adopting new programming languages. Agents have completely demolished that barrier. A powerful example is the rewrite of Bun. They ported 500k lines of Zig to Rust, and it took less than 2 weeks. That would have been unthinkable a year ago. Now, they did it for the sake of agent productivity: Rust's compiler gives better feedback than Zig. My takeaway is that better languages make agents better, and agents let you adopt better languages easily.
-
-4. I spoke with another colleague who is now at Anthropic, who said essentially the same thing: the barrier to entry has substantially reduced.
-
-5. Research has traditionally taken a long time to reach the market. AI has made it possible to synthesize this research into a product faster than ever before, from discovery, to understanding, to implementation. There's going to be a tidal wave of research going mainstream. We're just riding that wave.
+1. I spoke with another colleague who is now at Anthropic, who said essentially the same thing: the barrier to entry has substantially reduced.
 -->
 
 ---
