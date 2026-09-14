@@ -1,10 +1,13 @@
 // Regenerates short.md from slides.md so the two can never drift.
-// The short deck is a SELECTION plus three edits, nothing hand-written:
-//   - Insight is split in two, each pinned to one SDLC stage, so the human
-//     loop and the Cambra loop each get a page instead of a click.
+// The short deck is a SELECTION plus two edits, nothing hand-written:
 //   - Why Now drops its pull-quotes; they need a speaker to land.
-//   - Eyebrows renumber to the short deck's own sequence.
+//   - Every page loses its clicks: a leave-behind has no presenter to advance
+//     it, so whatever a beat would have revealed is simply shown.
 // Run: npm run short
+//
+// Insight used to be split here, one SDLC stage per page. slides.md now ships
+// it split, so this takes both pages as they are. Same for Why Now, which is
+// two pages in the full deck; the short deck keeps the one with the figures.
 const fs = require('fs')
 const path = require('path')
 const dir = path.join(__dirname, '..')
@@ -25,36 +28,22 @@ const pick = (i, expect) => {
 
 const FRONTMATTER = blocks[1]
 const COVER = blocks[2]
-const PROBLEM  = pick(3, 'The Problem')
-const SOLUTION = pick(4, 'The Solution')
-const INSIGHT  = pick(5, 'The Insight')
-const WHYNOW   = pick(6, 'Why Now')
-const TEAM     = pick(7, 'Team')
-const MARKET   = pick(8, 'Market')   // categories
-const SEGMENTS = pick(9, 'Market')   // segments — the payoff of the one above
-const BIZ      = pick(14, 'Business Model')
-const ASK      = pick(15, 'The Ask')
+const PROBLEM   = pick(3, 'The Problem')
+const SOLUTION  = pick(4, 'The Solution')
+const INSIGHT_F = pick(5, 'The Insight')   // the human loop
+const INSIGHT_G = pick(6, 'The Insight')   // the Cambra loop
+const WHYNOW    = pick(7, 'Why Now')       // the figures; page two is the quotes
+const TEAM      = pick(9, 'Team')
+const MARKET    = pick(10, 'Market')  // categories
+const SEGMENTS  = pick(11, 'Market')  // segments — the payoff of the one above
+const BIZ       = pick(16, 'Business Model')
+const ASK       = pick(17, 'The Ask')
 
-// --- Insight: one page per loop, each pinned to a stage -------------------
-// Every beat on the Insight slide, so a beat added to slides.md cannot be
-// silently dropped or left with a click number this page never reaches.
-const INSIGHT_BEATS = /( *)<div v-click="\d"><b>([^<]+)<\/b>[\s\S]*?<\/div>\n/g
-const insightPage = (stage, keep, closer) => {
-  let b = INSIGHT
-    .replace(/<SdlcDiagram :stage="\$clicks \+ 1" \/>/, `<SdlcDiagram :stage="${stage}" fixed />`)
-    .replace(/<div class="closer center"[^>]*>[\s\S]*?<\/div>/, `<div class="closer center">${closer}</div>`)
-  const found = [...b.matchAll(INSIGHT_BEATS)].map((m) => m[2])
-  const unknown = found.filter((n) => !INSIGHT_ASSIGNED.includes(n))
-  if (unknown.length) throw new Error(`Insight beat "${unknown[0]}" is not assigned to a short-deck page — add it to INSIGHT_ASSIGNED`)
-  for (const m of [...b.matchAll(INSIGHT_BEATS)]) if (!keep.includes(m[2])) b = b.replace(m[0], '')
-  // Whatever stays is always visible: these pages have no clicks of their own.
-  return b.replace(/ v-click="\d"(?=><b>)/g, '')
-}
-const INSIGHT_A_BEATS = ['Today']
-const INSIGHT_B_BEATS = ['Cambra', 'Transactional hot reload']
-const INSIGHT_ASSIGNED = [...INSIGHT_A_BEATS, ...INSIGHT_B_BEATS]
-const INSIGHT_A = insightPage(3, INSIGHT_A_BEATS, 'Today a <span class="hot">human</span> closes the loop.')
-const INSIGHT_B = insightPage(4, INSIGHT_B_BEATS, "You can't bolt this on. <span class=\"warm\">You have to design it in.</span>")
+// --- Insight: both pages, minus their clicks -----------------------------
+// A leave-behind has nobody to press the button, so every beat is shown.
+const unclick = (b) => b.replace(/ v-click=("?)[^"\s>]+\1/g, '')
+const INSIGHT_A = unclick(INSIGHT_F)
+const INSIGHT_B = unclick(INSIGHT_G)
 
 // --- Why Now: drop the pull-quotes, then close the click gaps they left ---
 let WHYNOW_S = WHYNOW.replace(/ *<QuoteCard[\s\S]*?\/>\n/g, '')

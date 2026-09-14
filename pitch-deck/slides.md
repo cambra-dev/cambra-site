@@ -25,7 +25,7 @@ colorSchema: dark
 
 <div class="frame">
   <div class="head">
-    <div class="eyebrow">{{ $slidev.nav.currentPage }} ·  The Problem</div>
+    <div class="eyebrow">{{ $slidev.nav.currentPage }} · The Problem</div>
     <h2>Your stack unravels in a month.</h2>
   </div>
   <div class="grow">
@@ -81,7 +81,7 @@ And this is just a basic app.
 
 <div class="frame">
   <div class="head">
-    <div class="eyebrow">{{ $slidev.nav.currentPage }} ·  The Solution</div>
+    <div class="eyebrow">{{ $slidev.nav.currentPage }} · The Solution</div>
     <h2>One program on one engine.</h2>
     <!-- TODO: put "application" box around each diagram. -->
   </div>
@@ -131,14 +131,30 @@ So this architecture makes it **impossible** for the compiler to check propertie
 
 <div class="frame">
   <div class="head">
-    <div class="eyebrow">{{ $slidev.nav.currentPage }} ·  The Insight</div>
+    <div class="eyebrow">{{ $slidev.nav.currentPage }} · The Insight</div>
     <h2>Shift left. Automate more.</h2>
   </div>
   <div class="grow">
-    <div class="sdlc-canvas"><SdlcDiagram :stage="$clicks + 1" /></div>
+    <div class="sdlc-canvas"><SdlcDiagram :stage="3" fixed /></div>
     <div class="pillars compact">
-      <div v-click="2"><b>Today</b> — types and unit tests early. All the important stuff late, with a human in the loop.</div>
-      <div v-click="3"><b>Cambra</b> — end-to-end properties checked before deployment, no human required. 
+      <div v-click="1"><b>Today</b> — types and unit tests early. All the important stuff late, with a human in the loop.</div>
+    </div>
+    <div class="closer center" v-click="2">Today a <span class="hot">human</span> closes the loop.</div>
+  </div>
+  <div class="page-no">{{ $slidev.nav.currentPage }} / {{ $slidev.nav.total }}</div>
+</div>
+
+---
+
+<div class="frame">
+  <div class="head">
+    <div class="eyebrow">{{ $slidev.nav.currentPage }} · The Insight</div>
+    <h2>Shift left. Automate more.</h2>
+  </div>
+  <div class="grow">
+    <div class="sdlc-canvas"><SdlcDiagram :stage="4" fixed /></div>
+    <div class="pillars compact">
+      <div v-click="1"><b>Cambra</b> — end-to-end properties checked before deployment, no human required. 
         <div class="bm-tags" style="margin-left:9em">
             <span>Static Assertions</span>
             <span>Program Branching</span>
@@ -146,7 +162,7 @@ So this architecture makes it **impossible** for the compiler to check propertie
         </div>
       </div>
     </div>
-    <div class="closer center" v-click="4">You can't bolt this on. <span class="warm">Cambra designs it in.</span></div>
+    <div class="closer center" v-click="2">You can't bolt this on. <span class="warm">Cambra designs it in.</span></div>
   </div>
   <div class="page-no">{{ $slidev.nav.currentPage }} / {{ $slidev.nav.total }}</div>
 </div>
@@ -169,7 +185,7 @@ This feedback is slow and expensive. It often needs a human in the loop to ensur
 
 <div class="frame">
   <div class="head">
-    <div class="eyebrow">{{ $slidev.nav.currentPage }} ·  Why Now</div>
+    <div class="eyebrow">{{ $slidev.nav.currentPage }} · Why Now</div>
     <h2>Mutually reinforcing trends</h2>
   </div>
   <div class="grow">
@@ -184,8 +200,6 @@ This feedback is slow and expensive. It often needs a human in the loop to ensur
             <div class="stat-src"><i class="i-simple-icons-microsoft"></i> Microsoft</div>
             <QuoteCard
               class="mt-auto"
-              reveal-on-expand
-              expand-at="2"
               initials="PP"
               quote="&quot;…it was very, very brittle…&quot;"
               full-quote="&quot;There was this point at which the code [AI] had written had gotten to a complexity tipping point, and then suddenly everything past that felt like it was very, very brittle…&quot;"
@@ -195,7 +209,77 @@ This feedback is slow and expensive. It often needs a human in the loop to ensur
           </div>
         </div>
       </div>
+      <div class="trend" v-click="2">
+        <div class="metaphor hot"><div class="i-ph-wall-fill"></div></div>
+        <div class="col warm">
+          <h3>Falling Adoption barriers</h3>
+          PL adoption is easy.
+          <div class="col-body">
+            <div class="flex" style="color: var(--amber); align-items: center"><div align=center style="font-weight: bold; line-height: 1; padding: 1em">535,000 lines<br>
+                ———————<br>
+                11 days</div> migrated</div>
+            <div class="xlate">
+              <span class="xlate-lang"><i class="i-simple-icons-zig"></i>Zig</span>
+              <span class="xlate-arrow">&rarr;</span>
+              <span class="xlate-lang"><i class="i-simple-icons-rust"></i>Rust</span>
+            </div>
+            <QuoteCard
+              class="mt-auto"
+              initials="DS"
+              quote="&quot;…the barrier to entry has substantially reduced.&quot;"
+              full-quote="&quot;I don't know Go. I still write Go code, and […] it just doesn't matter what language it is. So the barrier to entry has substantially reduced.&quot;"
+              name="David Schultz"
+              title="Distinguished Eng., Snowflake → Anthropic"
+            />
+          </div>
+        </div>
+      </div>
       <div class="trend" v-click="3">
+        <div class="metaphor"><img src="/brand/symbol.svg" alt="" /></div>
+        <div class="col">
+          <h3>Rising feasibility</h3>
+            Research is pent up.
+          <div class="col-body">
+            <div class="converge-canvas"><ConvergeDiagram /></div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+  <div class="page-no">{{ $slidev.nav.currentPage }} / {{ $slidev.nav.total }}</div>
+</div>
+
+---
+
+<div class="frame">
+  <div class="head">
+    <div class="eyebrow">{{ $slidev.nav.currentPage }} · Why Now</div>
+    <h2>Mutually reinforcing trends</h2>
+  </div>
+  <div class="grow">
+    <div class="cols n3 trends">
+      <div class="trend">
+        <div class="metaphor cool"><div class="i-ph-users-three-fill"></div></div>
+        <div class="col">
+          <h3>Huge Market opportunity</h3>
+          AI coding is bottlenecked.
+          <div class="col-body">
+            <div align=center class="cool" style="padding: .6em">only <span style="font-size: 28pt; font-weight: bold;">24% </span> gains</div>
+            <div class="stat-src"><i class="i-simple-icons-microsoft"></i> Microsoft</div>
+            <QuoteCard
+              class="mt-auto"
+              reveal-on-expand
+              expand-at="1"
+              initials="PP"
+              quote="&quot;…it was very, very brittle…&quot;"
+              full-quote="&quot;There was this point at which the code [AI] had written had gotten to a complexity tipping point, and then suddenly everything past that felt like it was very, very brittle…&quot;"
+              name="Polita Paulus"
+              title="Sr. Principal Eng., Snowflake → Golden"
+            />
+          </div>
+        </div>
+      </div>
+      <div class="trend">
         <div class="metaphor hot"><div class="i-ph-wall-fill"></div></div>
         <div class="col warm">
           <h3>Falling Adoption barriers</h3>
@@ -212,7 +296,7 @@ This feedback is slow and expensive. It often needs a human in the loop to ensur
             <QuoteCard
               class="mt-auto"
               reveal-on-expand
-              expand-at="4"
+              expand-at="2"
               initials="DS"
               quote="&quot;…the barrier to entry has substantially reduced.&quot;"
               full-quote="&quot;I don't know Go. I still write Go code, and […] it just doesn't matter what language it is. So the barrier to entry has substantially reduced.&quot;"
@@ -222,7 +306,7 @@ This feedback is slow and expensive. It often needs a human in the loop to ensur
           </div>
         </div>
       </div>
-      <div class="trend" v-click=5>
+      <div class="trend">
         <div class="metaphor"><img src="/brand/symbol.svg" alt="" /></div>
         <div class="col">
           <h3>Rising feasibility</h3>
@@ -233,6 +317,10 @@ This feedback is slow and expensive. It often needs a human in the loop to ensur
         </div>
       </div>
     </div>
+    <!-- Click anchors. `expand-at` reads `$clicks`, which Slidev derives from
+         the v-clicks on the page; with the trends static there were none, so
+         the quotes could never reach their own beat. -->
+    <div v-click="1"></div>
     <div v-click="2"></div>
   </div>
   <div class="page-no">{{ $slidev.nav.currentPage }} / {{ $slidev.nav.total }}</div>
@@ -249,14 +337,14 @@ This feedback is slow and expensive. It often needs a human in the loop to ensur
 
 4. I spoke with another colleague who is now at Anthropic, who said essentially the same thing: the barrier to entry has substantially reduced.
 
-5. Third, brilliant research has been locked out of the market. AI has made it possible to synthesize this research into a product faster than ever before, from discovery, to understanding, to implementation. There's going to be a tidal wave of research going mainstream. We're just riding that wave.
+5. Research has traditionally taken a long time to reach the market. AI has made it possible to synthesize this research into a product faster than ever before, from discovery, to understanding, to implementation. There's going to be a tidal wave of research going mainstream. We're just riding that wave.
 -->
 
 ---
 
 <div class="frame">
   <div class="head">
-    <div class="eyebrow">{{ $slidev.nav.currentPage }} ·  Team</div>
+    <div class="eyebrow">{{ $slidev.nav.currentPage }} · Team</div>
     <h2>Passionate, clear-eyed experts</h2>
   </div>
   <div class="grow">
@@ -333,8 +421,8 @@ We have the right technical knowledge, and the experience of bringing cutting ed
             <span class="vl-co"><i class="vl-dot"></i>Inngest</span>
             <span class="vl-co"><i class="vl-dot"></i>Restate</span>
           </span>
-          <span class="vl-val">$5B</span>
-          <span class="vl-growth">5&times; / yr</span>
+          <span class="vl-val">$12B</span>
+          <span class="vl-growth">3&times; / yr</span>
         </div>
         <svg class="venn-region convex" v-click="4" viewBox="0 0 315 299.59" aria-hidden="true">
           <path d="M157.50 18.18A100 100 0 0 1 199.60 108.89A100 100 0 0 0 115.40 108.88A100 100 0 0 1 157.50 18.18Z" />
@@ -367,24 +455,24 @@ We have the right technical knowledge, and the experience of bringing cutting ed
 </div>
 
 <!--
-0. Cambra works at the intersection of 3 market categories.
+0. Cambra works at the intersection of 3 product categories.
 
 1. Analytics is a behemoth with major incumbents like Snowflake, Databricks, and Clickhouse, cumulative valuations in the hundreds of billions, and annual growth between 30 and 80 percent.
 
 2. Serving backend APIs is a huge business. We picked a few examples with a lot of momentum as representative of the use cases we would target. Their combined valuations is $20B, with a yearly growth rate of 2-3x.
 
-3. Durable execution is a new category, but it's seeing explosive growth. Temporal is the dominant player, with a valuation of $5B 6 months ago, but rumored to be raising at $12B and growing at 5x.
+3. Durable execution is a new category, but it's seeing explosive growth. Temporal is the dominant player, with a raise announced this week at $12B and growing at 3x.
 
 4. Convex blends serving with durable execution. They're growth stage, so numbers aren't public, but they've raised $110M. They are positioning themselves as a new category: "Backend Application Platform".
 
-5. Cambra is the only product that unifies all 3 categories. I would argue you're not a true backend application platform unless you do that.
+5. Cambra is the only product that unifies all 3 categories. That's what you have to do to be a true backend application platform.
 -->
 
 ---
 
 <div class="frame">
   <div class="head">
-    <div class="eyebrow">{{ $slidev.nav.currentPage }} ·  Market Size</div>
+    <div class="eyebrow">{{ $slidev.nav.currentPage }} · Market Size</div>
     <h2>3 Categories, 1 market.</h2>
   </div>
   <div class="grow">
@@ -435,7 +523,7 @@ We have the right technical knowledge, and the experience of bringing cutting ed
 
 <div class="frame">
   <div class="head">
-    <div class="eyebrow">{{ $slidev.nav.currentPage }} ·  Why It Wins</div>
+    <div class="eyebrow">{{ $slidev.nav.currentPage }} · Why It Wins</div>
     <h2>Unprecedented productivity</h2>
   </div>
   <div class="grow">
@@ -507,7 +595,7 @@ What's interesting is where the savings happened: everything _except_ the domain
 
 <div class="frame">
   <div class="head">
-    <div class="eyebrow">{{ $slidev.nav.currentPage }} ·  Why It Wins</div>
+    <div class="eyebrow">{{ $slidev.nav.currentPage }} · Why It Wins</div>
     <h2>Transformative performance</h2>
   </div>
   <div class="grow">
@@ -556,7 +644,66 @@ These gains always come from not doing work: skip the network by colocating rela
 
 <div class="frame">
   <div class="head">
-    <div class="eyebrow">{{ $slidev.nav.currentPage }} ·  Traction</div>
+    <div class="eyebrow">{{ $slidev.nav.currentPage }} · Why It Wins</div>
+    <h2>Effortless adoption</h2>
+  </div>
+  <div class="grow">
+    <p class="lead-p">Familiar to read, incremental to adopt, and mostly driven by agents.</p>
+    <div class="cols n3">
+      <div class="col" v-click="1">
+        <h3 class="disp">Familiar concepts</h3>
+        <p>The application's own nouns &mdash; users, orders, carts &mdash; written the way a developer already thinks about them.</p>
+        <p>What Cambra abstracts away is the boring half: queues, schemas, retries, deploys. There is no new paradigm to learn, because the new part is the part you stop writing.</p>
+      </div>
+      <div class="col" v-click="2">
+        <h3 class="disp">One workload at a time</h3>
+        <p>Cambra speaks to the stack already in place, so nothing has to be migrated to start.</p>
+        <p>A team adopts it for a single workload, keeps the rest, and moves the next one when that one has paid off. No big-bang rewrite to approve, and no bet anyone has to defend.</p>
+      </div>
+      <div class="col" v-click="3">
+        <h3 class="disp">Agents do the ramp</h3>
+        <p>Most people will meet Cambra through a coding agent rather than a tutorial.</p>
+        <p>The agent absorbs the syntax; the developer reviews the result. The learning curve is the agent's, which is what makes a new language adoptable at all &mdash; the same trend slide 7 makes.</p>
+      </div>
+    </div>
+    <p v-click="4" class="closer">Our wedge: <span style="color:var(--coral)">Temporal</span> without the versioning problems &mdash; that also serves and analyzes.</p>
+  </div>
+  <div class="page-no">{{ $slidev.nav.currentPage }} / {{ $slidev.nav.total }}</div>
+</div>
+
+<!--
+0. Productivity and performance are why Cambra is better. Adoption is why that
+matters: a better system nobody can get to is worth nothing. Three reasons this
+one is reachable.
+
+1. It reads like the application. The nouns on the screen are the domain's own
+nouns. What we abstract away is the infrastructure nobody wanted to write in the
+first place: the queues, the schemas, the retry logic, the deployment
+choreography. So there isn't a new mental model to buy into — the novelty is in
+what you stop writing, not in what you have to learn.
+
+2. It goes in beside what's already there. Cambra integrates with the existing
+stack, so adoption is per-workload rather than all-at-once. A team picks one
+workload, gets the win, and decides about the next one with evidence. That's a
+decision an engineering manager can make on a Tuesday, not a migration they have
+to get budget for.
+
+3. And most users will come to it through an agent. They describe what they
+want, the agent writes Cambra, they review the diff. The ramp is the agent's
+problem, not the developer's — which is exactly the trend on the Why Now slide,
+pointed at our own adoption instead of somebody else's.
+
+4. Concretely, the first target is teams about to adopt Temporal. The pitch is
+one sentence: Temporal without the versioning problems, and it does serving and
+analytics too. Everyone who has fought a workflow versioning bug understands
+that immediately, and the appendix ICP slide is the longer version.
+-->
+
+---
+
+<div class="frame">
+  <div class="head">
+    <div class="eyebrow">{{ $slidev.nav.currentPage }} · Traction</div>
     <h2>Our value prop resonates.</h2>
   </div>
   <div class="grow">
@@ -637,7 +784,7 @@ These gains always come from not doing work: skip the network by colocating rela
 
 <div class="frame">
   <div class="head">
-    <div class="eyebrow">{{ $slidev.nav.currentPage }} ·  Business Model</div>
+    <div class="eyebrow">{{ $slidev.nav.currentPage }} · Business Model</div>
     <h2>OSS ⇒ Cloud Service ⇒ AI Services</h2>
   </div>
   <div class="grow">
@@ -699,7 +846,7 @@ These gains always come from not doing work: skip the network by colocating rela
 
 <div class="frame">
   <div class="head">
-    <div class="eyebrow">{{ $slidev.nav.currentPage }} ·  The Ask</div>
+    <div class="eyebrow">{{ $slidev.nav.currentPage }} · The Ask</div>
     <h2 style="font-family:var(--f-logo);font-size:2.6rem">$4M seed</h2>
     <div class="ask-sub">18-24 months to the Series A</div>
   </div>
@@ -737,11 +884,11 @@ These gains always come from not doing work: skip the network by colocating rela
 
 <div class="frame center">
   <div class="bg-glow" style="bottom:-16rem;left:-12rem;width:36rem;height:36rem;background:radial-gradient(circle,rgba(28,136,167,.2),transparent 70%)"></div>
-  <div class="eyebrow">{{ $slidev.nav.currentPage }} ·  Vision</div>
+  <div class="eyebrow">{{ $slidev.nav.currentPage }} · Vision</div>
   <h2 style="font-size:2.6rem;max-width:22ch;margin-top:.6rem">The <strong class="hot">development</strong> platform.</h2>
 
   <p class="lead-p" style="font-size:1.05rem">Our platform accumulates the context AI needs to take over not just operations, but <strong>application development</strong>.</p>
-  <div style="font-family:var(--f-mono);font-size:.7rem;color:var(--fg-3);margin-top:.6rem">cambra.d{{ $slidev.nav.currentPage }} ·  dan@cambra.dev</div>
+  <div style="font-family:var(--f-mono);font-size:.7rem;color:var(--fg-3);margin-top:.6rem">cambra.dev · dan@cambra.dev</div>
 </div>
 
 <!--
@@ -752,7 +899,7 @@ When you extrapolate, Cambra's capabilities uniquely position it to take over ap
 
 <div class="frame">
   <div class="head">
-    <div class="eyebrow">{{ $slidev.nav.currentPage }} ·  Demo</div>
+    <div class="eyebrow">{{ $slidev.nav.currentPage }} · Demo</div>
     <h2>The system as a program</h2>
   </div>
   <div class="grow" data-waitfor=".cart-demo">
@@ -821,7 +968,7 @@ it:
 7. *Ship the upgrade — press **v2** on the strip* (or **Shift-U**), **then
    Reload.** Two presses, deliberately: `v2` puts the new program in the pane
    and compiles nothing, so you can read it to the room — the strip says `v2
-   sho{{ $slidev.nav.currentPage }} ·  not compiled` while you do — and `Reload` is what swaps it in. The
+   shown · not compiled` while you do — and `Reload` is what swaps it in. The
    same machinery as beat 6, carrying a change nobody would make by hand on
    stage. Two things then happen at once and both are worth naming:
    - **The product list grows.** v1 subscribes to BTC and LTC; v2 subscribes to
@@ -920,6 +1067,92 @@ browser, ~116 ms per price row against a 430 ms budget.
 
 <div class="frame">
   <div class="head">
+    <div class="eyebrow">Appendix · Ideal Customer Profile</div>
+    <h2>Teams outgrowing their PaaS </h2>
+  </div>
+  <div class="grow">
+    <div class="cols n2">
+      <div class="cols n1">
+        <div class="col">
+            <h3>Who adopts first</h3>
+            <ul>
+            <li>Mid-size, high-growth — technical risk they can take, no time to build their own infra</li>
+            <li>Care about correctness (B2B, retail, finance) — not heavily regulated</li>
+            <li>Heavy AI coding usage already</li>
+            <li>High operational burden from stack fragmentation</li>
+            </ul>
+        </div>
+        <div class="cols n2">
+            <div class="col" style="padding:.8rem"><div class="vlogo i-simple-icons-supabase"></div><h3 style="font-family:var(--f-disp);text-transform:none;font-size:.9rem;color:var(--fg);letter-spacing:0">Supabase</h3><p style="font-size:.72rem">Can't handle durable execution, analytics.</p></div>
+            <div class="col" style="padding:.8rem"><div class="vlogo i-simple-icons-render"></div><h3 style="font-family:var(--f-disp);text-transform:none;font-size:.9rem;color:var(--fg);letter-spacing:0">Render</h3><p style="font-size:.72rem">Classic PaaS, not customizable.</p></div>
+        </div>
+      </div>
+      <div style="display:flex;flex-direction:column;gap:.8rem">
+        <h3 style="font-family:var(--f-mono);font-size:.7rem;letter-spacing:.14em;text-transform:uppercase;color:var(--fg-3);margin:0">About to pick up</h3>
+        <div class="cols n3">
+          <div class="col warm" style="padding:.8rem"><div class="vlogo i-simple-icons-temporal"></div><h3 style="font-family:var(--f-disp);text-transform:none;font-size:.9rem;color:var(--fg);letter-spacing:0">Temporal</h3><p style="font-size:.72rem">Non-determinism, replay issues</p></div>
+          <div class="col warm" style="padding:.8rem"><div class="vlogo-pair"><div class="vlogo i-simple-icons-apachekafka"></div><div class="vlogo i-simple-icons-clickhouse"></div></div><h3 style="font-family:var(--f-disp);text-transform:none;font-size:.85rem;color:var(--fg);letter-spacing:0">Kafka + Clickhouse</h3><p style="font-size:.72rem">Impedance mismatch</p></div>
+        </div>
+      </div>
+    </div>
+  </div>
+  <div class="page-no">{{ $slidev.nav.currentPage }} / {{ $slidev.nav.total }}</div>
+</div>
+
+<!--
+Source, verbatim:
+
+Frame the wedge market narrowly (who adopts first and why) before the
+expansive TAM. Seed investors have seen enough "$500B market" slides to
+discount them; a credible wedge (e.g., teams currently gluing
+Postgres+Kafka+dbt) followed by expansion logic reads as more
+sophisticated. [Note: that Postgres+Kafka+dbt example isn't otherwise
+used in the deck — consider it as an alternate/additional "unhappily
+using" card.]
+
+Wedge:
+- mid size, high growth tech companies
+  - mid size ⟹ willing to take more technical risk than nascent firms
+  - high growth ⟹ don't have time to build their own infra
+  - tech ⟹ sophisticated enough to understand the opportunity of a new
+    approach
+- care about correctness (e.g. B2B, retail, finance), but not heavily
+  regulated
+- heavy AI coding usage
+- unhappily using:
+  - supabase: not extensible, scalable
+  - temporal: non-determinism & replay issues
+  - kafka + clickhouse/duckdb: impedance mismatch
+- high operational burden from stack fragmentation
+
+Early Expansion: delivering on productivity promise leads to adoption
+by adjacent workloads. Cambra creates a network effect within a
+codebase: having more of the stack in Cambra leads to super-linear
+gains in productivity.
+
+Late Expansion (NOT currently on the slide — add if there's room):
+Cambra builds a suite of AI-powered features to accelerate application
+development: operational monitoring & mitigation, application metrics,
+an experimentation framework, automated workload simulation.
+
+ICP (from "Random ideas" section — overlaps with the above, plus one
+item not otherwise captured):
+- technical enough to understand the opportunity
+- focused enough to not want to build their own infra
+- feeling the pain of fragmentation in their stack
+- able to make tech adoption decisions
+Firmographics: mid size, high growth tech companies.
+Technographics: Supabase?, Temporal, Clickhouse.
+Pain points: heterogeneous domains (serving, durable execution,
+analytics), high operational burden from stack fragmentation,
+requirements around auth policy (?) [not elaborated in source — flag as
+open question], heavy AI coding usage.
+-->
+
+---
+
+<div class="frame">
+  <div class="head">
     <div class="eyebrow">Appendix · Product &amp; Architecture</div>
     <h2>A language, not a framework.</h2>
   </div>
@@ -978,11 +1211,11 @@ split out because it was too dense for one slide.
         <div class="stack">
           <div class="layer">
             <div class="k">CHL</div>
-            <div class="t">Pars{{ $slidev.nav.currentPage }} ·  LSP · package manager</div>
+            <div class="t">Parser · LSP · package manager</div>
           </div>
           <div class="layer">
             <div class="k">IR</div>
-            <div class="t">Compil{{ $slidev.nav.currentPage }} ·  optimizer</div>
+            <div class="t">Compiler · optimizer</div>
           </div>
         </div>
         <div class="bracket db" style="margin-top:.5rem"><span class="lbl">Database</span></div>
@@ -1074,86 +1307,4 @@ minimal time on it):
 (Moved off the Why It Wins slide, where the precedents read as though
 they applied to both columns. Kept here as the answer to technical
 skepticism rather than as a claim in the main line.)
--->
-
----
-
-<div class="frame">
-  <div class="head">
-    <div class="eyebrow">Appendix · Ideal Customer Profile</div>
-    <h2>Developers outgrowing their PaaS</h2>
-  </div>
-  <div class="grow">
-    <div class="cols n2">
-      <div class="col">
-        <h3>Who adopts first</h3>
-        <ul>
-          <li>Mid-size, high-growth — technical risk they can take, no time to build their own infra</li>
-          <li>Care about correctness (B2B, retail, finance) — not heavily regulated</li>
-          <li>Heavy AI coding usage already</li>
-          <li>High operational burden from stack fragmentation</li>
-        </ul>
-      </div>
-      <div style="display:flex;flex-direction:column;gap:.8rem">
-        <h3 style="font-family:var(--f-mono);font-size:.7rem;letter-spacing:.14em;text-transform:uppercase;color:var(--fg-3);margin:0">About to pick up</h3>
-        <div class="cols n3">
-          <div class="col warm" style="padding:.8rem"><div class="vlogo i-simple-icons-supabase"></div><h3 style="font-family:var(--f-disp);text-transform:none;font-size:.9rem;color:var(--fg);letter-spacing:0">Supabase</h3><p style="font-size:.72rem">Not extensible, not scalable</p></div>
-          <div class="col warm" style="padding:.8rem"><div class="vlogo i-simple-icons-temporal"></div><h3 style="font-family:var(--f-disp);text-transform:none;font-size:.9rem;color:var(--fg);letter-spacing:0">Temporal</h3><p style="font-size:.72rem">Non-determinism, replay issues</p></div>
-          <div class="col warm" style="padding:.8rem"><div class="vlogo-pair"><div class="vlogo i-simple-icons-apachekafka"></div><div class="vlogo i-simple-icons-clickhouse"></div></div><h3 style="font-family:var(--f-disp);text-transform:none;font-size:.85rem;color:var(--fg);letter-spacing:0">Kafka + Clickhouse</h3><p style="font-size:.72rem">Impedance mismatch</p></div>
-        </div>
-        <p class="punch" style="font-size:.85rem">Expansion: more of the stack in Cambra creates a network effect — super-linear productivity gains within a codebase.</p>
-      </div>
-    </div>
-  </div>
-  <div class="page-no">{{ $slidev.nav.currentPage }} / {{ $slidev.nav.total }}</div>
-</div>
-
-<!--
-Source, verbatim:
-
-Frame the wedge market narrowly (who adopts first and why) before the
-expansive TAM. Seed investors have seen enough "$500B market" slides to
-discount them; a credible wedge (e.g., teams currently gluing
-Postgres+Kafka+dbt) followed by expansion logic reads as more
-sophisticated. [Note: that Postgres+Kafka+dbt example isn't otherwise
-used in the deck — consider it as an alternate/additional "unhappily
-using" card.]
-
-Wedge:
-- mid size, high growth tech companies
-  - mid size ⟹ willing to take more technical risk than nascent firms
-  - high growth ⟹ don't have time to build their own infra
-  - tech ⟹ sophisticated enough to understand the opportunity of a new
-    approach
-- care about correctness (e.g. B2B, retail, finance), but not heavily
-  regulated
-- heavy AI coding usage
-- unhappily using:
-  - supabase: not extensible, scalable
-  - temporal: non-determinism & replay issues
-  - kafka + clickhouse/duckdb: impedance mismatch
-- high operational burden from stack fragmentation
-
-Early Expansion: delivering on productivity promise leads to adoption
-by adjacent workloads. Cambra creates a network effect within a
-codebase: having more of the stack in Cambra leads to super-linear
-gains in productivity.
-
-Late Expansion (NOT currently on the slide — add if there's room):
-Cambra builds a suite of AI-powered features to accelerate application
-development: operational monitoring & mitigation, application metrics,
-an experimentation framework, automated workload simulation.
-
-ICP (from "Random ideas" section — overlaps with the above, plus one
-item not otherwise captured):
-- technical enough to understand the opportunity
-- focused enough to not want to build their own infra
-- feeling the pain of fragmentation in their stack
-- able to make tech adoption decisions
-Firmographics: mid size, high growth tech companies.
-Technographics: Supabase?, Temporal, Clickhouse.
-Pain points: heterogeneous domains (serving, durable execution,
-analytics), high operational burden from stack fragmentation,
-requirements around auth policy (?) [not elaborated in source — flag as
-open question], heavy AI coding usage.
 -->

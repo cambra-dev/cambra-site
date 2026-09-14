@@ -52,7 +52,7 @@ const app = at(1, [
 const asyncRow = at(2, bandRow([
   { id: 'q', w: 120, data: { title: 'Queue', sub: 'Kafka, SQS', variant: 'bolt' } },
   { id: 'wp', w: 120, data: { title: 'Worker Pool', sub: 'K8s, Lambda', variant: 'bolt' } },
-  { id: 'js', w: 140, data: { title: 'Job State', sub: 'Postgress, Cassandra', variant: 'bolt store' } },
+  { id: 'js', w: 140, data: { title: 'Job State', sub: 'Postgres, Cassandra', variant: 'bolt store' } },
 ], ASYNC_Y))
 
 const analyticsRow = at(3, bandRow([
