@@ -645,55 +645,27 @@ These gains always come from not doing work: skip the network by colocating rela
     <h2>Effortless adoption</h2>
   </div>
   <div class="grow">
-    <p class="lead-p">Familiar to read, incremental to adopt, and mostly driven by agents.</p>
-    <div class="cols n3">
-      <div class="col" v-click="1">
-        <h3 class="disp">Familiar concepts</h3>
-        <p>The application's own nouns &mdash; users, orders, carts &mdash; written the way a developer already thinks about them.</p>
-        <p>What Cambra abstracts away is the boring half: queues, schemas, retries, deploys. There is no new paradigm to learn, because the new part is the part you stop writing.</p>
-      </div>
-      <div class="col" v-click="2">
-        <h3 class="disp">One workload at a time</h3>
-        <p>Cambra speaks to the stack already in place, so nothing has to be migrated to start.</p>
-        <p>A team adopts it for a single workload, keeps the rest, and moves the next one when that one has paid off. No big-bang rewrite to approve, and no bet anyone has to defend.</p>
-      </div>
-      <div class="col" v-click="3">
-        <h3 class="disp">Agents do the ramp</h3>
-        <p>Most people will meet Cambra through a coding agent rather than a tutorial.</p>
-        <p>The agent absorbs the syntax; the developer reviews the result. The learning curve is the agent's, which is what makes a new language adoptable at all &mdash; the same trend slide 7 makes.</p>
-      </div>
-    </div>
-    <p v-click="4" class="closer">Our wedge: <span style="color:var(--coral)">Temporal</span> without the versioning problems &mdash; that also serves and analyzes.</p>
+    <WedgeDiagram :stage="$clicks" :print-stage="3" />
+    <div class="click-anchor" v-click="1"></div>
+    <div class="click-anchor" v-click="2"></div>
+    <div class="click-anchor" v-click="3"></div>
   </div>
   <div class="page-no">{{ $slidev.nav.currentPage }} / {{ $slidev.nav.total }}</div>
 </div>
 
 <!--
-0. Productivity and performance are why Cambra is better. Adoption is why that
-matters: a better system nobody can get to is worth nothing. Three reasons this
-one is reachable.
+0. Productivity and performance are why Cambra is better. 
+But in the end, adoption is what really matters: nobody cares if nobody can use it.
+This is the market you have already seen — the three categories.
 
-1. It reads like the application. The nouns on the screen are the domain's own
-nouns. What we abstract away is the infrastructure nobody wanted to write in the
-first place: the queues, the schemas, the retry logic, the deployment
-choreography. So there isn't a new mental model to buy into — the novelty is in
-what you stop writing, not in what you have to learn.
+1. Durable execution is an ugly compromise for a different era. Everyone who has
+used Temporal knows about nondeterminism issues and the confusing interaction of replay and versioning. These are a constant source of pain, and a drag on productivity. Durable execution frameworks are structurally unable to solve these problems.
 
-2. It goes in beside what's already there. Cambra integrates with the existing
-stack, so adoption is per-workload rather than all-at-once. A team picks one
-workload, gets the win, and decides about the next one with evidence. That's a
-decision an engineering manager can make on a Tuesday, not a migration they have
-to get budget for.
+2. Cambra breaks into the market through that opening. Our architecture makes those problems disappear: no replay, no nondeterminism issues, no juggling worker versions. AI makes it easy to learn, and easy to adopt. And Cambra's design, which plugs in to an existing stack and presents familiar concepts, means it doesn't ask much of users in the long term.
 
-3. And most users will come to it through an agent. They describe what they
-want, the agent writes Cambra, they review the diff. The ramp is the agent's
-problem, not the developer's — which is exactly the trend on the Why Now slide,
-pointed at our own adoption instead of somebody else's.
-
-4. Concretely, the first target is teams about to adopt Temporal. The pitch is
-one sentence: Temporal without the versioning problems, and it does serving and
-analytics too. Everyone who has fought a workflow versioning bug understands
-that immediately, and the appendix ICP slide is the longer version.
+3. Adoption happens one workload at a time. A team brings over the workload that hurts,
+and decides about the next one with evidence. That kind of decision can be made by
+a tech lead on a Tuesday, not planned months in advance.
 -->
 
 ---
