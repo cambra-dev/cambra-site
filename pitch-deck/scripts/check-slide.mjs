@@ -126,6 +126,7 @@ try {
   /** Press Reload on something that will not compile, and wait for the refusal. */
   const compileRejected = async () => {
     if (!(await pressControl(page.locator(".reload-press").first(), "Reload"))) return false;
+    await rebuildSettles();
     try {
       await page.waitForFunction(
         () => document.querySelector(".reload-strip")?.textContent?.includes("refused") === true,
@@ -154,10 +155,33 @@ try {
       return false;
     }
   };
+  /**
+   * Wait out a rebuild, on the spinner rather than on what the strip says next.
+   *
+   * The detail slot shows a tally, a staged note or a refusal depending on what
+   * the pane holds, so waiting for any one of them is waiting for a particular
+   * outcome. The spinner is the rebuild itself: it appears when one starts and
+   * clears when it answers, whatever the answer was.
+   */
+  const rebuildSettles = async () => {
+    try {
+      await page.waitForFunction(
+        () => document.querySelectorAll(".reload-spinner").length === 0,
+        undefined,
+        { timeout: 60_000 },
+      );
+      return true;
+    } catch {
+      problems.push("a rebuild never finished");
+      return false;
+    }
+  };
+
   /** Compile what the pane holds, and wait for the strip to stop saying it has not. */
   const compile = async (label, fresh = false) => {
     const control = page.locator(fresh ? ".reload-fresh" : ".reload-press").first();
     if (!(await pressControl(control, fresh ? "from scratch" : "Reload"))) return false;
+    await rebuildSettles();
     try {
       await page.waitForFunction(
         ([want]) => {
@@ -268,16 +292,76 @@ try {
   // They dispatch the editor's own chords into the frame, so a bundle that
   // renamed `.cm-content` breaks them silently. `Reload` keeps the cart.
   await page.locator(".reload-press").first().click();
-  try {
-    await page.waitForSelector(".reload-figure", { timeout: 20_000 });
-    console.log(`  Reload: ${await trimmed(".reload-strip")}`);
-  } catch {
-    problems.push("clicking Reload produced no tally — the chord did not reach the editor");
-  }
+  await rebuildSettles();
+  console.log(`  Reload: ${await trimmed(".reload-strip")}`);
+  want(
+    (await page.locator(".reload-figure").count()) === 1,
+    "clicking Reload produced no tally — the chord did not reach the editor",
+  );
   want(
     (await page.locator(".order-row").count()) === 1,
     "clicking Reload should keep the cart — that is what it means",
   );
+
+  console.log("\n== the editor indents a block, and undoes it");
+  // An off-side-rule language makes indentation structural, so moving a block by
+  // the wrong amount is a different program — and editing in front of a room
+  // without undo means retyping a line while it watches.
+  {
+    const editor = page.frameLocator("iframe").first();
+    const lines = async (n) => (await editor.locator(".cm-line").allTextContents()).slice(0, n);
+    const before = await lines(4);
+    await editor.locator(".cm-line").nth(1).click();
+    await page.keyboard.down("Shift");
+    await editor.locator(".cm-line").nth(3).click();
+    await page.keyboard.up("Shift");
+    await page.keyboard.press("Tab");
+    await page.waitForTimeout(400);
+    const indented = await lines(4);
+    console.log(`  ${JSON.stringify(before[1])} -> ${JSON.stringify(indented[1])}`);
+    want(
+      indented[1] === `  ${before[1]}` && indented[3] === `  ${before[3]}`,
+      `Tab should move the whole selection two spaces: ${JSON.stringify(indented.slice(1, 4))}`,
+    );
+    await page.keyboard.press("Shift+Tab");
+    await page.waitForTimeout(400);
+    want(
+      (await lines(4)).join("\n") === before.join("\n"),
+      "Shift-Tab should put the block back",
+    );
+    await page.keyboard.press("Tab");
+    await page.waitForTimeout(300);
+    await page.keyboard.press("ControlOrMeta+z");
+    await page.waitForTimeout(400);
+    want((await lines(4)).join("\n") === before.join("\n"), "the editor should undo an indent");
+    console.log("  Tab, Shift-Tab and undo all move two spaces");
+  }
+
+  console.log("\n== Reload says it is working while it works");
+  {
+    await page.locator(".reload-press").first().click();
+    let label = null;
+    for (let i = 0; i < 100 && label === null; i++) {
+      if ((await page.locator(".reload-spinner").count()) > 0) {
+        label = (await trimmed(".reload-press")).trim();
+      } else {
+        await page.waitForTimeout(50);
+      }
+    }
+    want(label !== null, "pressing Reload showed nothing while the compile ran");
+    if (label !== null) {
+      console.log(`  ${label}`);
+      want(
+        await page.locator(".reload-fresh").isDisabled(),
+        "both rebuild controls should be disabled while one is in flight",
+      );
+    }
+    await rebuildSettles();
+    want(
+      !(await page.locator(".reload-press").first().isDisabled()),
+      "the rebuild controls should come back once the compile answers",
+    );
+  }
 
   console.log("\n== typing marks the pane as not compiled");
   await page.frameLocator("iframe").first().locator(".cm-content").click();

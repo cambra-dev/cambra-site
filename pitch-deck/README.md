@@ -73,6 +73,10 @@ navy, so the slide reads as the tool beside the thing it runs.
   the same `Diagnostic`s a snapshot carries, so the pane marks the spans they name and a hover gives
   the message. The program that was running goes on running, and the strip says at which generation.
   A rejection with no span to point at still falls back to a banner.
+- **The source pane edits like an editor.** `Tab` and `⇧Tab` move the selected lines by two
+  spaces — `⌘]` and `⌘[` do the same, kept because `Tab` in a frame is also how a keyboard leaves
+  it — and `⌘Z` undoes. An off-side-rule language makes indentation structural, so a block moved by
+  the wrong amount is a different program rather than an untidy one.
 - **The source pane is editable, and ⌘⏎ keeps the state.** That chord is `Program.reload`: the
   edited version compiles against the channels the program already has, takes over every operator
   whose computation is unchanged, and resumes every mutable variable from the value it held. The
@@ -96,6 +100,11 @@ navy, so the slide reads as the tool beside the thing it runs.
     a `@LoadFrom` reads it into, and only where the source says which variable it belongs to."* v1
     says nothing about where the reshaped collections' values belong, so there is nowhere to put
     them. Going back is starting the demo over, and the emptied cart is the honest sign of it.
+
+  Whichever way a rebuild is asked for, the control that asked spins and both are disabled until it
+  answers — a compile takes a second or two here, and a press with nothing acknowledging it reads as
+  a press that missed. The flag is set in `rebuild` rather than at the buttons, so a chord pressed
+  inside the editor lights the strip too.
 
   The strip's `Reload` and `from scratch` press the editor's own chords, by dispatching them into
   the frame: the source that matters is the one in CodeMirror, and CodeMirror renders only the lines

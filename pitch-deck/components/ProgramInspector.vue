@@ -72,9 +72,13 @@ const props = defineProps<{
    * The versions the slide can switch between, and which is running.
    *
    * Absent where there is only one program, in which case the control is not
-   * rendered rather than rendered inert. `switching` disables both while a
-   * swap is in flight: a second press mid-reload would compile against a
-   * program the first is part-way through replacing.
+   * rendered rather than rendered inert.
+   *
+   * Both are disabled while a version's source is being fetched (`switching`)
+   * and while a rebuild is in flight (`rebuilding`). Staging a version mid-
+   * compile is not wrong — the compile settles the flags against whatever the
+   * editor then holds — but it puts two answers in the air at once, and the
+   * strip has one place to say which version is which.
    */
   versions?: readonly { id: string; label: string; title: string }[];
   /** The version that is compiled and running, or absent for an edited program. */
@@ -104,6 +108,15 @@ const props = defineProps<{
    * at lines that mean nothing, confidently.
    */
   dirty?: boolean;
+  /**
+   * Which rebuild is in flight, if one is.
+   *
+   * The control that was pressed says so and both are disabled until it
+   * answers. A compile takes a second or two here, and a press with nothing
+   * acknowledging it reads as a press that missed — so the presenter presses
+   * again, against a program the first press is part-way through replacing.
+   */
+  rebuilding?: "keep" | "fresh" | null;
 }>();
 
 const emit = defineEmits<{
@@ -348,7 +361,7 @@ onBeforeUnmount(() => {
             class="version-press"
             :class="{ running: entry.id === version, staged: entry.id === shown && dirty }"
             :aria-pressed="entry.id === version"
-            :disabled="!snapshot || switching"
+            :disabled="!snapshot || switching || rebuilding !== null"
             :title="entry.title"
             @click="emit('switch', entry.id)"
           >
@@ -375,21 +388,25 @@ onBeforeUnmount(() => {
         <button
           type="button"
           class="reload-press"
-          :disabled="!snapshot"
+          :disabled="!snapshot || rebuilding !== null"
+          :aria-busy="rebuilding === 'keep'"
           title="Reload the edited source in place — the new version takes over the state (⌘⏎)"
           @click="press(true)"
         >
-          Reload
+          <span v-if="rebuilding === 'keep'" class="reload-spinner" aria-hidden="true" />
+          {{ rebuilding === "keep" ? "Reloading" : "Reload" }}
         </button>
         <span class="reload-sep" aria-hidden="true">·</span>
         <button
           type="button"
           class="reload-press reload-quiet reload-fresh"
-          :disabled="!snapshot"
+          :disabled="!snapshot || rebuilding !== null"
+          :aria-busy="rebuilding === 'fresh'"
           title="Compile the edited source as a new program — nothing kept, the cart emptied (⌘⇧⏎)"
           @click="press(false)"
         >
-          from scratch
+          <span v-if="rebuilding === 'fresh'" class="reload-spinner" aria-hidden="true" />
+          {{ rebuilding === "fresh" ? "compiling" : "from scratch" }}
         </button>
         <span class="reload-sep" aria-hidden="true">·</span>
         <button
@@ -620,5 +637,42 @@ onBeforeUnmount(() => {
 /* On is the exception, so it is the state that carries the accent. */
 .provenance-press.on {
   color: var(--lagoon);
+}
+/* The ring a control spins while its rebuild is in flight.
+   Sized in `em` so it tracks whichever of the two labels it sits in — they are
+   set at different sizes — and given the accent the tally uses, so the strip
+   reads as one thing working rather than two colours of news. */
+/* The control that is working is the one the presenter is watching, so it keeps
+   full contrast and the accent while its neighbour dims. Both are disabled, and
+   without this the busy one would be the faintest thing on the row — the
+   `:disabled` rule and the quiet row's own fade compounding on it. */
+.reload-press[aria-busy="true"]:disabled {
+  opacity: 1;
+  color: var(--lagoon);
+}
+.reload-spinner {
+  display: inline-block;
+  width: 0.8em;
+  height: 0.8em;
+  margin-right: 0.35em;
+  vertical-align: -0.05em;
+  border: 1.5px solid color-mix(in srgb, var(--lagoon) 35%, transparent);
+  border-top-color: var(--lagoon);
+  border-radius: 50%;
+  animation: reload-spin 0.7s linear infinite;
+}
+@keyframes reload-spin {
+  to {
+    transform: rotate(1turn);
+  }
+}
+/* The label already changed to `Reloading`, so the motion is the redundant half
+   and is what goes. A ring that sat still would read as a broken control. */
+@media (prefers-reduced-motion: reduce) {
+  .reload-spinner {
+    animation: none;
+    border-top-color: transparent;
+    border-right-color: var(--lagoon);
+  }
 }
 </style>

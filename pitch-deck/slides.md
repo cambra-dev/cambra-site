@@ -608,13 +608,17 @@ it:
    right of the inspector, restores it. Not a diagram of the program: the
    program, as the runtime holds it. Say "operator graph", not "dataflow" — the
    edges are construction edges.
-6. *Edit the program in front of them.* The source pane is editable. The guard
-   in `PUT /checkout` is the shortest edit worth making — loosen or tighten
-   `cash >= due` — and press **Cmd-Enter**. The new version takes over in the
-   page and **the cart keeps what is in it**: that is the claim on this slide's
-   own punchline, made rather than asserted. Point at the strip under the
-   inspector while you say it — `12 of 14 operators kept` is the evidence, and
-   it is there because an operator surviving an edit is invisible by nature.
+6. *Edit the program in front of them.* The source pane is editable, and edits
+   like an editor: select a block and **Tab** / **Shift-Tab** moves it two
+   spaces, **Cmd-Z** undoes. The guard in `PUT /checkout` is the shortest edit
+   worth making — loosen or tighten `cash >= due` — and press **Cmd-Enter**.
+   The new version takes over in the page and **the cart keeps what is in it**:
+   that is the claim on this slide's own punchline, made rather than asserted.
+   Point at the strip under the inspector while you say it — `12 of 14
+   operators kept` is the evidence, and it is there because an operator
+   surviving an edit is invisible by nature.
+   The control you pressed spins while the compile runs, so a second or two of
+   nothing is a second or two of something.
    **Cmd-Shift-Enter** compiles a new program from scratch instead: no tally,
    and the cart empties. Worth doing once, so the room sees the difference is a
    choice.

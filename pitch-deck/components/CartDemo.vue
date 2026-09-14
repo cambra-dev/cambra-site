@@ -945,7 +945,24 @@ function currentSnapshot(): unknown {
  */
 async function rebuild(source: string, options: { keepState: boolean }): Promise<unknown> {
   if (!transport) throw new Error("the host is not running");
-  return options.keepState ? reloadInPlace(transport, source) : compileFresh(transport, source);
+  // Marked here rather than at the controls, because this is where *every*
+  // rebuild passes: the strip's two buttons, the chords inside the editor, and
+  // a version the presenter staged. A spinner wired to a button would miss the
+  // chord, which is the one a presenter uses most.
+  //
+  // Which one is in flight, not just that one is: the strip spins the control
+  // that was pressed, and `Reload` and `from scratch` are different promises to
+  // be waiting on.
+  rebuilding.value = options.keepState ? "keep" : "fresh";
+  paint();
+  try {
+    return await (options.keepState
+      ? reloadInPlace(transport, source)
+      : compileFresh(transport, source));
+  } finally {
+    rebuilding.value = null;
+    paint();
+  }
 }
 
 /** ⌘⏎: a new version of the running program, over the state it is holding. */
@@ -1048,6 +1065,15 @@ const switching = ref(false);
  * source that has not been compiled they point at lines that mean nothing.
  */
 const dirty = ref(false);
+/**
+ * Which rebuild is in flight, if one is.
+ *
+ * A compile takes a second or two on this module, which is long enough that a
+ * press with no acknowledgement reads as a press that missed. The strip spins
+ * the control that is working and disables both, so a second press cannot start
+ * a rebuild against a program the first is part-way through replacing.
+ */
+const rebuilding = ref<"keep" | "fresh" | null>(null);
 const sources: Partial<Record<Version, string>> = {};
 /** The bundle's handle on its editor, once it has handed one over. */
 let editor: { setSource(text: string): void; source(): string | null } | null = null;
@@ -1267,6 +1293,7 @@ onBeforeUnmount(() => {
       :shown="shown"
       :dirty="dirty"
       :switching="switching"
+      :rebuilding="rebuilding"
       :provenance="provenance"
       @switch="showVersion($event as Version)"
       @toggle-provenance="provenance = !provenance"
