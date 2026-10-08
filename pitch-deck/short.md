@@ -8,10 +8,9 @@ colorSchema: dark
 
 <div class="frame" style="justify-content:flex-start;padding-top:4.5rem">
   <img class="title-wordmark" src="/brand/logo-horizontal-negative.svg" alt="Cambra">
-  <h1 style="font-size:3.4rem;margin:0">Ship fast. Break nothing.</h1>
+  <h1 style="font-size:3.4rem;margin:0">Agent Heaven is an App Platform</h1>
   <p class="punch" style="margin-top:.6rem">
-      Replace your stack with one program on one engine: 
-      <br>proven before it runs, tested against a branch of production.
+      Build agents that live forever and evolve safely, on a platform that compounds in value as you grow.
   </p>
   <div class="byline">
     <span><div>Dan Sotolongo<br>
@@ -33,13 +32,12 @@ colorSchema: dark
   <div class="grow">
     <div class="grow split">
         <div class="diagram-stack">
-          <!-- The clock names the protagonist and the pace: an engineer with a
-               coding agent, six weeks, not six years. -->
+          <!-- The clock names the protagonist and the pace: an engineer with a coding agent, six weeks, not six years. -->
           <div class="when">
-            <span v-click="1"><b>Day 1</b> the app</span>
-            <span v-click="2"><b>Week 2</b> jobs</span>
-            <span v-click="3"><b>Week 4</b> analytics</span>
-            <span v-click="4"><b>Week 6</b> observability</span>
+            <span v-click="1"><b>Day 1</b> the agent</span>
+            <span v-click="2"><b>Week 2</b> durable runs</span>
+            <span v-click="3"><b>Week 4</b> evals</span>
+            <span v-click="4"><b>Week 6</b> governance</span>
           </div>
           <div class="diagram-canvas">
             <SystemDiagram :stage="$clicks" />
@@ -58,34 +56,12 @@ colorSchema: dark
   <div class="page-no">{{ $slidev.nav.currentPage }} / {{ $slidev.nav.total }}</div>
 </div>
 
-<!--
-0. Here's the problem we're solving. Say you're a software developer building an application.
-
-1. You start with the 3-tier architecture: a database, a server, and a client. You get up and running in a day, and iterate with your agent to get the MVP done in under a week.
-
-2. Then, you realize you need to handle long-lived background tasks. So you add a workflow system.
-
-3. Then, you notice that you need to understand how customers are using your app. So you add an analytics system.
-
-4. Then something breaks, and you remember that you need observability across the whole system. So you add a telemetry system.
-
-And this is just a basic app.
-
-5. The big problem is that all of the connections between these systems are unchecked. 
-
-6. As you add systems, the number of places things can go wrong grows faster. And often, the only way to know when something breaks is to see it in production.
-
-7. AI builds the stack faster. It doesn't make it smaller. Building faster just gets you into this mess sooner.
-
--->
-
 ---
 
 <div class="frame">
   <div class="head">
     <div class="eyebrow">{{ $slidev.nav.currentPage }} · The Solution</div>
     <h2>One program on one engine.</h2>
-    <!-- TODO: put "application" box around each diagram. -->
   </div>
   <div class="grow">
     <div class="scopes">
@@ -98,102 +74,16 @@ And this is just a basic app.
         <div class="scope-canvas"><ScopeDiagram variant="system" /></div>
       </figure>
     </div>
-    <!-- The three pillars, and the only place all three sub-lines appear. The
-         multipliers moved to Why It Wins, where the charts can carry them. -->
     <div class="pillars">
       <div v-click="3"><b>One program on one engine.</b> Not dozens of separate components.</div>
       <div v-click="4"><b>Proven before it runs.</b> The compiler checks your integrity and security rules end to end.</div>
-      <div v-click="5"><b>Tested against a branch of production.</b> See the actual effect of deploying, without risking production.</div>
+      <div v-click="5" class="beat-ember"><b>Change it while it runs.</b> The new version takes over with its state intact, checked by the compiler.</div>
+      <div v-click="6" class="beat-ember"><b>Tested against a branch of production.</b> See the actual effect of deploying, without risking production.</div>
     </div>
-    <p class="closer center" v-click="6">Ship fast. <span class="hot">Break nothing.</span></p>
+    <p class="closer center" v-click="7">Ship fast. <span class="hot">Break nothing.</span></p>
   </div>
   <div class="page-no">{{ $slidev.nav.currentPage }} / {{ $slidev.nav.total }}</div>
 </div>
-
-<!--
-0. Solving this problem requires rethinking the software stack we take for granted.
-
-1. In the traditional stack, a program runs as a process inside of the operating system. The OS handles storage and communication, and we can plug in components to add capabilities.
-The thing that checks whether or not our program makes sense is the compiler.
-So this architecture makes it **impossible** for the compiler to check properties that reach outside of an OS process. That's the root cause of the problem.
-
-2. So the solution is to take the program out of the box. In Cambra, a program is a *logical* description of the relationships between the different parts of your application. Cambra's engine takes care of distributing it across machines, how data is stored, and how the various parts communicate.
-
-3. With Cambra, you write your entire application as a single program, and it runs on a single engine. You don't have to wire together endless components.
-
-4. The compiler checks the integrity and security of your program end-to-end.
-
-5. The engine lets you test new versions of your program against a branch of production, letting you get 100% fidelity without endangering live traffic.
-
-6. So you get to ship with complete confidence.
-
--->
-
----
-
-<div class="frame">
-  <div class="head">
-    <div class="eyebrow">{{ $slidev.nav.currentPage }} · The Insight</div>
-    <h2>Shift left. Automate more.</h2>
-  </div>
-  <div class="grow">
-    <div class="sdlc-canvas"><SdlcDiagram :stage="Math.min($clicks + 1, 3)" :print-stage="3" /></div>
-    <div class="pillars compact">
-      <div class="beat-today"><b>Today</b> — types and unit tests early. All the important stuff late, with a human in the loop.
-        <!-- Reserves the height of page two's tag row. The pair shares a
-             layout, and without this the diagram refits between them. -->
-        <div class="bm-tags" aria-hidden="true" style="margin-left:9em;visibility:hidden">
-            <span>Static Assertions</span>
-            <span>Program Branching</span>
-            <span>Transactional Hot Reload</span>
-        </div>
-      </div>
-    </div>
-    <div class="closer center">Today a <span class="hot">human</span> closes the loop.</div>
-  </div>
-  <div class="page-no">{{ $slidev.nav.currentPage }} / {{ $slidev.nav.total }}</div>
-</div>
-
-<!--
-0. The real impact of this shift manifests when agents are building your application. Consider the software development lifecycle.
-
-1. The programmer writes some code, and compiles it. The compiler tells them if they did something that doesn't make sense. They write and run tests, which tells when the test cases have bugs.
-
-2. But feedback on the most important properties — reliability, integrity, security, performance — is very limited until we deploy to a production-like environment: staging, load tests, audit logging, etc.
-This feedback is slow and expensive. It often needs a human in the loop to ensure the tests are realistic and don't endanger production.
-
-3. So today, the properties that matter most are checked last, by a person. That
-is the loop we have to close.
--->
-
----
-
-<div class="frame">
-  <div class="head">
-    <div class="eyebrow">{{ $slidev.nav.currentPage }} · The Insight</div>
-    <h2>Shift left. Automate more.</h2>
-  </div>
-  <div class="grow">
-    <div class="sdlc-canvas"><SdlcDiagram :stage="4" fixed /></div>
-    <div class="pillars compact">
-      <div class="beat-cambra"><b>Cambra</b> — end-to-end properties checked before deployment, no human required. 
-        <div class="bm-tags" style="margin-left:9em">
-            <span>Static Assertions</span>
-            <span>Program Branching</span>
-            <span>Transactional Hot Reload</span>
-        </div>
-      </div>
-    </div>
-    <div class="closer center">You can't bolt this on. <span class="warm">Cambra designs it in.</span></div>
-  </div>
-  <div class="page-no">{{ $slidev.nav.currentPage }} / {{ $slidev.nav.total }}</div>
-</div>
-
-<!--
-0. Same lifecycle, with Cambra's feedback in place of the slow loop. Cambra automates these feedback signals with groundbreaking features: static assertions, program branching, and transactional hot reload. That gets the human out of the loop, letting AI iterate unimpeded.
-
-1. These features aren't something you can bolt on to an existing application platform. It's something you have to design in. Cambra is the only system built for it.
--->
 
 ---
 
@@ -204,22 +94,22 @@ is the loop we have to close.
   </div>
   <div class="grow">
     <div class="cols n3 trends">
-      <div class="trend" v-click="1">
+      <div class="trend">
         <div class="metaphor cool"><div class="i-ph-users-three-fill"></div></div>
         <div class="col">
           <h3>Huge Market opportunity</h3>
-          AI coding is bottlenecked.
+          <div class="trend-lead">AI coding is bottlenecked.</div>
           <div class="col-body">
             <div align=center class="cool" style="padding: .6em">only <span style="font-size: 28pt; font-weight: bold;">24% </span> gains</div>
             <div class="stat-src"><i class="i-simple-icons-microsoft"></i> Microsoft</div>
           </div>
         </div>
       </div>
-      <div class="trend" v-click="2">
+      <div class="trend">
         <div class="metaphor hot"><div class="i-ph-wall-fill"></div></div>
         <div class="col warm">
           <h3>Falling Adoption barriers</h3>
-          PL adoption is easy.
+          <div class="trend-lead">Programming language adoption is easy.</div>
           <div class="col-body">
             <div class="flex" style="color: var(--amber); align-items: center"><div align=center style="font-weight: bold; line-height: 1; padding: 1em">535,000 lines<br>
                 ———————<br>
@@ -228,34 +118,27 @@ is the loop we have to close.
               <span class="xlate-lang"><i class="i-simple-icons-zig"></i>Zig</span>
               <span class="xlate-arrow">&rarr;</span>
               <span class="xlate-lang"><i class="i-simple-icons-rust"></i>Rust</span>
-          </div>
+            </div>
           </div>
         </div>
       </div>
-      <div class="trend" v-click="3">
+      <div class="trend">
         <div class="metaphor"><img src="/brand/symbol.svg" alt="" /></div>
         <div class="col">
-          <h3>Rising feasibility</h3>
-            Research is pent up.
+          <h3>FUD in the air</h3>
+          <div class="trend-lead">Software vulnerabilities are scarier than ever.</div>
           <div class="col-body">
-            <div class="converge-canvas"><ConvergeDiagram /></div>
+            <div align=center class="cool" style="padding: .6em"><span style="font-size: 28pt; font-weight: bold;">3× </span> CVEs since 2022.</div>
           </div>
         </div>
       </div>
     </div>
+    <!-- Click anchors. `expand-at` reads `$clicks`, which Slidev derives from
+         the v-clicks on the page; with the trends static there are none, so the
+         quotes could never reach their own beat. -->
   </div>
   <div class="page-no">{{ $slidev.nav.currentPage }} / {{ $slidev.nav.total }}</div>
 </div>
-
-<!--
-0. 3 trends make this the perfect moment for this kind of innovation.
-
-1. First, the potential of AI has not yet been realized. A recent Microsoft study showed that adopting coding agents only increased productivity by 24%.
-
-2. Second, historically, there were huge barriers to adopting new programming languages. Agents have completely demolished that barrier. A powerful example is the rewrite of Bun. They ported 500k lines of Zig to Rust, and it took less than 2 weeks. That would have been unthinkable a year ago. Now, they did it for the sake of agent productivity: Rust's compiler gives better feedback than Zig. My takeaway is that better languages make agents better, and agents let you adopt better languages easily.
-
-3. Research has traditionally taken a long time to reach the market. AI has made it possible to synthesize this research into a product faster than ever before, from discovery, to understanding, to implementation. There's going to be a tidal wave of research going mainstream. We're just riding that wave.
--->
 
 ---
 
@@ -267,6 +150,7 @@ is the loop we have to close.
   <div class="grow">
       <p>Each with over a decade of experience working on this problem.</p>
       <p>Created and grew Dynamic Tables at Snowflake to $100M ARR over 4 years.</p>
+      <p>Every offer we&rsquo;ve made has been accepted &mdash; 4 of 4, with talent arriving unsolicited.</p>
       <br>
     <div class="cols" style="grid-template-columns:1fr 1fr 1fr">
       <TeamCard photo="/team/dan.jpg" name="Dan Sotolongo" role="Founder/CEO"
@@ -285,14 +169,6 @@ is the loop we have to close.
   </div>
   <div class="page-no">{{ $slidev.nav.currentPage }} / {{ $slidev.nav.total }}</div>
 </div>
-
-<!--
-Our team is world class. We each have over a decade of experience working on this problem from above and below.
-
-Daniel and I tag-teamed the creation of Dynamic Tables at Snowflake, which grew into a $100M business over 4 years. I'm the product guy, he blasts through implementation. Before that we worked on groundbreaking stream processing systems. Skylar drives our developer experience, having hit this problem from many different angles and built developer infrastructure at scale.
-
-We have the right technical knowledge, and the experience of bringing cutting edge products to market. We're the team you'd bet can solve this problem.
--->
 
 ---
 
@@ -338,7 +214,7 @@ We have the right technical knowledge, and the experience of bringing cutting ed
             <span class="vl-co"><i class="vl-dot"></i>Inngest</span>
             <span class="vl-co"><i class="vl-dot"></i>Restate</span>
           </span>
-          <span class="vl-val">$12B</span>
+          <span class="vl-val">$13B</span>
           <span class="vl-growth">3&times; / yr</span>
         </div>
         <svg class="venn-region convex" v-click="4" viewBox="0 0 315 299.59" aria-hidden="true">
@@ -355,9 +231,18 @@ We have the right technical knowledge, and the experience of bringing cutting ed
       </div>
       </div>
       </div>
-      <div class="beats">
+      <div class="beats beats-clear">
         <p v-click="4"><span class="hot">Convex</span> unifies 2 categories.</p>
         <p class="closer" v-click="5">Only <span class="warm">Cambra</span> does all 3.</p>
+        <div class="spend" v-click="6">
+          <div class="spend-head">Cost of revenue by layer</div>
+          <div class="cor">
+            <div class="cor-row"><span class="cor-name">Apps</span><span class="cor-track"><span class="cor-bar" style="width:100.0%"><i style="width:47%"></i></span></span><span class="cor-val">47%</span></div>
+            <div class="cor-row here"><span class="cor-name">Data &amp; platform</span><span class="cor-track"><span class="cor-bar" style="width:47.00%"><i style="width:24%"></i></span></span><span class="cor-val">24%</span></div>
+            <div class="cor-row"><span class="cor-name">Infrastructure</span><span class="cor-track"><span class="cor-bar" style="width:11.28%"><i style="width:44%"></i></span></span><span class="cor-val">44%</span></div>
+          </div>
+          <p class="spend-note">The platform layer has both centralization and large margins.</p>
+        </div>
       </div>
     </div>
   </div>
@@ -366,24 +251,11 @@ We have the right technical knowledge, and the experience of bringing cutting ed
       <span v-click="1">Snowflake is a live market cap. Analytics growth covers Snowflake and Databricks.</span>
       <br>
       <span v-click="2"><span style="font-family: var(--f-logo)">*</span> Select independents only. Hyperscalers dominate the category. <br><span class="vl-dot vl-dot-inline"></span> do not disclose revenue.</span>
+      <span v-click="6"><br>Apps: AI-native SaaS, <a href="https://avanteventures.com/en/library/ai-startup-gross-margin-benchmark-2026">ICONIQ State of AI 2026 &nearr;</a> &middot; Platform: <a href="https://www.snowflake.com/en/news/press-releases/snowflake-reports-financial-results-for-the-fourth-quarter-and-full-year-of-fiscal-2026/">Snowflake FY2026 &nearr;</a> 24%, <a href="https://www.sec.gov/Archives/edgar/data/0001561550/000162828026053829/ex-991x20260630x8k.htm">Datadog Q2 2026 &nearr;</a> 20% &middot; Infra: <a href="https://www.stocktitan.net/sec-filings/DOCN/10-q-digital-ocean-holdings-inc-quarterly-earnings-report-a7679abb1555.html">DigitalOcean Q1 2026 &nearr;</a></span>
       
   </div>
   <div class="page-no">{{ $slidev.nav.currentPage }} / {{ $slidev.nav.total }}</div>
 </div>
-
-<!--
-0. Cambra works at the intersection of 3 product categories.
-
-1. Analytics is a behemoth with major incumbents like Snowflake, Databricks, and Clickhouse, cumulative valuations in the hundreds of billions, and annual growth between 30 and 80 percent.
-
-2. Serving backend APIs is a huge business. We picked a few examples with a lot of momentum as representative of the use cases we would target. Their combined valuations is $20B, with a yearly growth rate of 2-3x.
-
-3. Durable execution is a new category, but it's seeing explosive growth. Temporal is the dominant player, with a raise announced this week at $12B and growing at 3x.
-
-4. Convex blends serving with durable execution. They're growth stage, so numbers aren't public, but they've raised $110M. They are positioning themselves as a new category: "Backend Application Platform".
-
-5. Cambra is the only product that unifies all 3 categories. That's what you have to do to be a true backend application platform.
--->
 
 ---
 
@@ -419,22 +291,102 @@ We have the right technical knowledge, and the experience of bringing cutting ed
         <p class="lead-p">Instead of counting <strong>products</strong>, <br>let's count <strong>customers</strong>.</p>
         <p v-click="1">Almost every app needs all three.</p>
         <p class="closer" v-click="2">Cambra's TAM is <span class="warm">software applications</span>.</p>
-        <p v-click="3"><strong>Wedge ICP</strong>: teams <span class="hot">outgrowing their PaaS.</span></p>
       </div>
     </div>
   </div>
   <div class="page-no">{{ $slidev.nav.currentPage }} / {{ $slidev.nav.total }}</div>
 </div>
 
-<!--
-0. Those are the product categories, but the market segmentation looks very different.
+---
 
-1. In fact, most applications need to buy all 3 categories. But they've been kept separate because people think unifying them is impossible.
+<div class="frame">
+  <div class="head">
+    <div class="eyebrow">{{ $slidev.nav.currentPage }} · The Wedge</div>
+    <h2>Agents force the change.</h2>
+  </div>
+  <div class="grow">
+    <div class="cols n2 venn-row">
+      <!-- The market slide's own Venn, unchanged in geometry, with the wedge
+           named at the intersection instead of the company. -->
+      <div class="venn-col">
+        <div class="venn-head">What it needs</div>
+        <div class="venn-stage">
+      <div class="venn">
+        <div class="venn-circle analytics"></div>
+        <div class="venn-label analytics"><span class="vl-name">Analytics</span></div>
+        <div class="venn-circle serving"></div>
+        <div class="venn-label serving"><span class="vl-name">Serving</span></div>
+        <div class="venn-circle durable"></div>
+        <div class="venn-label durable"><span class="vl-name">Durable execution</span></div>
+        <svg class="venn-region cambra" viewBox="0 0 315 299.59" aria-hidden="true">
+          <path class="for-cat" d="M115.40 108.88A100 100 0 0 1 199.60 108.89A100 100 0 0 1 157.50 181.82A100 100 0 0 1 115.40 108.88Z" />
+        </svg>
+        <div class="venn-core" style="width:auto;height:auto;padding:.3rem .6rem;background:var(--abyssal);border:1px solid var(--warm);border-radius:6px;font-family:var(--f-mono);font-size:.62rem;font-weight:700;letter-spacing:.08em;text-transform:uppercase;color:var(--warm);white-space:nowrap">agent runtimes</div>
+      </div>
+        </div>
+        <div class="wspend">
+          <b class="ws-amt">$250M</b>
+          <span class="ws-txt">a year on Temporal, up <b>200%</b>. 18 of the top 30 AI-native companies run on it.</span>
+        </div>
+        <div class="ws-src"><a href="https://www.geekwire.com/2026/temporal-12-55b-valuation-ai-agents/">Temporal Series E, Sept 2026 &nearr;</a></div>
+      </div>
+      <div class="beats reqs">
+          <p>Everybody is building agents on durable execution. <span>But agents need all this:</span></p>
+        <ul>
+          <li><strong>Immortality.</strong> Not a run that ends when the history log fills.</li>
+          <li><strong>Evolvability.</strong> Without replay or pinned old versions.</li>
+          <li><strong>Transactional shared state.</strong> One store, across agents.</li>
+          <li><strong>Branchability.</strong> For evals, simulation, experiments.</li>
+          <li><strong>Verifiability.</strong> As models grow more autonomous.</li>
+          <li><strong>Complete provenance.</strong> Every decision back to its causes.</li>
+        </ul>
+        <p class="closer">Temporal does none of them. <span>The architecture that solves agents <span class="hot">is an application platform</span> </span> 
+        <span> &mdash; one you can adopt <span class="hot">one agent at a time</span>, alongside your existing stack.</span></p>
+      </div>
+    </div>
+  </div>
+  <div class="page-no">{{ $slidev.nav.currentPage }} / {{ $slidev.nav.total }}</div>
+</div>
 
-2. We disagree. Cambra unifies all 3 categories, and this market structure means our addressable market is something like "all software applications"— a gigantic market full of incumbents with structural limitations. A unified product stands to take the whole market—it's the iPhone to the cameras, GPSes, and dumb phones of software infrastructure.
+---
 
-3. Of course, we're not chasing that right out of the gate. Our wedge hypothesis is to focus on teams who have outgrown their PaaS, and are about to adopt a durable execution framework or analytics stack.
--->
+<div class="frame">
+  <div class="head">
+    <div class="eyebrow">{{ $slidev.nav.currentPage }} · Why It Wins</div>
+    <h2 style="max-width:none">Compounds as agents get more capable.</h2>
+  </div>
+  <div class="grow">
+    <div class="ladder">
+      <div class="rung-group g1">
+        <div class="rung-label">Foundation</div>
+        <div class="rungs">
+          <div class="rung"><b>Immortality</b><span>A run never has to end.</span></div>
+          <div class="rung"><b>Evolvability</b><span>New code takes over a live run.</span></div>
+        </div>
+      </div>
+      <div class="rung-group g2">
+        <div class="rung-label">Complex systems</div>
+        <div class="rungs">
+          <div class="rung"><b>Transactional shared state</b><span>Agents read and write one store.</span></div>
+          <div class="rung"><b>Branchability</b><span>Fork the world and test against it.</span></div>
+        </div>
+      </div>
+      <div class="rung-group g3">
+        <div class="rung-label">Safety &amp; governance</div>
+        <div class="rungs">
+          <div class="rung"><b>Verifiability</b><span>Invariants the compiler enforces.</span></div>
+          <div class="rung"><b>Complete provenance</b><span>Every decision traces to its causes.</span></div>
+        </div>
+      </div>
+    </div>
+    <div class="verdict">
+      <p class="verdict-head">Durable execution <span class="hot">can't do these</span>.</p>
+      <p class="verdict-why">It relies on <b>deterministic replay</b>, which makes all of these features inaccessible in principle.</p>
+    </div>
+    <p class="closer center">For Cambra, these are just <span class="hot">consequences</span> of its architecture.</p>
+  </div>
+  <div class="page-no">{{ $slidev.nav.currentPage }} / {{ $slidev.nav.total }}</div>
+</div>
 
 ---
 
@@ -495,44 +447,37 @@ We have the right technical knowledge, and the experience of bringing cutting ed
   <div class="page-no">{{ $slidev.nav.currentPage }} / {{ $slidev.nav.total }}</div>
 </div>
 
-<!--
--->
-
 ---
 
 <div class="frame">
   <div class="head">
     <div class="eyebrow">{{ $slidev.nav.currentPage }} · The Ask</div>
     <h2 style="font-family:var(--f-logo);font-size:2.6rem">$4M seed</h2>
-    <div class="ask-sub">18-24 months to the Series A</div>
+    <div class="ask-sub">12–18 months to the Series A</div>
   </div>
   <div class="grow">
     <div class="ask-phases">
-      <div class="ask-phase" style="--h:48%">
-        <div class="ph"><span>Open Source</span><span>months 0–6</span></div>
-        <div class="amt">$0.6M<small>team of 6</small></div>
-        <div class="deliv">Teams outgrowing their PaaS/BaaS reach for Cambra instead of a workflow engine and analytics stack.</div>
+      <div class="ask-phase" style="--h:56%">
+        <div class="ph"><span>MVP</span><span>months 0–6</span></div>
+        <div class="amt">$0.9M<small>team of 6</small></div>
+        <div class="deliv">Get hot reload + agent integrations in a design partner's hands within 3 months. Iterate to MVP in 3 more.</div>
       </div>
-      <div class="ask-phase" style="--h:69%">
-        <div class="ph"><span>Hosted Engine</span><span>months 6–18</span></div>
-        <div class="amt">$1.8M<small>team of 8</small></div>
-        <div class="deliv">The hosted engine is <b class="cool">in production</b> with 3–5 paying design partners. Grow OSS community to prime sales funnel for launch.</div>
+      <div class="ask-phase" style="--h:75%">
+        <div class="ph"><span>Production</span><span>months 6–12</span></div>
+        <div class="amt">$1.2M<small>team of 8</small></div>
+        <div class="deliv">Get 5 paying design partners <b class="cool">into production</b>. Hire dev-rel to grow OSS community, prime sales funnel.</div>
       </div>
       <div class="ask-phase warm" style="--h:100%">
-        <div class="ph"><span>Grow</span><span>months 18–24</span></div>
-        <div class="amt">$1.3M<small>team of 11</small></div>
-        <div class="deliv">Raise the Series A on production usage, leaving six months of runway. Launch public Beta, freemium tier. Ramp up marketing.</div>
+        <div class="ph"><span>Growth</span><span>months 12–18</span></div>
+        <div class="amt">$1.6M<small>team of 11</small></div>
+        <div class="deliv">Raise the Series A on production usage, leaving six months of runway. Start building hosted service, freemium tier. Ramp up marketing.</div>
       </div>
     </div>
     <div class="ask-footer">
       <div><strong>Where it goes</strong> &middot; people 87% &middot; cloud + inference 7% &middot; legal, accounting, travel 6% &middot; plan $3.8M + reserve</div>
-      <div><strong>Already in</strong> &middot; Snowflake co-founder &middot; Redpanda CTO &middot; SAFEs at a $20M cap</div>
+      <div><strong>Already in</strong> &middot; Snowflake co-founder &middot; Redpanda CEO, CTO &middot; SAFEs at a $20M cap</div>
     </div>
   </div>
   <div class="page-no">{{ $slidev.nav.currentPage }} / {{ $slidev.nav.total }}</div>
 </div>
-
-<!--
-
--->
 

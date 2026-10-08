@@ -5,9 +5,8 @@
 //     it, so whatever a beat would have revealed is simply shown.
 // Run: npm run short
 //
-// Insight used to be split here, one SDLC stage per page. slides.md now ships
-// it split, so this takes both pages as they are. Same for Why Now, which is
-// two pages in the full deck; the short deck keeps the one with the figures.
+// Insight lives in the appendix now, so it is not here. Why Now was two pages
+// until 2026-09-22; it is one, and the short deck drops its pull-quotes.
 const fs = require('fs')
 const path = require('path')
 const dir = path.join(__dirname, '..')
@@ -20,41 +19,50 @@ let prev = 0
 for (const i of [...seps, lines.length]) { blocks.push(lines.slice(prev, i).join('\n')); prev = i + 1 }
 
 const eyebrowOf = (b) => (b.match(/class="eyebrow"[^>]*>\s*([^<]+)/) || [, ''])[1].trim()
-const pick = (i, expect) => {
-  const got = eyebrowOf(blocks[i])
-  if (!got.includes(expect)) throw new Error(`block ${i}: expected "${expect}", found "${got}" — slides.md order changed`)
-  return blocks[i]
+
+// Only the main deck. The appendix labels itself "Appendix · …", and the short
+// deck never draws from it.
+const appendixAt = blocks.findIndex((b) => /<h1[^>]*>\s*Appendix\s*</.test(b))
+if (appendixAt < 0) throw new Error('no Appendix divider found in slides.md')
+const MAIN = blocks.slice(0, appendixAt)
+
+// Pick by what a slide SAYS, not where it sits — reordering the deck is a
+// normal edit and must not silently reshuffle the leave-behind.
+const pick = (expect) => {
+  const hits = MAIN.filter((b) => eyebrowOf(b).includes(expect))
+  if (hits.length === 0) throw new Error(`no main-deck slide with eyebrow "${expect}"`)
+  return hits[0]
 }
 
 const FRONTMATTER = blocks[1]
 const COVER = blocks[2]
-const PROBLEM   = pick(3, 'The Problem')
-const SOLUTION  = pick(4, 'The Solution')
-const INSIGHT_F = pick(5, 'The Insight')   // the human loop
-const INSIGHT_G = pick(6, 'The Insight')   // the Cambra loop
-const WHYNOW    = pick(7, 'Why Now')       // the figures; page two is the quotes
-const TEAM      = pick(9, 'Team')
-const MARKET    = pick(10, 'Market')  // categories
-const SEGMENTS  = pick(11, 'Market')  // segments — the payoff of the one above
-const BIZ       = pick(16, 'Business Model')
-const ASK       = pick(17, 'The Ask')
+const PROBLEM   = pick('The Problem')
+const SOLUTION  = pick('The Solution')
+const WEDGE     = pick('The Wedge')            // agents force the change
+const WINS      = pick('Why It Wins')          // the capability ladder
+const WHYNOW    = pick('Why Now')              // the figures; page two is the quotes
+const TEAM      = pick('Team')
+const MARKET    = pick('Market positioning')   // categories
+const SEGMENTS  = pick('Market Size')          // the payoff of the one above
+const BIZ       = pick('Business Model')
+const ASK       = pick('The Ask')
 
-// --- Insight: both pages, minus their clicks -----------------------------
 // A leave-behind has nobody to press the button, so every beat is shown.
 const unclick = (b) => b.replace(/ v-click=("?)[^"\s>]+\1/g, '')
-const INSIGHT_A = unclick(INSIGHT_F)
-const INSIGHT_B = unclick(INSIGHT_G)
 
-// --- Why Now: drop the pull-quotes, then close the click gaps they left ---
+// --- Why Now: drop the pull-quotes ---
+// The deck carries one Why Now now, and its three trends are already static,
+// so there is nothing left to restage — only the quotes to remove, and the
+// click anchor that existed solely to give them a beat.
 let WHYNOW_S = WHYNOW.replace(/ *<QuoteCard[\s\S]*?\/>\n/g, '')
-                     .replace(/ *<div v-click="2"><\/div>\n/g, '')
-let trend = 0
-WHYNOW_S = WHYNOW_S.replace(/<div class="trend" v-click=("?)\d\1>/g, () => `<div class="trend" v-click="${++trend}">`)
-if (trend !== 3) throw new Error(`Why Now: restaged ${trend} trends, expected 3`)
+                     .replace(/ *<div class="click-anchor" v-click="[^"]*"><\/div>\n/g, '')
+if (/<QuoteCard/.test(WHYNOW_S)) throw new Error('Why Now: a QuoteCard survived the strip')
+const trends = (WHYNOW_S.match(/<div class="trend"/g) || []).length
+if (trends !== 3) throw new Error(`Why Now: found ${trends} trends, expected 3`)
 
-const PAGES = [COVER, PROBLEM, SOLUTION, INSIGHT_A, INSIGHT_B, WHYNOW_S, TEAM, MARKET, SEGMENTS, BIZ, ASK]
-// Insight's two pages share a number, and so do the two market pages.
-const NUMBERS = [null, 1, 2, 3, 3, 4, 5, 6, 6, 7, 8]
+const PAGES = [COVER, PROBLEM, SOLUTION, WHYNOW_S, TEAM, MARKET, SEGMENTS, unclick(WEDGE), unclick(WINS), BIZ, ASK]
+// The two market pages share a number.
+const NUMBERS = [null, 1, 2, 3, 4, 5, 5, 6, 7, 8, 9]
 const renumbered = PAGES.map((b, i) =>
   NUMBERS[i] == null ? b : b.replace(/(class="eyebrow"[^>]*>\s*)\d\d( · )/, `$1${String(NUMBERS[i]).padStart(2, '0')}$2`))
 

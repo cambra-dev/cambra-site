@@ -4,6 +4,9 @@ import { useSlideContext } from '@slidev/client'
 
 const props = defineProps({
   initials: { type: String, required: true },
+  // A headshot to use instead of the initials. The initials stay required as
+  // the fallback and as the img's alt text.
+  photo: { type: String, default: '' },
   quote: { type: String, required: true },
   // The unabridged version. Shown from `expandAt` onwards; omit it and the
   // card never changes.
@@ -28,7 +31,10 @@ const expanded = computed(
 
 <template>
   <div class="quote-card" :class="{ expanded, veiled: revealOnExpand && !expanded }">
-    <div class="avatar">{{ initials }}</div>
+    <div class="avatar" :class="{ photo: !!photo }">
+      <img v-if="photo" :src="photo" :alt="initials" />
+      <template v-else>{{ initials }}</template>
+    </div>
     <div class="qbody">
       <p class="qtext">{{ quote }}</p>
       <div class="qname"><b>{{ name }}</b> — {{ title }}</div>
@@ -41,7 +47,10 @@ const expanded = computed(
          column outright reads as deliberate where a partial overlay just looks
          like a clipped bullet. Attribution is repeated so it stands alone. -->
     <div v-if="fullQuote" class="qfull" :class="{ expanded }">
-      <div class="avatar">{{ initials }}</div>
+      <div class="avatar" :class="{ photo: !!photo }">
+        <img v-if="photo" :src="photo" :alt="initials" />
+        <template v-else>{{ initials }}</template>
+      </div>
       <div class="qbody">
         <p class="qtext">{{ fullQuote }}</p>
         <div class="qname"><b>{{ name }}</b> — {{ title }}</div>
@@ -96,6 +105,17 @@ const expanded = computed(
   font-size: 0.7rem;
   color: var(--abyssal);
   background: var(--amber);
+  overflow: hidden;
+}
+/* The photo fills the circle; the amber disc would otherwise show as a ring
+   around a crop that is not perfectly square. */
+.avatar.photo {
+  background: none;
+}
+.avatar img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
 }
 .qbody {
   display: flex;

@@ -1085,10 +1085,20 @@ span.warm {
    the two pages do not resize and shift between them. Hiding a copy of the card
    on page one does not work — `.qfull.expanded` sets `visibility: visible`, so
    it reappears through an inherited `hidden`. */
-.trends .trend {
-  /* Above what either page needs, so both take the minimum and neither page's
-     own content decides the height. */
-  min-height: 21.5rem;
+/* Both Why Now pages carry the same three columns; only page two hangs
+   QuoteCards off them. A fixed minimum used to hold the two level, and page
+   two outgrew it — so the row fills `.grow` instead. The height now comes from
+   the frame, which both pages share, and cannot drift as content changes. */
+.cols.trends {
+  flex: 1;
+  min-height: 0;
+}
+
+/* The lead sentence sits between the heading and `.col-body`. Left bare it
+   wraps to one line in one column and two in the next, which starts the three
+   bodies — and so the three stat blocks — at different heights. Two, always. */
+.trend-lead {
+  min-height: 3.1em;
 }
 
 .click-anchor {
@@ -1736,3 +1746,1424 @@ span.warm {
   color: var(--fg-2);
 }
 
+
+/* --- What has to be true ----------------------------------------------
+   The five hypotheses the company rests on, and where each stands. Same
+   facts the Traction slide carried; the frame is what changed — a list of
+   accomplishments invites a shrug, a list of things that must be true, three
+   already answered, invites the next question.
+
+   The status column runs cool → warm → grey down the slide, so the shape of
+   the argument reads before any word does. */
+.hyps {
+  display: flex;
+  flex-direction: column;
+  margin-top: 0.3rem;
+}
+.hyp {
+  display: grid;
+  grid-template-columns: 1.15fr 6.5rem 1.7fr;
+  /* Column gap only. `gap` also applies between grid ROWS, and the chips and
+     quote cards sit in an implicit second row — so a shorthand here stacked
+     1rem of row-gap on top of their own margin. */
+  column-gap: 1rem;
+  row-gap: 0;
+  align-items: baseline;
+  padding: 0.72rem 0;
+  /* Heavier than the `--line` borders on the chips and quote cards that sit
+     inside these bands: the divider has to outrank the content it separates,
+     or the rows stop reading as rows. */
+  border-bottom: 2px solid var(--line-2);
+}
+.hyp .h-claim {
+  font-family: var(--f-disp);
+  font-size: 1.02rem;
+  font-weight: 700;
+  line-height: 1.25;
+  color: var(--fg);
+}
+.hyp .h-status {
+  font-family: var(--f-mono);
+  font-size: 0.64rem;
+  font-weight: 700;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+}
+.hyp .h-status.ok { color: var(--cool); }
+.hyp .h-status.now { color: var(--warm); }
+.hyp .h-status.open { color: var(--fg-3); }
+.hyp .h-ev {
+  font-size: 0.8rem;
+  line-height: 1.34;
+  color: var(--fg-2);
+}
+.hyps + .closer {
+  margin-top: 1.15rem;
+}
+/* The two prospects who put a number on it, under the ladder they are evidence
+   for. Their own words rather than the row's summary of them — "two buyers
+   named a price" is the claim, and this is the receipt. */
+.hyp-quotes {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 0.9rem;
+  /* Inside the row's own band: spans all three columns, sitting under the claim
+     it is evidence for and above that row's rule. `align-self` because the row
+     aligns its cells on the baseline, which a block like this has no business
+     participating in. */
+  grid-column: 1 / -1;
+  align-self: start;
+  /* Matches the stat chips: tight to the claim, clear of the rule below. */
+  margin-top: 0.35rem;
+  margin-bottom: 0.5rem;
+}
+/* Concrete numbers under the agent claim, in the same band. Lighter than the
+   quote cards below them so the two elaborations do not compete. */
+.hyp-stats {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 0.9rem;
+  grid-column: 1 / -1;
+  align-self: start;
+  /* Each chip sizes to its own text and centres in its third. Grid items
+     stretch by default, which gave three boxes of equal width holding text of
+     very unequal length. */
+  justify-items: center;
+  /* Tight to the claim they elaborate, clear of the rule below. */
+  margin-top: 0.35rem;
+  margin-bottom: 0.5rem;
+}
+.hs {
+  display: flex;
+  align-items: baseline;
+  gap: 0.5rem;
+  padding: 0.4rem 0.7rem;
+  background: var(--bg-2);
+  border: 1px solid var(--line);
+  border-left: 3px solid var(--warm);
+  border-radius: 8px;
+}
+.hs b {
+  font-family: var(--f-mono);
+  font-size: 0.95rem;
+  font-weight: 700;
+  color: var(--warm);
+  white-space: nowrap;
+}
+.hs span {
+  font-size: 0.7rem;
+  line-height: 1.2;
+  color: var(--fg-2);
+}
+
+/* --- Lists inside .beats ---------------------------------------------
+   The Wedge slide's requirements. `.col ul` carries the deck's list look —
+   square cool marker, no browser bullets — but `.col` is a card with a fill
+   and a rail, which would box the requirements away from the lead and closer
+   beside them. So the same marker, unboxed, for a list that sits in prose. */
+.beats ul {
+  margin: 0;
+  padding: 0;
+  list-style: none;
+  display: flex;
+  flex-direction: column;
+  gap: 0.7rem;
+}
+.beats li {
+  position: relative;
+  padding-left: 1.1rem;
+  font-size: 0.95rem;
+  line-height: 1.35;
+  color: var(--fg-2);
+}
+.beats li strong {
+  color: var(--fg);
+}
+.beats li::before {
+  content: '';
+  position: absolute;
+  left: 0;
+  top: 0.55em;
+  width: 5px;
+  height: 5px;
+  border-radius: 1px;
+  background: var(--cool);
+}
+
+/* The hot-reload claim on the Solution slide. Placed after the positional
+   pillar rules so equal specificity resolves in its favour, like .beat-cambra. */
+.pillars > div.beat-ember {
+  border-left-color: var(--ember);
+}
+
+/* The Wedge: six requirements beside the Venn. Tighter than the default list
+   and a smaller closer, or six lines plus the turn do not fit half a slide. */
+.beats.reqs {
+  gap: 0.5rem;
+}
+.beats.reqs ul {
+  gap: 0.28rem;
+}
+.beats.reqs li {
+  font-size: 0.88rem;
+  line-height: 1.32;
+}
+.beats.reqs > p:first-child {
+  font-size: 0.9rem;
+}
+.beats.reqs .closer {
+  font-size: 1.05rem;
+}
+
+/* Why It Wins: the capability ladder. Three groups read left to right; each
+   carries a rail in the pillar colours (cool, warm, coral) and two rungs. */
+.ladder {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  column-gap: 1.6rem;
+  margin-top: 0.4rem;
+}
+.rung-group {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  gap: 1.1rem;
+}
+.rung-group + .rung-group::before {
+  content: '\2192';
+  position: absolute;
+  left: -1.3rem;
+  top: -0.1rem;
+  font-family: var(--f-mono);
+  font-size: 1rem;
+  color: var(--fg-3);
+}
+.rung-label {
+  font-family: var(--f-mono);
+  font-size: 0.76rem;
+  font-weight: 700;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  padding-bottom: 0.55rem;
+  border-bottom: 2px solid var(--line-2);
+}
+.rung-group.g1 .rung-label { color: var(--cool);  border-bottom-color: var(--cool); }
+.rung-group.g2 .rung-label { color: var(--warm);  border-bottom-color: var(--warm); }
+.rung-group.g3 .rung-label { color: var(--coral); border-bottom-color: var(--coral); }
+.rungs {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 1.2rem;
+}
+.rung {
+  display: flex;
+  flex-direction: column;
+  gap: 0.45rem;
+  min-width: 0;
+}
+.rung b {
+  font-family: var(--f-disp);
+  font-size: 1.3rem;
+  font-weight: 700;
+  line-height: 1.15;
+  color: var(--fg);
+}
+.rung span {
+  font-size: 0.92rem;
+  line-height: 1.35;
+  color: var(--fg-2);
+}
+.ladder + .closer {
+  margin-top: 1.4rem !important;
+}
+
+/* ── Root cause ──────────────────────────────────────────────────────────
+   One premise across the top, three cuts below. The diagrams share a fixed
+   grid so the argument is geometric — count the boundaries — which only
+   works if the three stages are the same height and scale.
+
+   Text rules carry a `.frame` prefix: the default theme styles `.slidev-layout
+   p` (0,1,1), which outranks a bare class and was stretching these to its own
+   line-height. Same fight `.slidev-layout h2` documents above. */
+.grow.rc {
+  gap: 0.8rem;
+}
+.rc-premise {
+  flex: none;
+  display: flex;
+  align-items: center;
+  gap: 1.3rem;
+}
+.frame .rc-premise p {
+  margin: 0;
+  font-size: 1rem;
+  line-height: 1.35;
+  color: var(--fg-2);
+  max-width: 54ch;
+}
+.rc-premise b {
+  color: var(--fg);
+  font-weight: 700;
+}
+.rc-stage {
+  position: relative;
+  height: 8.2rem;
+}
+.rc-stage.rc-sm {
+  flex: none;
+  width: 17rem;
+  height: 4.6rem;
+}
+.rc-panels {
+  flex: none;
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  column-gap: 1.2rem;
+}
+.rc-panel {
+  margin: 0;
+  min-width: 0;
+  display: flex;
+  flex-direction: column;
+  /* Content-sized, top-aligned: a stretched figure spreads its rows and the
+     vendor line drifts away from the claim it belongs to. */
+  justify-content: flex-start;
+  gap: 0.4rem;
+}
+.rc-panel figcaption {
+  display: flex;
+  align-items: baseline;
+  gap: 0.45rem;
+  font-family: var(--f-disp);
+  font-size: 0.85rem;
+  font-weight: 700;
+  line-height: 1.2;
+  color: var(--fg);
+}
+.rc-tag {
+  flex: none;
+  padding: 0.1rem 0.32rem;
+  border: 1px solid var(--line-2);
+  border-radius: 4px;
+  font-family: var(--f-mono);
+  font-size: 0.56rem;
+  font-weight: 700;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: var(--fg-3);
+}
+.rc-tag.warm {
+  border-color: var(--warm);
+  color: var(--warm);
+}
+.frame .rc-cost {
+  margin: 0;
+  font-size: 0.78rem;
+  line-height: 1.3;
+  color: var(--fg-2);
+}
+.rc-cost b {
+  color: var(--fg);
+  font-weight: 700;
+}
+.frame .rc-who {
+  margin: 0;
+  font-family: var(--f-mono);
+  font-size: 0.6rem;
+  line-height: 1.2;
+  letter-spacing: 0.04em;
+  color: var(--fg-3);
+}
+.rc-who.warm {
+  color: var(--warm);
+}
+/* The answer, not a third option. A box around the stage read as loose — the
+   stage is column-width and the diagram inside it is not — so the signal is
+   carried by the caption and the vendor line instead. */
+.rc-panel.is-us figcaption {
+  color: var(--warm);
+}
+.rc-panels + .closer {
+  font-size: 1.2rem;
+}
+
+/* ── Split brain / one brain ─────────────────────────────────────────────
+   The pair that carries the argument: two hemispheres with the sync work
+   drawn in the gap between them, then the same picture with the gap closed.
+   Warm is the program (as in ScopeDiagram), grey is what sits outside it,
+   coral is the seam — the deck's colour for where things go wrong.
+
+   `.frame` prefixes on the text rules: the theme's `.slidev-layout p` is
+   (0,1,1) and outranks a bare class. */
+.brain {
+  flex: none;
+  display: grid;
+  grid-template-columns: 1fr 8.5rem 1fr;
+  align-items: stretch;
+}
+.brain.one {
+  grid-template-columns: 1fr;
+  justify-items: center;
+}
+.hemi {
+  background: var(--bg-2);
+  border: 2px solid var(--warm);
+  border-radius: 12px;
+  padding: 0.85rem 1.05rem;
+  display: flex;
+  flex-direction: column;
+  gap: 0.25rem;
+}
+.hemi.out {
+  border-color: var(--fg-3);
+}
+.hemi.whole {
+  max-width: 46rem;
+}
+.hemi-where {
+  font-family: var(--f-mono);
+  font-size: 0.6rem;
+  font-weight: 700;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  color: var(--warm);
+}
+.hemi.out .hemi-where {
+  color: var(--fg-3);
+}
+.hemi-what {
+  font-family: var(--f-disp);
+  font-size: 1.4rem;
+  font-weight: 700;
+  line-height: 1.1;
+  color: var(--fg);
+}
+.frame .hemi p {
+  margin: 0.1rem 0 0;
+  font-size: 0.82rem;
+  line-height: 1.35;
+  color: var(--fg-2);
+}
+/* The gap is the point of the slide, so it carries the label rather than
+   being empty space between two boxes. */
+.seam {
+  position: relative;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+.seam::before {
+  content: '';
+  position: absolute;
+  top: 0.5rem;
+  bottom: 0.5rem;
+  left: 50%;
+  border-left: 2px dashed var(--coral);
+}
+.seam span {
+  position: relative;
+  background: var(--abyssal);
+  padding: 0.4rem 0.3rem;
+  font-family: var(--f-mono);
+  font-size: 0.6rem;
+  font-weight: 700;
+  letter-spacing: 0.08em;
+  line-height: 1.5;
+  text-transform: uppercase;
+  text-align: center;
+  color: var(--coral);
+}
+.sync-work {
+  flex: none;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 0.5rem;
+}
+.frame .brain-lead {
+  margin: 0;
+  font-size: 0.88rem;
+  line-height: 1.3;
+  color: var(--fg-2);
+}
+.sync-work .pills {
+  justify-content: center;
+}
+/* Struck through rather than removed: the point is that these still exist as
+   concepts — they just have nothing to do here. */
+.pill.off {
+  color: var(--fg-3);
+  border-color: var(--line);
+  text-decoration: line-through;
+  text-decoration-color: var(--coral);
+  text-decoration-thickness: 2px;
+}
+
+/* Six rows on De-risking, two of them carrying evidence cards, do not fit at
+   the original band sizes. Tightened here rather than on `.hyp` itself so the
+   Why It Wins ladder, which shares the class, keeps its roomier proportions. */
+.hyps.tight .hyp {
+  padding: 0.48rem 0;
+}
+.hyps.tight .hyp .h-claim {
+  font-size: 0.95rem;
+}
+.hyps.tight .hyp .h-ev {
+  font-size: 0.76rem;
+  line-height: 1.3;
+}
+.hyps.tight .hyp-stats,
+.hyps.tight .hyp-quotes {
+  margin-top: 0.3rem;
+  margin-bottom: 0.25rem;
+}
+/* A single card sits under the claim it evidences rather than being stretched
+   across the full width of the band. */
+.hyp-quotes.one {
+  grid-template-columns: minmax(0, 30rem);
+  justify-items: stretch;
+}
+
+/* ── Market: the layer map ───────────────────────────────────────────────
+   Eight bands, each carrying one sourced figure and one dated verdict. The
+   runtime band is drawn EMPTY on purpose — put a logo in it and the slide
+   becomes a self-serving 2x2 with extra steps. The logo belongs on the
+   slide after this one. */
+.head-sub {
+  font-size: 0.95rem;
+  line-height: 1.35;
+  color: var(--fg-2);
+  max-width: 78ch;
+}
+.stack-map {
+  flex: none;
+  display: flex;
+  flex-direction: column;
+  gap: 0.25rem;
+}
+.lyr {
+  display: grid;
+  grid-template-columns: 15rem 1fr 9.5rem;
+  column-gap: 1rem;
+  align-items: baseline;
+  padding: 0.34rem 0.7rem;
+  border: 1px solid var(--line);
+  border-radius: 7px;
+  background: var(--bg-2);
+}
+.lyr-name {
+  font-family: var(--f-disp);
+  font-size: 0.86rem;
+  font-weight: 700;
+  color: var(--fg);
+}
+.lyr-fig {
+  font-size: 0.76rem;
+  line-height: 1.25;
+  color: var(--fg-2);
+}
+.lyr-fig code {
+  font-family: var(--f-mono);
+  font-size: 0.72rem;
+  color: var(--fg-2);
+}
+.lyr-verdict {
+  font-family: var(--f-mono);
+  font-size: 0.62rem;
+  font-weight: 700;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  text-align: right;
+  color: var(--fg-3);
+}
+.lyr-verdict.rev {
+  color: var(--cool);
+}
+.lyr-verdict.hot {
+  color: var(--coral);
+}
+/* The unclaimed band: no fill, dashed edge, so the eye reads a gap in the
+   stack rather than another row. */
+.lyr.open {
+  background: none;
+  border: 2px dashed var(--warm);
+  padding-top: 0.5rem;
+  padding-bottom: 0.5rem;
+}
+.lyr.open .lyr-name {
+  color: var(--warm);
+  font-size: 0.95rem;
+}
+.frame .map-note {
+  margin: 0.55rem 0 0;
+  font-size: 0.85rem;
+  line-height: 1.35;
+  color: var(--fg-2);
+  text-align: center;
+}
+
+/* ── The Problem: the agent build sequence ───────────────────────────────
+   Five steps that get worse, so the rail escalates cool → ember rather than
+   repeating one accent. The clock column carries the "and this took two
+   months" reading the old diagram got from its timeline. */
+.seq {
+  flex: none;
+  display: flex;
+  flex-direction: column;
+  gap: 0.45rem;
+}
+.sq {
+  display: grid;
+  grid-template-columns: 4.2rem 1.6rem 1fr;
+  column-gap: 0.7rem;
+  align-items: baseline;
+  padding-left: 0.8rem;
+  border-left: 3px solid var(--line-2);
+}
+.sq-when {
+  font-family: var(--f-mono);
+  font-size: 0.66rem;
+  letter-spacing: 0.04em;
+  color: var(--fg-3);
+  white-space: nowrap;
+}
+.sq-n {
+  font-family: var(--f-mono);
+  font-size: 0.8rem;
+  font-weight: 700;
+  color: var(--fg-3);
+}
+.sq-body {
+  font-size: 0.92rem;
+  line-height: 1.35;
+  color: var(--fg-2);
+}
+.sq-body b {
+  color: var(--fg);
+  font-weight: 700;
+}
+.sq.s1 { border-left-color: var(--cool); }
+.sq.s2 { border-left-color: var(--cool); }
+.sq.s3 { border-left-color: var(--warm); }
+.sq.s4 { border-left-color: var(--coral); }
+.sq.s5 { border-left-color: var(--ember); }
+.sq.s3 .sq-n, .sq.s3 .sq-when { color: var(--warm); }
+.sq.s4 .sq-n, .sq.s4 .sq-when { color: var(--coral); }
+.sq.s5 .sq-n, .sq.s5 .sq-when { color: var(--ember); }
+/* The closer is a quote, and its whole force is who said it — a team with no
+   workflow engine, i.e. the pain is not an artefact of adopting Temporal. */
+.pain-q {
+  flex: none;
+  margin: 0;
+  padding-left: 1.1rem;
+  border-left: 4px solid var(--warm);
+}
+.frame .pain-q p {
+  margin: 0;
+  font-family: var(--f-disp);
+  font-size: 1.45rem;
+  font-weight: 600;
+  line-height: 1.25;
+  color: var(--fg);
+}
+.pain-q footer {
+  margin-top: 0.35rem;
+  font-size: 0.78rem;
+  line-height: 1.3;
+  color: var(--fg-3);
+}
+.pain-q footer strong {
+  color: var(--fg-2);
+}
+
+/* The theme styles bare <blockquote> with its own dark panel and radius, at a
+   specificity a single class does not beat. This is a pull-quote on the deck
+   ground, not a callout box. */
+.frame blockquote.pain-q {
+  background: none;
+  border-radius: 0;
+  padding: 0 0 0 1.1rem;
+  border-left: 4px solid var(--warm);
+  font-style: normal;
+}
+
+/* ── Pain 1: learn Temporal ──────────────────────────────────────────────
+   Real screenshots of Temporal's own docs, thrown on the stage at angles and
+   overlapping. They are light-mode pages on a dark deck, which is exactly the
+   glare the slide wants — this beat is supposed to feel like too much. */
+.shots {
+  position: relative;
+  flex: 1;
+  min-height: 0;
+}
+.shot {
+  position: absolute;
+  width: 40%;
+  border-radius: 6px;
+  border: 1px solid var(--line-2);
+  box-shadow: 0 14px 36px rgba(0, 0, 0, 0.55);
+  object-fit: cover;
+  object-position: top left;
+  max-height: 62%;
+}
+.shot.p1 { top: 0;    left: 1%;  transform: rotate(-3deg);  z-index: 1; }
+.shot.p2 { top: 14%;  left: 21%; transform: rotate(2.2deg); z-index: 2; }
+.shot.p3 { top: 2%;   left: 40%; transform: rotate(-1.4deg);z-index: 3; }
+.shot.p4 { top: 26%;  left: 12%; transform: rotate(3.4deg); z-index: 4; }
+.shot.p5 { top: 20%;  left: 44%; transform: rotate(-2.6deg);z-index: 5; }
+.shot.p6 { top: 34%;  left: 30%; transform: rotate(1.2deg); z-index: 6; }
+/* The count lands on top of the pile, so it needs its own ground — grey text
+   over a white docs page is unreadable. */
+.shot-tally {
+  position: absolute;
+  right: 0;
+  top: 44%;
+  z-index: 7;
+  display: flex;
+  flex-direction: column;
+  align-items: flex-end;
+  text-align: right;
+  max-width: 12rem;
+  padding: 0.6rem 0.8rem;
+  background: var(--abyssal);
+  border: 1px solid var(--line-2);
+  border-radius: 10px;
+  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.6);
+}
+.shot-tally b {
+  font-family: var(--f-disp);
+  font-size: 3.6rem;
+  font-weight: 700;
+  line-height: 1;
+  color: var(--coral);
+}
+.shot-tally span {
+  font-size: 0.86rem;
+  line-height: 1.25;
+  color: var(--fg-2);
+}
+.concepts {
+  flex: none;
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.3rem;
+  justify-content: center;
+}
+.concepts span {
+  font-family: var(--f-mono);
+  font-size: 0.6rem;
+  letter-spacing: 0.03em;
+  padding: 0.18rem 0.42rem;
+  border: 1px solid var(--line);
+  border-radius: 4px;
+  color: var(--fg-3);
+}
+
+/* ── Pain 2: you may not change it ───────────────────────────────────────
+   Temporal's own rule, then its own before/after from the Python versioning
+   page. Rendered as a diff rather than syntax-highlighted: the point is the
+   volume of what gets added, not the syntax. */
+.frame blockquote.doc-rule {
+  flex: none;
+  margin: 0;
+  background: none;
+  border-radius: 0;
+  padding: 0 0 0 1rem;
+  border-left: 4px solid var(--warm);
+  font-style: normal;
+}
+.frame .doc-rule p {
+  margin: 0;
+  font-family: var(--f-disp);
+  font-size: 1.12rem;
+  font-weight: 600;
+  line-height: 1.3;
+  color: var(--fg);
+}
+.doc-rule footer {
+  margin-top: 0.25rem;
+  font-family: var(--f-mono);
+  font-size: 0.62rem;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  color: var(--fg-3);
+}
+.diff {
+  flex: none;
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  column-gap: 1.1rem;
+  align-items: start;
+}
+.diff figure {
+  margin: 0;
+  min-width: 0;
+}
+.diff figcaption {
+  font-family: var(--f-mono);
+  font-size: 0.6rem;
+  font-weight: 700;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  color: var(--fg-3);
+  margin-bottom: 0.3rem;
+}
+.frame pre.code {
+  margin: 0;
+  padding: 0.6rem 0.7rem;
+  background: var(--code-bg);
+  border: 1px solid var(--line);
+  border-radius: 8px;
+  font-family: var(--f-mono);
+  font-size: 0.58rem;
+  line-height: 1.45;
+  color: var(--fg-2);
+  white-space: pre;
+  overflow: hidden;
+}
+.frame pre.code .add {
+  display: inline-block;
+  width: 100%;
+  background: rgba(245, 163, 55, 0.14);
+  color: var(--warm);
+}
+
+/* ── Pain 3: rainbow deploys ─────────────────────────────────────────────
+   Deliberately off-palette. The fleets are a literal rainbow because that is
+   the name the practice goes by, and because six clashing colours on this
+   deck read as wrong — which is the argument. */
+/* Two bands, not three columns: the app feeds the service from above, and
+   the service, the arrow and the fleets sit on ONE row — so the row itself
+   says where the communication happens. */
+.rainbow {
+  flex: none;
+  display: flex;
+  flex-direction: column;
+}
+.rb-top {
+  width: 12rem;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 0.2rem;
+}
+.rb-row {
+  display: grid;
+  grid-template-columns: 12rem 5.5rem 1fr;
+  column-gap: 0.6rem;
+  align-items: center;
+}
+/* The queue is what every fleet polls, so the arrow runs across to the grid
+   rather than down off the bottom of the column. */
+.rb-feed {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 0.15rem;
+  color: var(--fg-3);
+}
+.rb-feed .rb-line {
+  font-family: var(--f-mono);
+  font-size: 1.15rem;
+  line-height: 1;
+}
+.rb-feed small {
+  font-family: var(--f-mono);
+  font-size: 0.55rem;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  text-align: center;
+}
+.rb-col {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 0.2rem;
+}
+.rb-box {
+  width: 100%;
+  padding: 0.5rem 0.6rem;
+  text-align: center;
+  border-radius: 8px;
+  border: 2px solid var(--cool);
+  background: var(--bg-2);
+  font-family: var(--f-disp);
+  font-size: 0.92rem;
+  font-weight: 700;
+  color: var(--fg);
+}
+.rb-box.svc {
+  border-color: var(--fg-3);
+}
+.rb-arrow {
+  font-family: var(--f-mono);
+  font-size: 1rem;
+  line-height: 1.1;
+  color: var(--fg-3);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+.rb-arrow small {
+  font-size: 0.55rem;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+}
+.rb-pools {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 0.6rem;
+}
+.rb-pool {
+  padding: 0.55rem 0.5rem;
+  border-radius: 8px;
+  border: 2px solid;
+  background: rgba(255, 255, 255, 0.04);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 0.1rem;
+}
+.rb-pool b {
+  font-family: var(--f-mono);
+  font-size: 0.6rem;
+  font-weight: 700;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: var(--fg-3);
+}
+.rb-pool span {
+  font-family: var(--f-disp);
+  font-size: 1.15rem;
+  font-weight: 700;
+}
+.rb-pool.v1 { border-color: #4a9fd8; }
+.rb-pool.v1 span { color: #4a9fd8; }
+.rb-pool.v2 { border-color: #5fbf6a; }
+.rb-pool.v2 span { color: #5fbf6a; }
+.rb-pool.v3 { border-color: #f5c542; }
+.rb-pool.v3 span { color: #f5c542; }
+.rb-pool.v4 { border-color: #f0883e; }
+.rb-pool.v4 span { color: #f0883e; }
+.rb-pool.v5 { border-color: #e05252; }
+.rb-pool.v5 span { color: #e05252; }
+.rb-pool.v6 { border-color: #9b7fd4; }
+.rb-pool.v6 span { color: #9b7fd4; }
+.rb-math {
+  flex: none;
+  display: flex;
+  align-items: baseline;
+  justify-content: center;
+  gap: 1rem;
+}
+.rbm {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+.rbm b {
+  font-family: var(--f-disp);
+  font-size: 1.6rem;
+  font-weight: 700;
+  line-height: 1.05;
+  color: var(--fg);
+}
+.rbm span {
+  font-family: var(--f-mono);
+  font-size: 0.58rem;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  color: var(--fg-3);
+}
+.rbm.op b, .rbm.op {
+  font-family: var(--f-disp);
+  font-size: 1.3rem;
+  color: var(--fg-3);
+}
+.rbm.hot b {
+  color: var(--coral);
+}
+
+/* The nondeterminism error, verbatim from temporalio/sdk-java#902. A log
+   panel rather than a quote: this is the thing a developer sees, and the
+   expected/actual pair is the same activity swap the docs example makes. */
+.nde {
+  flex: none;
+  background: var(--code-bg);
+  border: 1px solid rgba(224, 82, 82, 0.5);
+  border-left: 4px solid #e05252;
+  border-radius: 8px;
+  padding: 0.5rem 0.75rem 0.55rem;
+  position: relative;
+}
+.nde-head {
+  font-family: var(--f-mono);
+  font-size: 0.58rem;
+  font-weight: 700;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  color: #e05252;
+  margin-bottom: 0.3rem;
+}
+.frame pre.nde-body {
+  margin: 0;
+  padding: 0;
+  background: none;
+  border: 0;
+  font-family: var(--f-mono);
+  font-size: 0.62rem;
+  line-height: 1.5;
+  color: var(--fg-2);
+  white-space: pre-wrap;
+}
+.nde-body .ev {
+  color: var(--warm);
+}
+.nde-src {
+  position: absolute;
+  right: 0.7rem;
+  bottom: 0.45rem;
+  font-family: var(--f-mono);
+  font-size: 0.55rem;
+  letter-spacing: 0.04em;
+  color: var(--fg-3);
+}
+.frame .doc-rule-line {
+  margin: 0.2rem 0 0;
+  font-size: 0.72rem;
+  line-height: 1.35;
+  text-align: center;
+  color: var(--fg-3);
+  max-width: 96ch;
+  margin-left: auto;
+  margin-right: auto;
+}
+
+/* An error panel plus a two-column diff plus a closer is a full slide; each
+   piece is sized down here rather than globally, so the other code blocks in
+   the deck keep their readable size. */
+.grow.nde-slide {
+  gap: 0.75rem;
+}
+.grow.nde-slide .nde {
+  padding: 0.42rem 0.7rem 0.45rem;
+}
+.grow.nde-slide .nde-body {
+  font-size: 0.55rem;
+  line-height: 1.42;
+}
+.grow.nde-slide pre.code {
+  font-size: 0.53rem;
+  line-height: 1.38;
+  padding: 0.5rem 0.6rem;
+}
+.grow.nde-slide .closer {
+  font-size: 1.22rem;
+}
+
+/* ── The Problem, slide one: the preliminaries ───────────────────────────
+   Deliberately calm and un-foreshadowed — it only gets the reader to the
+   architecture everyone recommends. It reuses `.rainbow`'s grid with a single
+   fleet, so the explosion three slides later is visibly the SAME picture
+   multiplied rather than a new diagram. */
+.prelim {
+  flex: none;
+  display: flex;
+  flex-direction: column;
+  gap: 0.55rem;
+}
+.pre-step {
+  padding-left: 0.9rem;
+  border-left: 3px solid var(--cool);
+  font-size: 1rem;
+  line-height: 1.38;
+  color: var(--fg-2);
+  max-width: 82ch;
+}
+.pre-step b {
+  color: var(--fg);
+  font-weight: 700;
+}
+/* The one fleet you actually meant to run. */
+.rb-pool.calm {
+  border-color: var(--cool);
+}
+.rb-pool.calm span {
+  color: var(--cool);
+}
+
+/* Six fleets stack into two rows, so the row is taller than the service box.
+   Pin the service and the arrow to the top of it: the app's arrow still lands
+   on the service, and the service sits level with the first rank of fleets. */
+.rb-row.tall .rb-box.svc,
+.rb-row.tall .rb-feed {
+  align-self: start;
+}
+
+/* ── The Buyer ───────────────────────────────────────────────────────────
+   Named companies running exactly this workload at scale, each with the
+   thing they had to build around the constraint. The workaround is the
+   point: these teams are already paying for the problem. */
+.frame .buyer-def {
+  flex: none;
+  margin: 0;
+  font-size: 1rem;
+  line-height: 1.4;
+  color: var(--fg-2);
+  max-width: 88ch;
+}
+.buyers { flex: none; }
+.buyers .col { gap: 0.3rem; }
+.buyer-scale {
+  font-family: var(--f-mono);
+  font-size: 0.68rem;
+  font-weight: 700;
+  letter-spacing: 0.06em;
+  color: var(--cool);
+}
+.buyers + .closer { margin-top: 0.4rem !important; }
+
+/* Every anecdote on The Buyer is checkable: a link to the talk or case study
+   it comes from. Kept small and last in the card so it reads as a citation. */
+.frame a.buyer-src {
+  margin-top: auto;
+  padding-top: 0.3rem;
+  font-family: var(--f-mono);
+  font-size: 0.58rem;
+  letter-spacing: 0.04em;
+  color: var(--fg-3);
+  text-decoration: none;
+  border-bottom: 0;
+}
+.frame a.buyer-src:hover {
+  color: var(--ember);
+}
+
+/* Why Now: the incumbent's own framing, quoted. Bigger than body copy because
+   it is the evidence, not a caption. */
+.wn-quote {
+  font-family: var(--f-disp);
+  font-size: 1.05rem;
+  font-weight: 600;
+  line-height: 1.3;
+  color: var(--cool);
+  padding-left: 0.6rem;
+  border-left: 3px solid var(--cool);
+}
+
+.frame .wn-note {
+  margin-top: auto;
+  font-size: 0.72rem;
+  color: var(--fg-3);
+}
+
+/* A card whose claims come from two places cites both. */
+.frame span.buyer-src {
+  margin-top: auto;
+  padding-top: 0.3rem;
+  display: block;
+  font-family: var(--f-mono);
+  font-size: 0.55rem;
+  letter-spacing: 0.03em;
+  line-height: 1.5;
+  color: var(--fg-3);
+}
+.frame span.buyer-src a {
+  color: var(--fg-3);
+  text-decoration: none;
+  border-bottom: 0;
+}
+.frame span.buyer-src a:hover {
+  color: var(--ember);
+}
+
+/* The Buyer, point one: these customers exist, by name, at scale. A plain row
+   of names does that faster than three cards of statistics. */
+.buyer-names {
+  flex: none;
+}
+.frame .buyer-names p {
+  margin: 0 0 0.4rem;
+  font-size: 0.82rem;
+  color: var(--fg-3);
+}
+.bn-row {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.45rem;
+}
+.bn-row span {
+  font-family: var(--f-disp);
+  font-size: 0.92rem;
+  font-weight: 700;
+  color: var(--fg);
+  padding: 0.18rem 0.55rem;
+  border: 1px solid var(--line-2);
+  border-radius: 6px;
+}
+
+/* ── Market: how big, how fast ───────────────────────────────────────────
+   Two headline figures, then the evidence behind them. No map, no TAM
+   arithmetic — the ceiling is demonstrated by what the layer is already
+   worth to one company. */
+.mkt {
+  flex: none;
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 1.6rem;
+}
+.mkt-big {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  text-align: center;
+  gap: 0.2rem;
+}
+.mkt-big b {
+  font-family: var(--f-logo);
+  font-size: 5.2rem;
+  font-weight: 600;
+  line-height: 0.95;
+  color: var(--cool);
+}
+.mkt-big:nth-child(2) b {
+  color: var(--warm);
+}
+.mkt-big span {
+  font-size: 0.9rem;
+  line-height: 1.3;
+  color: var(--fg-2);
+  max-width: 26ch;
+}
+.mkt-rows {
+  flex: none;
+  display: flex;
+  flex-direction: column;
+  gap: 0.3rem;
+  margin-top: 0.4rem;
+}
+.mkt-row {
+  display: grid;
+  grid-template-columns: 11rem 1fr;
+  column-gap: 1rem;
+  align-items: baseline;
+  padding: 0.34rem 0;
+  border-bottom: 1px solid var(--line);
+}
+.mkt-row b {
+  font-family: var(--f-mono);
+  font-size: 0.95rem;
+  font-weight: 700;
+  color: var(--fg);
+  text-align: right;
+}
+.mkt-row span {
+  font-size: 0.86rem;
+  line-height: 1.3;
+  color: var(--fg-2);
+}
+.mkt-src {
+  position: absolute;
+  left: 3.2rem;
+  bottom: 1.1rem;
+  font-family: var(--f-mono);
+  font-size: 0.55rem;
+  letter-spacing: 0.04em;
+  color: var(--fg-3);
+}
+
+/* ─── the ladder's counter-claim ──────────────────────────────── */
+/* The six capabilities above are not a roadmap the incumbent can also walk.
+   Replay rebuilds state by re-running the program, so it needs the whole log
+   and the code that wrote it — and that forecloses every rung. Prefixed with
+   `.frame` because the theme styles `.slidev-layout p` at (0,1,1), which
+   outranks a bare class. */
+.frame .verdict {
+  max-width: 64ch;
+  margin: 0 auto;
+  padding-top: 1rem;
+  border-top: 1px solid var(--line);
+  text-align: center;
+}
+.frame .verdict-head {
+  margin: 0;
+  font-family: var(--f-disp);
+  font-size: 1.25rem;
+  font-weight: 600;
+  line-height: 1.3;
+  color: var(--fg);
+}
+.frame .verdict-head .hot {
+  color: var(--coral);
+}
+.frame .verdict-why {
+  margin: 0.45rem 0 0;
+  font-size: 0.95rem;
+  line-height: 1.5;
+  color: var(--fg-3);
+}
+.frame .verdict-why b {
+  font-weight: 600;
+  color: var(--fg-2);
+}
+
+/* ─── Tim Morrissey's read, 2026-09-21 ────────────────────────── */
+
+/* The piecemeal path was in the appendix, where the rewrite objection never
+   reaches it. It answers the turn the Wedge closer creates — "you need an
+   application platform" invites "so I rewrite everything?" — so it sits there,
+   marked to read as its own claim rather than a seventh requirement. */
+.frame .beat-adopt {
+  margin: 0.15rem 0 0;
+  padding: 0.35rem 0.6rem;
+  border-left: 3px solid var(--cool);
+  border-radius: 0 6px 6px 0;
+  background: rgba(108, 196, 200, 0.09);
+  font-size: 0.82rem;
+  line-height: 1.35;
+  color: var(--fg-2);
+}
+
+
+/* Where the margin sits in the stack. One denominator for all three rows —
+   each layer's cost of revenue against its own revenue — because the earlier
+   copy put cloud's share of COGS beside a gross margin and read as though the
+   two were the same measure. Named .cor*, since .stack is already taken. */
+.spend {
+  margin-top: 0.35rem;
+  padding: 0.55rem 0.7rem;
+  background: var(--bg-2);
+  border: 1px solid var(--line);
+  border-radius: 8px;
+}
+.spend-head {
+  font-family: var(--f-mono);
+  font-size: 0.56rem;
+  font-weight: 700;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  color: var(--fg-3);
+  margin-bottom: 0.45rem;
+}
+.cor {
+  display: flex;
+  flex-direction: column;
+  gap: 0.38rem;
+}
+.cor-row {
+  display: grid;
+  grid-template-columns: 8rem 1fr 2.6rem;
+  align-items: center;
+  gap: 0.6rem;
+  font-size: 0.78rem;
+  color: var(--fg-2);
+}
+.cor-name {
+  white-space: nowrap;
+}
+/* The track is the full cell; the bar inside it is this layer's top line,
+   which is the cost segment of the layer above — so the three nest into a
+   funnel. Left-aligned, or the nesting does not read. */
+.cor-track {
+  display: block;
+  min-width: 0;
+}
+.cor-bar {
+  display: block;
+  height: 0.58rem;
+  min-width: 2px;
+  border-radius: 3px;
+  background: rgba(255, 255, 255, 0.09);
+  overflow: hidden;
+}
+.cor-bar i {
+  display: block;
+  height: 100%;
+  border-radius: 3px;
+  background: var(--fg-3);
+}
+.cor-val {
+  text-align: right;
+  font-family: var(--f-disp);
+  font-weight: 700;
+  color: var(--fg);
+}
+/* The layer we build at. */
+.cor-row.here .cor-name,
+.cor-row.here .cor-val {
+  color: var(--warm);
+}
+.cor-row.here .cor-bar i {
+  background: var(--warm);
+}
+.frame .spend .spend-note {
+  margin: 0.5rem 0 0;
+  padding-top: 0.4rem;
+  border-top: 1px solid var(--line);
+  font-size: 0.76rem;
+  line-height: 1.4;
+  color: var(--fg-3);
+}
+/* The caveat block is pinned to the bottom of the frame and runs to five
+   lines once the layer sources are added, far enough up that it ran under the
+   panel. Reserve its height so the column centres in what is left. */
+.beats.beats-clear {
+  padding-bottom: 6.5rem;
+}
+
+.venn-src a {
+  color: var(--cool);
+  text-decoration: none;
+  border-bottom: 1px solid rgba(108, 196, 200, 0.35);
+}
+.frame .spend .spend-note {
+  margin-top: 0.4rem;
+  padding-top: 0.4rem;
+  border-top: 1px solid var(--line);
+  font-size: 0.78rem;
+  color: var(--fg-3);
+}
+
+/* The Wedge's claim is that everyone is building agents on durable execution.
+   One figure carries it. No agent-specific split of Temporal's revenue is
+   published, so this is total spend plus the AI-native share of its base —
+   the honest pair, kept to two lines under the Venn. */
+.wspend {
+  display: flex;
+  align-items: baseline;
+  gap: 0.55rem;
+  margin-top: 0.5rem;
+  padding: 0.5rem 0.7rem;
+  background: var(--bg-2);
+  border: 1px solid var(--line);
+  border-left: 3px solid var(--warm);
+  border-radius: 0 8px 8px 0;
+}
+.ws-amt {
+  flex: none;
+  font-family: var(--f-disp);
+  font-size: 1.5rem;
+  font-weight: 700;
+  line-height: 1;
+  color: var(--warm);
+}
+.ws-txt {
+  font-size: 0.78rem;
+  line-height: 1.35;
+  color: var(--fg-2);
+}
+.ws-txt b {
+  font-weight: 700;
+  color: var(--fg);
+}
+.ws-src {
+  margin-top: 0.3rem;
+  font-family: var(--f-mono);
+  font-size: 0.55rem;
+  color: var(--fg-3);
+}
+.ws-src a {
+  color: var(--cool);
+  text-decoration: none;
+  border-bottom: 1px solid rgba(108, 196, 200, 0.35);
+}
