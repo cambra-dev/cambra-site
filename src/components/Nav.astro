@@ -1,8 +1,15 @@
 ---
 /**
- * Top navigation bar. Brand lockup on the left; GitHub, blog, and contact
- * links on the right.
+ * Top navigation bar. Brand lockup on the left; links on the right. Links
+ * without `mobile` are hidden below the sm breakpoint so the bar fits a phone;
+ * the hero and footer still reach the repo and the blog.
  */
+const links = [
+  { label: "GitHub", href: "https://github.com/cambra-dev/cambra" },
+  { label: "Blog", href: "/blog" },
+  { label: "Customers", href: "/design-partners", mobile: true },
+  { label: "Jobs", href: "/jobs", mobile: true },
+];
 ---
 
 <header
@@ -20,25 +27,20 @@
       />
     </a>
 
-    <div class="flex items-center gap-6 text-sm font-medium">
-      <a
-        href="https://github.com/cambra-dev/cambra"
-        class="text-[var(--color-ink-soft)] hover:text-[var(--color-accent)] transition-colors"
-      >
-        GitHub
-      </a>
-      <a
-        href="/blog"
-        class="text-[var(--color-ink-soft)] hover:text-[var(--color-accent)] transition-colors"
-      >
-        Blog
-      </a>
-      <a
-        href="/#contact"
-        class="text-[var(--color-ink-soft)] hover:text-[var(--color-accent)] transition-colors"
-      >
-        Contact
-      </a>
+    <div class="flex items-center gap-4 sm:gap-6 text-sm font-medium">
+      {
+        links.map((link) => (
+          <a
+            href={link.href}
+            class:list={[
+              "text-[var(--color-ink-soft)] hover:text-[var(--color-accent)] transition-colors whitespace-nowrap",
+              { "hidden sm:inline": !link.mobile },
+            ]}
+          >
+            {link.label}
+          </a>
+        ))
+      }
     </div>
   </nav>
 </header>

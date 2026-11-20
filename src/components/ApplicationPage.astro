@@ -1,0 +1,86 @@
+---
+/**
+ * Shared shell for the application pages (design partners, jobs). The page
+ * passes the intro through the "intro" slot and the form fields through the
+ * default slot. The "split" layout puts a short intro beside the form; the
+ * "stacked" layout puts a long intro (such as a job description) above it.
+ *
+ * Every form posted here must also be mirrored in public/netlify-forms.html,
+ * or Netlify will not register it at build time.
+ */
+import BaseLayout from "../layouts/BaseLayout.astro";
+import Nav from "./Nav.astro";
+
+interface Props {
+  title: string;
+  description: string;
+  formName: string;
+  heading: string;
+  submitLabel: string;
+  layout?: "split" | "stacked";
+  /** Heading above the form in the stacked layout. */
+  formHeading?: string;
+}
+
+const {
+  title,
+  description,
+  formName,
+  heading,
+  submitLabel,
+  layout = "split",
+  formHeading = "Apply",
+} = Astro.props;
+const stacked = layout === "stacked";
+---
+
+<BaseLayout title={title} description={description}>
+  <Nav />
+  <main class="max-w-5xl mx-auto px-6 py-20 md:py-28">
+    <div class={stacked ? "max-w-2xl" : "grid md:grid-cols-2 gap-12 md:gap-16"}>
+      <div>
+        <h1
+          class="font-display text-3xl md:text-5xl font-medium leading-[1.05] mb-6 text-[var(--color-ink)]"
+          style="letter-spacing: -0.02em;"
+        >
+          {heading}
+        </h1>
+        <div class={stacked ? "prose" : "space-y-4 text-[var(--color-ink-soft)] leading-relaxed"}>
+          <slot name="intro" />
+        </div>
+        {
+          stacked && (
+            <h2
+              id="apply"
+              class="text-2xl md:text-3xl font-semibold tracking-tight mt-16 mb-8 text-[var(--color-ink)]"
+              style="letter-spacing: -0.02em;"
+            >
+              {formHeading}
+            </h2>
+          )
+        }
+      </div>
+
+      <form
+        name={formName}
+        method="POST"
+        data-netlify="true"
+        netlify-honeypot="bot-field"
+        action="/thanks"
+        class="space-y-5"
+      >
+        <p class="hidden" aria-hidden="true">
+          <label>Don't fill this out if you're human: <input name="bot-field" /></label>
+        </p>
+        <input type="hidden" name="form-name" value={formName} />
+        <slot />
+        <button
+          type="submit"
+          class="bg-[var(--color-accent)] hover:bg-[var(--color-accent-dark)] text-white text-sm font-medium px-5 py-2.5 rounded-md transition-colors"
+        >
+          {submitLabel}
+        </button>
+      </form>
+    </div>
+  </main>
+</BaseLayout>

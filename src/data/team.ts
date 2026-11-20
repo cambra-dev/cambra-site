@@ -13,6 +13,8 @@ export interface TeamMember {
   photo: string;
   /** Optional LinkedIn or personal site URL */
   link?: string;
+  /** Optional X handle, without the @ */
+  x?: string;
 }
 
 // TODO: Replace placeholder entries with real team data.
@@ -23,6 +25,7 @@ export const team: TeamMember[] = [
     bio: 'Lover of databases, programming languages, and distributed systems.',
     photo: '/team/dan.jpg',
     link: 'https://www.linkedin.com/in/sortalongo',
+    x: 'sortalongo',
   },
   {
     name: 'Daniel Mills',
@@ -37,5 +40,6 @@ export const team: TeamMember[] = [
     bio: 'Developer tool aficionado. Hard-thing doer.',
     photo: '/team/skylar.jpg',
     link: 'https://www.linkedin.com/in/skylarcc/',
+    x: 'notgroundlar',
   },
 ];

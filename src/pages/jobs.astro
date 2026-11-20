@@ -1,0 +1,211 @@
+---
+/**
+ * Founding-engineer job description and application. Posts to the Netlify
+ * form "job-application". The copy follows the "Job Description" section of
+ * the founders' job-description Google Doc; keep the two in sync.
+ */
+import ApplicationPage from "../components/ApplicationPage.astro";
+import FormField from "../components/FormField.astro";
+
+const areas = [
+    {
+        name: "Programming languages",
+        example:
+            "Designed a language or type system; built a type checker, interpreter, or language tooling used by others",
+    },
+    {
+        name: "Compilers",
+        example:
+            "Built IRs, optimization passes, or code generation for a production compiler",
+    },
+    {
+        name: "Databases",
+        example:
+            "Built a query engine, optimizer, storage layer, or transaction system",
+    },
+    {
+        name: "Distributed systems",
+        example:
+            "Built replication or consensus infrastructure that runs at scale",
+    },
+];
+---
+
+<ApplicationPage
+    title="Founding engineer"
+    description="Cambra is hiring founding engineers to build the language and runtime end to end. Fully remote, $225,000 plus founding engineer equity."
+    formName="job-application"
+    heading="Founding engineer"
+    submitLabel="Apply"
+    layout="stacked"
+>
+    <Fragment slot="intro">
+        <h2>About Cambra</h2>
+        <p>
+            Cambra is building a unified programming platform that fuses the
+            application runtime and the database into one system.
+        </p>
+        <p>
+            It presents like a programming language, while the runtime handles
+            durability, distribution, and fault tolerance. The goal is one
+            system that spans transactional, analytical, and streaming
+            workloads, so you stop stitching together an app server, a database,
+            a warehouse, and a stream processor.
+        </p>
+        <p>
+            Cambra is{" "}
+            <a href="https://github.com/cambra-dev/cambra">open source</a>. Your
+            work will be public from day one.
+        </p>
+
+        <h2>The team</h2>
+        <p>
+            The founders, Dan Sotolongo (CEO), Daniel Mills, and Skylar Cook,
+            have worked together for over a decade. Dan and Daniel scaled a
+            database product to $100M ARR at Snowflake.
+        </p>
+        <p>
+            We raised a seed round led by Lightspeed. You'd be one of the first
+            engineers, shaping the system's core design and the engineering
+            culture around it.
+        </p>
+
+        <h2>The role</h2>
+        <p>
+            You'll build the Cambra language and runtime end to end. You bring
+            deep expertise in one area, and you'll work across component
+            boundaries. The work spans:
+        </p>
+        <ul>
+            <li>
+                <strong>Language:</strong> syntax, semantics, and the type
+                system that make durable, distributed code feel ordinary
+            </li>
+            <li>
+                <strong>Compiler:</strong> the IR, analyses, and optimizations
+                that lower programs onto the runtime
+            </li>
+            <li>
+                <strong>Query and storage:</strong> planning, execution, and
+                storage for transactional, analytical, and streaming workloads
+            </li>
+            <li>
+                <strong>Distributed runtime:</strong> durability, replication,
+                and fault tolerance, invisible to the programmer
+            </li>
+        </ul>
+        <p>
+            There is no fixed lane. Priorities shift as the system takes shape,
+            and each founding engineer will own major pieces of it.
+        </p>
+
+        <h2>Who we're looking for</h2>
+        <p>
+            We're hiring people who have pushed forward the state of the art in
+            at least one of these areas, and want to do it again:
+        </p>
+        <ul>
+            {areas.map((a) => (
+                <li>
+                    <strong>{a.name}:</strong> {a.example}
+                </li>
+            ))}
+        </ul>
+        <p>You also:</p>
+        <ul>
+            <li>
+                <strong>Work well in a group.</strong> You share context freely,
+                take and give hard feedback, and care about the team's output
+                more than your own.
+            </li>
+            <li>
+                <strong>Wield coding agents fluently.</strong> You use them
+                daily and know where they speed you up and where they don't.
+            </li>
+            <li>
+                <strong>Want to reach beyond your specialty.</strong> You're
+                excited to learn the other three areas from teammates who are
+                experts in them.
+            </li>
+        </ul>
+
+        <h2>How we work</h2>
+        <ul>
+            <li>
+                <strong>Fully remote.</strong> 4 working hours in US Mountain
+                Time business hours required daily.
+            </li>
+            <li>
+                <strong>Quarterly offsites.</strong> We meet in person in the US
+                every 3 months; attendance is required.
+            </li>
+            <li>
+                <strong>Agent-native.</strong> Coding agents are a core part of
+                how we build, not an experiment.
+            </li>
+        </ul>
+
+        <h2>Compensation</h2>
+        <ul>
+            <li>
+                <strong>Salary:</strong> $225,000
+            </li>
+            <li>
+                <strong>Equity:</strong> founding engineer equity; we share
+                specifics in the first conversation.
+            </li>
+            <li>
+                <strong>Benefits:</strong> health coverage, a
+                home-office/equipment budget, and travel covered for offsites.
+                We hire internationally.
+            </li>
+        </ul>
+
+        <h2>How to apply</h2>
+        <p>
+            Fill in the form below with your résumé, a few lines about your
+            relevant experience, and a link to work you're proud of (code,
+            papers, talks, or a project write-up).
+        </p>
+    </Fragment>
+
+    <FormField name="name" label="Name" required />
+    <FormField name="email" label="Email" type="email" required />
+    <FormField name="location" label="Where are you based?" required />
+    <FormField
+        name="hours"
+        label="Can you work 4 hours a day in US Mountain Time business hours, and attend a US offsite every 3 months?"
+        type="select"
+        required
+        options={["Yes", "No", "Let's discuss"]}
+    />
+    <FormField
+        name="resume"
+        label="Résumé link"
+        type="url"
+        required
+        placeholder="https://"
+    />
+    <FormField
+        name="area"
+        label="Where have you pushed the state of the art?"
+        type="select"
+        required
+        options={[...areas.map((a) => a.name), "Something else"]}
+    />
+    <FormField
+        name="experience"
+        label="A few lines about your relevant experience"
+        type="textarea"
+        required
+    />
+    <FormField
+        name="work"
+        label="A link to work you're proud of"
+        type="url"
+        required
+        hint="Code, papers, talks, or a project write-up."
+        placeholder="https://"
+    />
+    <FormField name="links" label="GitHub, LinkedIn, or personal site" />
+</ApplicationPage>

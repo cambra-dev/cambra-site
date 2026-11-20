@@ -1,55 +1,56 @@
 ---
 /**
- * Vision section. Three panels explaining the problem, the approach, and the
- * guarantee. Copy is drafted from the design doc — refine before launch.
+ * Vision section. Three panels that elaborate on the hero, one per outcome:
+ * contain the sprawl, unbreakable, scales with you. Each names the outcome, then the
+ * mechanism.
  */
 import Waves from "./Waves.astro";
 
 const panels = [
-  {
-    label: "01",
-    heading: "Logic & data, not infra.",
-    body: `Forget about services, tables, queues, caches. Build on your terms.`,
-  },
-  {
-    label: "02",
-    heading: "Compiled? Verified.",
-    body: `The spec is just types. The type checker automates verification.`,
-  },
-  {
-    label: "03",
-    heading: "Branch the whole app.",
-    body: `Don't settle for code or database branches. Experiment freely, safely.`,
-  },
+    {
+        label: "01",
+        heading: "Contain the sprawl.",
+        body: `As your app grows, it stays one program. Your agent changes data, logic and APIs together, so a feature that would touch five services is one change.`,
+    },
+    {
+        label: "02",
+        heading: "Unbreakable.",
+        body: `The compiler checks your invariants end to end before anything runs. Branch the running app to try any change at no risk. Hot-reload the whole app with no downtime and no broken transactions.`,
+    },
+    {
+        label: "03",
+        heading: "Scales with you.",
+        body: `The compiler optimizes the whole app, and one runtime runs it. It performs as if an expert hand-tuned every layer, then scales up across cores and out across machines.`,
+    },
 ];
 ---
 
-<section
-  class="relative overflow-hidden bg-[var(--color-bg)] pt-24 pb-20 md:pt-32 md:pb-28"
->
-  <div class="max-w-5xl mx-auto px-6">
-    <div class="grid md:grid-cols-3 gap-12 md:gap-16">
-      {
-        panels.map((panel) => (
-          <div>
-            <span class="block font-mono text-xs font-medium text-[var(--color-accent)] mb-4 tracking-[0.22em] uppercase">
-              {panel.label}
-            </span>
-            <h2
-              class="text-xl md:text-2xl font-semibold tracking-tight leading-snug mb-4 text-[var(--color-ink)]"
-              style="letter-spacing: -0.01em;"
-            >
-              {panel.heading}
-            </h2>
-            <p class="text-[var(--color-ink-soft)] leading-relaxed text-[0.9375rem]">
-              {panel.body}
-            </p>
-          </div>
-        ))
-      }
+<section class="relative overflow-hidden bg-[var(--color-bg)] pt-24 pb-20 md:pt-32 md:pb-28">
+    <div class="max-w-5xl mx-auto px-6">
+        <div class="grid md:grid-cols-3 gap-12 md:gap-16">
+            {panels.map((panel) => (
+                <div>
+                    <span class="block font-mono text-xs font-medium text-[var(--color-accent)] mb-4 tracking-[0.22em] uppercase">
+                        {panel.label}
+                    </span>
+                    <h2
+                        class="text-xl md:text-2xl font-semibold tracking-tight leading-snug mb-4 text-[var(--color-ink)]"
+                        style="letter-spacing: -0.01em;"
+                    >
+                        {panel.heading}
+                    </h2>
+                    <p class="text-[var(--color-ink-soft)] leading-relaxed text-[0.9375rem]">
+                        {panel.body}
+                    </p>
+                </div>
+            ))}
+        </div>
     </div>
-  </div>
 
-  <!-- Subtle wavy seam into the Contact section (Sand) below -->
-  <Waves palette="solid-sand" shape="tide" height="clamp(80px, 10vw, 140px)" />
+    <!-- Subtle wavy seam into the Contact section (Sand) below -->
+    <Waves
+        palette="solid-sand"
+        shape="tide"
+        height="clamp(80px, 10vw, 140px)"
+    />
 </section>
