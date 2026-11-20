@@ -1,0 +1,40 @@
+---
+/**
+ * One labelled form control for the Netlify application forms. Renders an
+ * input, a textarea, or a select, with the shared field styling.
+ */
+interface Props {
+  name: string;
+  label: string;
+  type?: "text" | "email" | "url" | "textarea" | "select";
+  required?: boolean;
+  placeholder?: string;
+  hint?: string;
+  options?: string[];
+}
+
+const { name, label, type = "text", required = false, placeholder, hint, options = [] } = Astro.props;
+const id = `field-${name}`;
+const control =
+  "w-full bg-white border border-[var(--color-san-blas)] rounded-md px-3.5 py-2.5 text-sm text-[var(--color-ink)] placeholder:text-[var(--color-muted)] focus:outline-none focus:ring-2 focus:ring-[var(--color-accent)] focus:border-transparent transition";
+---
+
+<div>
+  <label for={id} class="block text-sm font-medium mb-1.5 text-[var(--color-ink)]">
+    {label}
+    {!required && <span class="font-normal text-[var(--color-muted)]"> (optional)</span>}
+  </label>
+  {hint && <p class="text-xs text-[var(--color-ink-soft)] mb-1.5">{hint}</p>}
+  {
+    type === "textarea" ? (
+      <textarea id={id} name={name} required={required} placeholder={placeholder} rows="4" class={control} />
+    ) : type === "select" ? (
+      <select id={id} name={name} required={required} class={control}>
+        <option value="">Choose one</option>
+        {options.map((o) => <option value={o}>{o}</option>)}
+      </select>
+    ) : (
+      <input id={id} type={type} name={name} required={required} placeholder={placeholder} class={control} />
+    )
+  }
+</div>
