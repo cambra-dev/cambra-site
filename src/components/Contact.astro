@@ -1,54 +1,57 @@
 ---
 /**
- * Contact capture section. Netlify Forms processes submissions automatically
- * on deploy — no backend needed. Submissions appear in the Netlify dashboard.
+ * Get-involved section: three paths side by side. "Follow along" is an email
+ * signup (Netlify form "contact"); the founders' X links live in Team.
+ * "Design partners" and "Join the team" link to their own application pages.
  *
- * Prerequisites:
- *   1. Enable form detection: Netlify dashboard → Site settings → Forms → Enable form detection.
- *   2. The hidden form in public/netlify-forms.html must mirror this form's fields
- *      (Netlify scans it at build time to register the form).
+ * Netlify Forms processes submissions on deploy; they appear in the Netlify
+ * dashboard. Prerequisites:
+ *   1. Enable form detection: Netlify dashboard → Site settings → Forms.
+ *   2. public/netlify-forms.html must mirror every form's fields, or Netlify
+ *      will not register the form at build time.
  *
- * To receive email notifications for new submissions:
- *   Netlify dashboard → Forms → contact → Notifications → Add email notification.
+ * Email notifications: Netlify dashboard → Forms → <form> → Notifications.
  */
 import Waves from "./Waves.astro";
+
+const card = "flex flex-col bg-white/60 border border-[var(--color-san-blas)] rounded-lg p-6";
+const cardHeading = "text-lg font-semibold tracking-tight mb-2 text-[var(--color-ink)]";
+const cardBody = "text-sm text-[var(--color-ink-soft)] leading-relaxed mb-6";
+const button =
+  "inline-flex items-center gap-2 bg-[var(--color-accent)] hover:bg-[var(--color-accent-dark)] text-white text-sm font-medium px-5 py-2.5 rounded-md transition-colors";
 ---
 
 <section id="contact" class="relative overflow-hidden pt-12 pb-20 md:pt-16 md:pb-28" style="background: var(--color-sand);">
   <div class="max-w-5xl mx-auto px-6">
-    <div class="max-w-md">
-      <h2
-        class="text-2xl md:text-3xl font-semibold tracking-tight mb-3 text-[var(--color-ink)]"
-        style="letter-spacing: -0.02em;"
-      >
-        Stay in the loop.
-      </h2>
-      <p class="text-[var(--color-ink-soft)] mb-8 leading-relaxed">
-        We'll reach out when there's something worth sharing — no spam, no
-        marketing, no newsletters.
-      </p>
+    <h2
+      class="text-2xl md:text-3xl font-semibold tracking-tight mb-10 text-[var(--color-ink)]"
+      style="letter-spacing: -0.02em;"
+    >
+      Get involved.
+    </h2>
 
-      <!-- Netlify Forms: the hidden input and netlify attribute are required. -->
-      <form
-        name="contact"
-        method="POST"
-        data-netlify="true"
-        netlify-honeypot="bot-field"
-        class="space-y-5"
-        action="/thanks"
-      >
-        <!-- Honeypot for bot filtering -->
-        <p class="hidden" aria-hidden="true">
-          <label>
-            Don't fill this out if you're human: <input name="bot-field" />
-          </label>
+    <div class="grid md:grid-cols-3 gap-6">
+      <!-- Follow along -->
+      <div class={card}>
+        <h3 class={cardHeading}>Follow along.</h3>
+        <p class={cardBody}>
+          We'll email you when there's something worth seeing. No spam, no newsletters.
         </p>
-        <input type="hidden" name="form-name" value="contact" />
 
-        <div>
-          <label for="email" class="block text-sm font-medium mb-1.5 text-[var(--color-ink)]">
-            Email address
-          </label>
+        <form
+          name="contact"
+          method="POST"
+          data-netlify="true"
+          netlify-honeypot="bot-field"
+          action="/thanks"
+          class="space-y-3"
+        >
+          <p class="hidden" aria-hidden="true">
+            <label>Don't fill this out if you're human: <input name="bot-field" /></label>
+          </p>
+          <input type="hidden" name="form-name" value="contact" />
+          <input type="hidden" name="intent" value="following" />
+          <label for="email" class="sr-only">Email address</label>
           <input
             id="email"
             type="email"
@@ -57,42 +60,33 @@ import Waves from "./Waves.astro";
             placeholder="you@example.com"
             class="w-full bg-white border border-[var(--color-san-blas)] rounded-md px-3.5 py-2.5 text-sm text-[var(--color-ink)] placeholder:text-[var(--color-muted)] focus:outline-none focus:ring-2 focus:ring-[var(--color-accent)] focus:border-transparent transition"
           />
-        </div>
+          <button type="submit" class={button}>Follow</button>
+        </form>
 
-        <fieldset>
-          <legend class="block text-sm font-medium mb-2 text-[var(--color-ink)]"
-            >I'm interested in…</legend
-          >
-          <div class="space-y-2.5">
-            <label class="flex items-center gap-3 cursor-pointer">
-              <input
-                type="radio"
-                name="intent"
-                value="following"
-                checked
-                class="accent-[var(--color-accent)] w-4 h-4"
-              />
-              <span class="text-sm text-[var(--color-ink)]">Following the project</span>
-            </label>
-            <label class="flex items-center gap-3 cursor-pointer">
-              <input
-                type="radio"
-                name="intent"
-                value="joining"
-                class="accent-[var(--color-accent)] w-4 h-4"
-              />
-              <span class="text-sm text-[var(--color-ink)]">Working on this</span>
-            </label>
-          </div>
-        </fieldset>
+      </div>
 
-        <button
-          type="submit"
-          class="bg-[var(--color-accent)] hover:bg-[var(--color-accent-dark)] text-white text-sm font-medium px-5 py-2.5 rounded-md transition-colors"
-        >
-          Submit
-        </button>
-      </form>
+      <!-- Design partners -->
+      <div class={card}>
+        <h3 class={cardHeading}>Become a design partner.</h3>
+        <p class={cardBody}>
+          Build a real application on Cambra with the founders. Get early access, direct support,
+          and a say in what we build next.
+        </p>
+        <a href="/design-partners" class={`${button} mt-auto self-start`}>
+          Apply <span aria-hidden="true">→</span>
+        </a>
+      </div>
+
+      <!-- Jobs -->
+      <div class={card}>
+        <h3 class={cardHeading}>Join the team.</h3>
+        <p class={cardBody}>
+          We're hiring founding engineers to build the language and runtime end to end. Fully remote.
+        </p>
+        <a href="/jobs" class={`${button} mt-auto self-start`}>
+          Apply <span aria-hidden="true">→</span>
+        </a>
+      </div>
     </div>
   </div>
 

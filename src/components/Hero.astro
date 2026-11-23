@@ -9,55 +9,53 @@ const repoUrl = "https://github.com/cambra-dev/cambra";
 ---
 
 <section
-  class="relative overflow-hidden pt-20 pb-56 md:pt-28 md:pb-80"
-  style="background: var(--color-abyssal);"
+    class="relative overflow-hidden pt-20 pb-56 md:pt-28 md:pb-80"
+    style="background: var(--color-abyssal);"
 >
-  <div class="relative z-10 max-w-5xl mx-auto px-6">
-    <!-- Tagline eyebrow -->
-    <p
-      class="font-mono uppercase tracking-[0.22em] text-sm md:text-base mb-6"
-      style="color: var(--color-lagoon);"
-    >
-      Ship at the pace of AI.
-    </p>
+    <div class="relative z-10 max-w-5xl mx-auto px-6">
+        <!-- Tagline eyebrow -->
+        <p
+            class="font-mono uppercase tracking-[0.22em] text-sm md:text-base mb-6"
+            style="color: var(--color-lagoon);"
+        >
+            A new foundation for distributed applications
+        </p>
 
-    <!-- Headline -->
-    <h1
-      class="font-display text-4xl md:text-6xl font-medium leading-[1.05] max-w-3xl mb-8 text-white"
-    >
-      Code is cheap. Validation isn't.
-    </h1>
+        <!-- Headline -->
+        <h1 class="font-display text-4xl md:text-6xl font-medium leading-[1.05] max-w-3xl mb-8 text-white">
+            Production Grade Vibes.
+        </h1>
 
-    <p
-      class="text-lg md:text-xl max-w-2xl leading-relaxed mb-10"
-      style="color: rgba(255,255,255,0.72);"
-    >
-      Infrastructure fragmentation is holding you back: databases, queues, APIs,
-      analytics — wired by hand, verified by eye. <br />Cambra collapses the
-      stack into one coherent system.
-    </p>
+        <p
+            class="text-lg md:text-xl max-w-2xl leading-relaxed mb-10"
+            style="color: rgba(255,255,255,0.72);"
+        >
+            Your app will outgrow a single database. Contain the sprawl. Cambra
+            unifies your entire backend into a single, unbreakable system that
+            scales with you.
+        </p>
 
-    <!-- CTAs -->
-    <div class="flex flex-wrap gap-4 items-center">
-      <a
-        href={repoUrl}
-        class="inline-flex items-center gap-2 bg-[var(--color-accent)] hover:bg-[var(--color-accent-dark)] text-white font-medium text-sm px-5 py-2.5 rounded-md transition-colors"
-      >
-        Read the code
-        <span aria-hidden="true">→</span>
-      </a>
-      <a
-        href="/blog"
-        class="inline-flex items-center gap-2 text-sm font-medium px-5 py-2.5 rounded-md transition-colors border"
-        style="color: rgba(255,255,255,0.85); border-color: rgba(255,255,255,0.25);"
-        onmouseover="this.style.borderColor='rgba(255,255,255,0.5)'"
-        onmouseout="this.style.borderColor='rgba(255,255,255,0.25)'"
-      >
-        Read the blog
-      </a>
+        <!-- CTAs -->
+        <div class="flex flex-wrap gap-4 items-center">
+            <a
+                href={repoUrl}
+                class="inline-flex items-center gap-2 bg-[var(--color-accent)] hover:bg-[var(--color-accent-dark)] text-white font-medium text-sm px-5 py-2.5 rounded-md transition-colors"
+            >
+                Read the code
+                <span aria-hidden="true">→</span>
+            </a>
+            <a
+                href="/blog"
+                class="inline-flex items-center gap-2 text-sm font-medium px-5 py-2.5 rounded-md transition-colors border"
+                style="color: rgba(255,255,255,0.85); border-color: rgba(255,255,255,0.25);"
+                onmouseover="this.style.borderColor='rgba(255,255,255,0.5)'"
+                onmouseout="this.style.borderColor='rgba(255,255,255,0.25)'"
+            >
+                Read the blog
+            </a>
+        </div>
     </div>
-  </div>
 
-  <!-- Decorative waves at the bottom of the hero, reading into the next section -->
-  <Waves palette="cool-inverse" height="clamp(200px, 30vw, 400px)" />
+    <!-- Decorative waves at the bottom of the hero, reading into the next section -->
+    <Waves palette="cool-inverse" height="clamp(200px, 30vw, 400px)" />
 </section>

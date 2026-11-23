@@ -1,0 +1,64 @@
+---
+/**
+ * Design-partner application. Posts to the Netlify form "design-partner".
+ */
+import ApplicationPage from "../components/ApplicationPage.astro";
+import FormField from "../components/FormField.astro";
+---
+
+<ApplicationPage
+  title="Design partners"
+  description="Build a real application on Cambra with the founders, and shape what we build next."
+  formName="design-partner"
+  heading="Build with us."
+  submitLabel="Apply"
+>
+  <Fragment slot="intro">
+    <p>
+      We're working with a small number of teams to build real applications on Cambra.
+    </p>
+    <p>
+      Design partners get early access, direct support from the founders, and a say in what we
+      build next.
+    </p>
+    <p>
+      We ask for a real project, one that has outgrown or will outgrow a single database, and
+      regular feedback while you build it.
+    </p>
+  </Fragment>
+
+  <FormField name="name" label="Name" required />
+  <FormField name="email" label="Work email" type="email" required placeholder="you@company.com" />
+  <FormField name="company" label="Company" required />
+  <FormField name="role" label="Role" />
+  <FormField
+    name="project"
+    label="What do you want to build?"
+    type="textarea"
+    required
+    placeholder="The app, who uses it, and what it has to handle."
+  />
+  <FormField
+    name="stack"
+    label="What does your stack look like today?"
+    type="textarea"
+    placeholder="Databases, queues, caches, services, hosting."
+  />
+  <FormField
+    name="pain"
+    label="What breaks, or what holds you back?"
+    type="textarea"
+  />
+  <FormField
+    name="agents"
+    label="How does your team use coding agents?"
+    type="textarea"
+  />
+  <FormField
+    name="timeline"
+    label="When would you want to start?"
+    type="select"
+    required
+    options={["Now", "Within 3 months", "Within a year", "Just exploring"]}
+  />
+</ApplicationPage>
